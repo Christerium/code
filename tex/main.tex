@@ -4,6 +4,19 @@
 
 \begin{document}
 
-% Your content goes here
+\title{MOSRFLP}
+
+\section*{SDP for SRFLP}
+
+\begin{align}
+    \min \quad & K - \sum_{i < j} \frac{c_{ij}}{2} \left[\sum_{k<i} l_k X_{ki,kj} - \sum_{i<k<j} l_k X_{ik,kj} + \sum_{i<k} l_k X_{ik,jk}\right]  \label{eq:obj} \\
+    s.t. \quad & X_{ij,jk} - X_{ij,ik} - X_{ik,jk} = -1 \quad \text{for all triples} i < j < k                                                   \label{eq:transitivity} \\
+               & diag(X) = e                                                                                                                      \label{eq:diag} \\
+               & rank(X) = 1                                                                                                                      \label{eq:rank} \\
+               & X \succeq 0 \label{eq:psd}
+\end{align}
+
+The constraints \eqref{eq:diag} is the equivalent to $X_{ij,ij} \in \{-1,1\}$. The constraint \eqref{eq:rank} ensures that the matrix $X$ has rank 1, which is part of the optimality condition for SDP. The constraint \eqref{eq:psd} ensures that the matrix $X$ is positive semidefinite.
+
 
 \end{document}
