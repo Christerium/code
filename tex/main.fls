@@ -43,6 +43,8 @@ INPUT /home/user/.miktex/texmfs/install/tex/latex/amsfonts/umsb.fd
 INPUT /home/user/.miktex/texmfs/install/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
 INPUT /home/user/.miktex/texmfs/install/fonts/tfm/public/amsfonts/symbols/msbm7.tfm
 INPUT /home/user/.miktex/texmfs/install/fonts/tfm/public/amsfonts/symbols/msbm5.tfm
+INPUT /home/user/.miktex/texmfs/install/fonts/tfm/public/cm/cmr12.tfm
+INPUT /home/user/.miktex/texmfs/install/fonts/tfm/public/cm/cmbx12.tfm
 OUTPUT main.pdf
 INPUT /home/user/.miktex/texmfs/data/fonts/map/pdftex/pdftex.map
 INPUT main.aux
@@ -56,5 +58,7 @@ INPUT /home/user/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmmi7.pfb
 INPUT /home/user/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmmi7.pfb
 INPUT /home/user/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmr10.pfb
 INPUT /home/user/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmr10.pfb
+INPUT /home/user/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmr7.pfb
+INPUT /home/user/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmr7.pfb
 INPUT /home/user/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmsy10.pfb
 INPUT /home/user/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmsy10.pfb
