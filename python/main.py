@@ -1,9 +1,11 @@
-import cvxpy as cp
-import numpy as np
-from scipy.special import comb
-import mosek
-import time
-import sys, getopt
+import cvxpy as cp                  # For optimization
+import numpy as np                  # For matrix operations
+from scipy.special import comb      # For binomnial coefficient
+import mosek                        # Solver
+import time                         # Time measurement
+import sys, getopt                  # Command line arguments
+from typing import NamedTuple       # C-like structure, but immutable (not changeable after creation)
+
 
 # ToDo:
 # - Branch and bound algorithm
@@ -13,6 +15,33 @@ import sys, getopt
 # - Test it on different instances 
 # - Programm a instance generate (I would do just a simple one, with random lenghts, costs and just wirting down all pairs.)
 #   - Maybe do not even write all pairs, but just assume the order of the pairs and save the cost and length of the pairs.
+
+class Instance(NamedTuple):
+    pairs: list
+    costs: list
+    lengths: list
+
+def argument_parser(argv):
+    inputfile = ''
+
+    try:
+        opts, args = getopt.getopt(argv,"hi:o:",["ifile=","ofile="])
+    except getopt.GetoptError:
+        print('main.py -i <inputfile> -o <outputfile>')
+        sys.exit(2)
+    for opt, arg in opts:
+        if opt == '-h':
+            print('main.py -i <inputfile> -o <outputfile> -g <instance size>')
+            sys.exit()
+        elif opt in ("-i", "--ifile"):
+            inputfile = "instance/"+arg
+        elif opt in ("-g", "--generate"):
+            generate_instance(int(arg))
+            inputfile = "instance/instance.txt"
+
+    print('Input file is "', inputfile)
+
+    return inputfile
 
 def generate_instance(n):
     with open("python/instance.txt", 'w') as file:
@@ -42,7 +71,8 @@ def get_index(i, j, n):
     return int(n*(i-1)-(((i-1)*(i-1)+(i-1))/2)+(j-i)-1)
 
 # Define the optimization problem (Anjos and Vannelli 2008, p. 5)
-def define_problem(pairs, costs, lengths):    
+def define_problem(instance): 
+    pairs, costs, lengths = instance.pairs, instance.costs, instance.lengths   
     n = len(lengths)
 
     # Variable definition
@@ -89,7 +119,9 @@ def define_problem(pairs, costs, lengths):
     print("The optimal value is", problem.value)
 
 # Define the optimization problem (test with K-<C,Y>)
-def define_problem2(pairs, costs, lengths):    
+def define_problem2(instance):    
+    pairs, costs, lengths = instance.pairs, instance.costs, instance.lengths
+    
     n = len(lengths)
     
     # Variable definition
@@ -103,10 +135,7 @@ def define_problem2(pairs, costs, lengths):
     costs_matrix = define_costmatrix(pairs, costs, lengths)
     print("--- %s seconds ---" % (time.time() - start_time))
     
-    #print(costs_matrix)
     objective = cp.Minimize(K - cp.trace((costs_matrix @ X)))
-
-    #print(costs_matrix)
 
     constraints = []
     """ for i,j in pairs:
@@ -135,6 +164,9 @@ def define_problem2(pairs, costs, lengths):
     #print("A solution X is")
     #print(X.value)
 
+    return problem, X
+
+# Create the cost matrix for the optimization problem
 def define_costmatrix(pairs, costs, lengths):
     m = len(costs)
     n = len(lengths)
@@ -164,42 +196,16 @@ def define_costmatrix(pairs, costs, lengths):
 
     return cost_matrix
 
+
 def main(argv):
-    inputfile = ''
-    outputfile = ''
 
-    try:
-        opts, args = getopt.getopt(argv,"hi:o:",["ifile=","ofile="])
-    except getopt.GetoptError:
-        print('main.py -i <inputfile> -o <outputfile>')
-        sys.exit(2)
-    for opt, arg in opts:
-        if opt == '-h':
-            print('main.py -i <inputfile> -o <outputfile> -g <instance size>')
-            sys.exit()
-        elif opt in ("-i", "--ifile"):
-            inputfile = "instance/"+arg
-            outputfile = "output/" + arg + "_output"
-        elif opt in ("-o", "--ofile"):
-            outputfile = arg
-        elif opt in ("-g", "--generate"):
-            pairs, costs, lengths = generate_instance(int(arg))
+    inputfile = argument_parser(argv)
+    instance = Instance(*read_instance(inputfile))
 
-    print('Input file is "', inputfile)
-    print('Output file is "', outputfile)
+    problem, X = define_problem2(instance)
 
-
-    #pairs, costs, lengths = read_instance("python/simmons_1.txt")
-    #pairs, costs, lengths = read_instance("python/30_fac.txt")
-    #pairs, costs, lengths = read_instance("python/instance.txt")
+    print(X[0][0].value)
     
-    #generate_instance(10)
-
-    #define_problem(pairs, costs, lengths)
-
-    #start_time = time.time()
-    #define_problem2(pairs, costs, lengths)  
-    #print("--- %s seconds ---" % (time.time() - start_time))
 
 if __name__ == "__main__":
     main(sys.argv[1:])
