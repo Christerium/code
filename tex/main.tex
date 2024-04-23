@@ -41,4 +41,23 @@ To obtain the index starting with zero.
 \section*{Abstract}
 The Single Row Facility Location Problem (SRFLP) is a combinatorial optimization problem that arises in the context of locating facilities in a network. The problem is to find the optimal location of a single facility on a line network, such that the total transportation cost is minimized. For this problem semi definite programming relaxations have proven to be effective. In this paper we build on this approach and apply it to the Multi-Objective Single Row Facility Location Problem (MOSRFLP). We present a semi definite programming framework with for the MOSRFLP and compare it to state-of-the-art integer programming formulation used in literature for the single objective SRFLP. 
 
+
+\section*{SDP Branch and Bound}
+
+I should start by figuring out how to do the branch and bound for the SDP as for the multi objective problem we might use lexico-graphical ordering. This would make it a lot easier to implement. 
+
+At the moment I can do the SDP relaxation. For the branch and bound I would need to implement a heuristic to get a feasible solution. Furthermore, I would need to think of an efficient way to branch and to prune and especially how to store the branching tree. 
+
+In other papers, there are five phases. The Preprocessing, the bounding, the prunding, the reduction and the branching.
+
+The Preprocessing might not be necessary in our case, because we our problem cannot be not feasible, as there is always some way to order the facilities. 
+
+The Bounding is basically the heuristic to get a feasible solution and a upper bound on the problem. The better the heuristic the better the bound.
+
+In the pruning phase, we check if the current solution is better than the best solution found so far. If not we prune the branch. For this check again all the reasons for pruning. (Hint: Write a function, which gets a b and B tree and a node and checks if the node can be pruned or not)
+
+For the branching, the question is which variable to choose from. I would at first recommend to not choose variables where the value is already fixed. Need to read further literature on this because maybe putting some facilities in the middle or at the end might be a good idea. 
+
+Additionally I need to transform the solution into a permutation such that it make sense. Maybe already translate the relaxation into a permutation, to find some patterns. 
+
 \end{document}
