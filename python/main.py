@@ -12,17 +12,16 @@ from mosek.fusion import *          # For optimization
 # ToDo:
 # - Branch and bound algorithm
 # - Think about branch and cut algorithm
-# - Get the solution of the problem as a variable to work on. 
 # - Implement the heuristic of the paper of Anjos, Kennings and Vannelli
-# - Test it on different instances 
-# - Programm a instance generate (I would do just a simple one, with random lenghts, costs and just wirting down all pairs.)
-#   - Maybe do not even write all pairs, but just assume the order of the pairs and save the cost and length of the pairs.
 
+# Define the instance structure
 class Instance(NamedTuple):
     pairs: list
     costs: list
     lengths: list
+    cost_matrix: np.matrix
 
+# Parse the command line arguments
 def argument_parser(argv):
     inputfile = ''
 
@@ -46,6 +45,7 @@ def argument_parser(argv):
 
     return inputfile
 
+# Generate a instance file with n elements
 def generate_instance(n):
     with open("instance/instance.txt", 'w') as file:
         for i in range(1, n+1):
@@ -67,13 +67,16 @@ def read_instance(file_path):
                 costs.append(int(line.split()[3]))
             elif line[0] == "l":
                 lengths.append(int(line.split()[1]))
-        return pairs, costs, lengths
+        
+    cost_matrix = define_costmatrix(pairs, costs, lengths)
+
+    return pairs, costs, lengths, cost_matrix
 
 # Get the index of the element in the matrix
 def get_index(i, j, n):
     return int(n*(i-1)-(((i-1)*(i-1)+(i-1))/2)+(j-i)-1)
 
-# Define the optimization problem (Anjos and Vannelli 2008, p. 5)
+# Define the optimization problem (Anjos and Vannelli 2008, p. 5) (not necessary anymor)
 def define_problem(instance): 
     pairs, costs, lengths = instance.pairs, instance.costs, instance.lengths   
     n = len(lengths)
@@ -121,7 +124,7 @@ def define_problem(instance):
 
     print("The optimal value is", problem.value)
 
-# Define the optimization problem (test with K-<C,Y>)
+# Define the optimization problem (test with K-<C,Y>) (not necessary anymore)
 def define_problem2(instance):    
     pairs, costs, lengths = instance.pairs, instance.costs, instance.lengths
     
@@ -200,11 +203,7 @@ def define_costmatrix(pairs, costs, lengths):
 
     return cost_matrix
 
-def streamprinter(text):
-    sys.stdout.write(text)
-    sys.stdout.flush()
 
-def matrix2sparse(matrix):
     costsub = []
     costval = []
     for i in range(0, len(matrix)):
@@ -219,31 +218,99 @@ def matrix2sparse(matrix):
     
     return costsub, costval
 
-
+# Define the optimization problem with the mosek solver
 def problem_mosek(instance):
     pairs, costs, lengths = instance.pairs, instance.costs, instance.lengths    
     costs_matrix = define_costmatrix(pairs, costs, lengths)
-    #costsub, costval = matrix2sparse(costs_matrix)
     K = np.sum(costs)*np.sum(lengths)/2
+
+    n = len(lengths)
 
     with Model("Test") as M:
 
-        X = M.variable("X", Domain.inPSDCone(10))
-        C = Matrix.dense(costs_matrix.tolist())
+        dim = len(pairs)
+        X = M.variable("X", Domain.inPSDCone(dim))
+        C = Matrix.sparse(costs_matrix) 
+
+        # Objective function
+        M.objective(ObjectiveSense.Minimize, Expr.sub(K, Expr.dot(C, X)))
+
+        # Diagonal constraint
+        M.constraint("diag",Expr.mulDiag(X, Matrix.eye(dim)), Domain.equalsTo(1.0))
+
+        # Triangle constraints
+        """for i,j in pairs:
+            for k in range(j+1, n+1):
+                ij, ik, jk = get_index(i,j,n), get_index(i,k,n), get_index(j,k,n)
+                M.constraint(Expr.sub(Expr.sub(X.index(ij,jk), X.index(ij,ik)), X.index(ik,jk)), Domain.equalsTo(-1.0))
+        """
+
+        #X_1 = []
+        #X_2 = []
+        #X_3 = []
+        """for i,j in pairs:
+            for k in range(j+1, n+1):
+                ij, ik, jk = get_index(i,j,n), get_index(i,k,n), get_index(j,k,n)
+                X_1.append(X.index(ij,jk))
+                X_2.append(X.index(ij,ik))
+                X_3.append(X.index(ik,jk))
+        X_sum1 = []
+        X_sum2 = []
+        X_sum3 = []
+        for i,j in pairs:
+            X_1h = []
+            X_2h = []
+            X_3h = []
+            for k in range(j+1, n+1):
+                ij, ik, jk = get_index(i,j,n), get_index(i,k,n), get_index(j,k,n)
+                X_1h.append(X.index(ij,jk))
+                X_2h.append(X.index(ij,ik))
+                X_3h.append(X.index(ik,jk))
+            X_sum1.append(Expr.sum(X_1h))
+            X_sum2.append(Expr.sum(X_2h))
+            X_sum3.append(Expr.sum(X_3h))
+
+        #M.constraint(Expr.sub(Var.hstack(X_1), Expr.add(Var.hstack(X_2), Var.hstack(X_3))), Domain.greaterThan(-1.0))
+        M.constraint(Expr.sub(Var.hstack(X_sum1), Expr.add(Var.hstack(X_sum2), Var.hstack(X_sum3))), Domain.greaterThan(-1.0))"""
 
 
-        print(costs_matrix.tolist())    
 
-        M.objective(ObjectiveSense.Maximize, Expr.dot(C,X))
 
-        #M.constraint("diag", Expr.add(Expr.sub(Expr.diag(X), 1), 0))
-        
 
-        M.solve()
-        M.setLogHandler(sys.stdout)
-        M.writeTask("test.ptf")
+        try:
+            M.solve()
+            
+            M.acceptedSolutionStatus(AccSolutionStatus.Optimal)
+            print("Optimal primal objective: {0}".format(M.primalObjValue()))
 
-        print(X.level())
+        except OptimizeError as e:
+            print("Optimization failed. Error: {0}".format(e))
+
+        except SolutionError as e:
+            # The solution with at least the expected status was not available.
+            # We try to diagnoze why.
+            print("Requested solution was not available.")
+            prosta = M.getProblemStatus()
+
+            if prosta == ProblemStatus.DualInfeasible:
+                print("Dual infeasibility certificate found.")
+
+            elif prosta == ProblemStatus.PrimalInfeasible:
+                print("Primal infeasibility certificate found.")
+                
+            elif prosta == ProblemStatus.Unknown:
+            # The solutions status is unknown. The termination code
+            # indicates why the optimizer terminated prematurely.
+                print("The solution status is unknown.")
+                symname, desc = mosek.Env.getcodedesc(mosek.rescode(int(M.getSolverIntInfo("optimizeResponse"))))
+                print("   Termination code: {0} {1}".format(symname, desc))
+
+            else:
+                print("Another unexpected problem status {0} is obtained.".format(prosta))
+
+        except Exception as e:
+            print("Unexpected error: {0}".format(e))
+
 
 
 # Transform the solution of the optimization problem to a permutation
@@ -297,32 +364,12 @@ def main(argv):
 
     #problem, X = define_problem2(instance)
 
-    #problem_mosek(instance)
-    pairs, costs, lengths = instance.pairs, instance.costs, instance.lengths    
-    costs_matrix = define_costmatrix(pairs, costs, lengths)
-    #costsub, costval = matrix2sparse(costs_matrix)
-    K = np.sum(costs)*np.sum(lengths)/2
+   # problem_mosek(instance)     
 
-    with Model("Test") as M:
-        dim = len(costs_matrix.tolist())
-        X = M.variable("X", Domain.inPSDCone(dim))
-        C = Matrix.dense(costs_matrix.tolist()) 
-
-        #print(costs_matrix.tolist())
-        #C  = Matrix.sparse ( [[2.,1.,0.],[1.,2.,1.],[0.,1.,2.]] )
-
-        M.objective(ObjectiveSense.Minimize, Expr.dot(C, X))
-
-        M.constraint("diag",Expr.mulDiag(X, Matrix.eye(dim)), Domain.equalsTo(1.0))
-
-        
-        
-
-        M.solve()
-        #M.setLogHandler(sys.stdout)
-        M.writeTask("test.ptf")
-
-        print(X.level())
+    print(get_index(1,4,5))
+    print(get_index(2,4,5))
+    print(get_index(3,4,5))
+    print(get_index(4,5,5))
 
     #p_values = solution2permutation(X, len(instance.lengths))
 
@@ -330,6 +377,10 @@ def main(argv):
 
     #print(X.value)
     print("--- %s seconds ---" % (time.time() - start_time))
+
+    #print(X.value())
+    #print(M.primalObjValue())
+    
 
 
 if __name__ == "__main__":
