@@ -364,8 +364,11 @@ def main(argv):
 
     #problem, X = define_problem2(instance)
 
-   # problem_mosek(instance)     
+   # problem_mosek(instance)  
 
+   # ToDo: Find a way to do the scalarization for the summed up triangle constraints   
+   # Idea at the moment to use one matrix for each triangle constraint
+    # As I should not have any matrix element double since i != j != k, therefore I should then be able to call <AX> >= 2-n
     print(get_index(1,4,5))
     print(get_index(2,4,5))
     print(get_index(3,4,5))
