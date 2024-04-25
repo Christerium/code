@@ -47,7 +47,13 @@ INPUT /home/user/.miktex/texmfs/install/fonts/tfm/public/cm/cmr12.tfm
 INPUT /home/user/.miktex/texmfs/install/fonts/tfm/public/cm/cmbx12.tfm
 OUTPUT main.pdf
 INPUT /home/user/.miktex/texmfs/data/fonts/map/pdftex/pdftex.map
+INPUT /home/user/.miktex/texmfs/install/fonts/tfm/jknappen/ec/tcrm1000.tfm
+INPUT /home/user/.miktex/texmfs/install/fonts/tfm/public/cm/cmbx10.tfm
 INPUT main.aux
+INPUT /home/user/.miktex/texmfs/data/fonts/pk/ljfour/jknappen/ec/dpi600/tcrm1000.pk
+INPUT /home/user/.miktex/texmfs/data/fonts/pk/ljfour/jknappen/ec/dpi600/tcrm1000.pk
+INPUT /home/user/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmbx10.pfb
+INPUT /home/user/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 INPUT /home/user/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmbx12.pfb
 INPUT /home/user/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmbx12.pfb
 INPUT /home/user/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmex10.pfb

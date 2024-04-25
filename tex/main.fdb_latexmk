@@ -1,7 +1,9 @@
 # Fdb version 4
-["pdflatex"] 1713783976 "/home/user/MOSRFLP/code/tex/main.tex" "main.pdf" "main" 1713783976 0
+["pdflatex"] 1714037687 "/home/user/MOSRFLP/code/tex/main.tex" "main.pdf" "main" 1714037687 0
   "/home/user/.miktex/texmfs/data/fonts/map/pdftex/pdftex.map" 1709215724 189117 2a04beaea7864ea122565fbee9e43c13 ""
+  "/home/user/.miktex/texmfs/data/fonts/pk/ljfour/jknappen/ec/dpi600/tcrm1000.pk" 1711354237 11548 4261e2bea28cece6cb1dd54c599bd17b ""
   "/home/user/.miktex/texmfs/data/miktex/data/le/pdftex/pdflatex.fmt" 1710768088 24218775 4360ab729f18b9a80b10a690bdc64e92 ""
+  "/home/user/.miktex/texmfs/install/fonts/tfm/jknappen/ec/tcrm1000.tfm" 1704182611 1436 c7f957a372ef2fbe93c0982f96625e12 ""
   "/home/user/.miktex/texmfs/install/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1704182603 1004 54797486969f23fa377b128694d548df ""
   "/home/user/.miktex/texmfs/install/fonts/tfm/public/amsfonts/symbols/msam10.tfm" 1704182603 916 f87d7c45f9c908e672703b83b72241a3 ""
   "/home/user/.miktex/texmfs/install/fonts/tfm/public/amsfonts/symbols/msam5.tfm" 1704182603 924 9904cf1d39e9767e7a3622f2a125a565 ""
@@ -9,8 +11,10 @@
   "/home/user/.miktex/texmfs/install/fonts/tfm/public/amsfonts/symbols/msbm10.tfm" 1704182603 908 2921f8a10601f252058503cc6570e581 ""
   "/home/user/.miktex/texmfs/install/fonts/tfm/public/amsfonts/symbols/msbm5.tfm" 1704182603 940 75ac932a52f80982a9f8ea75d03a34cf ""
   "/home/user/.miktex/texmfs/install/fonts/tfm/public/amsfonts/symbols/msbm7.tfm" 1704182603 940 228d6584342e91276bf566bcf9716b83 ""
+  "/home/user/.miktex/texmfs/install/fonts/tfm/public/cm/cmbx10.tfm" 1704182610 1328 c834bbb027764024c09d3d2bf908b5f0 ""
   "/home/user/.miktex/texmfs/install/fonts/tfm/public/cm/cmbx12.tfm" 1704182610 1324 c910af8c371558dc20f2d7822f66fe64 ""
   "/home/user/.miktex/texmfs/install/fonts/tfm/public/cm/cmr12.tfm" 1704182610 1288 655e228510b4c2a1abe905c368440826 ""
+  "/home/user/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmbx10.pfb" 1704182603 34811 78b52f49e893bcba91bd7581cdc144c0 ""
   "/home/user/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmbx12.pfb" 1704182603 32080 340ef9bf63678554ee606688e7b5339d ""
   "/home/user/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmex10.pfb" 1704182603 30251 6afa5cb1d0204815a708a080681d4674 ""
   "/home/user/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmmi10.pfb" 1704182603 36299 5f9df58c2139e7edcf37c8fca4bd384d ""
@@ -30,9 +34,9 @@
   "/home/user/.miktex/texmfs/install/tex/latex/base/article.cls" 1704182616 20144 fbcf51733730d8f1a62143512ff5b1fe ""
   "/home/user/.miktex/texmfs/install/tex/latex/base/size10.clo" 1704182616 8448 74078c4a887f2cdcd57c3ec111622740 ""
   "/home/user/.miktex/texmfs/install/tex/latex/l3backend/l3backend-pdftex.def" 1704182612 29988 6d57d2b884f7464419678df319af86d2 ""
-  "/home/user/MOSRFLP/code/tex/main.tex" 1713781783 4298 0f5bb037cf381fdf13af05a22c8f82f7 ""
-  "main.aux" 1713783976 203 d40a9bcb60b773d28fb1f8a1ce8c2376 "pdflatex"
-  "main.tex" 1713781783 4298 0f5bb037cf381fdf13af05a22c8f82f7 ""
+  "/home/user/MOSRFLP/code/tex/main.tex" 1714037685 4678 24d1bbb93d1102555ca060b11efc2807 ""
+  "main.aux" 1714037687 203 d40a9bcb60b773d28fb1f8a1ce8c2376 "pdflatex"
+  "main.tex" 1714037685 4678 24d1bbb93d1102555ca060b11efc2807 ""
   (generated)
   "main.aux"
   "main.log"

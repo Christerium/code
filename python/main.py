@@ -9,10 +9,13 @@ import argparse                     # For command line arguments
 from mosek.fusion import *          # For optimization
 import old_functions
 
+
 # ToDo:
 # - Branch and bound algorithm
 # - Think about branch and cut algorithm
 # - Implement the heuristic of the paper of Anjos, Kennings and Vannelli
+
+TOLERANCE = None
 
 # Define the instance structure
 class Instance(NamedTuple):
@@ -193,12 +196,80 @@ def problem_mosek(instance, sum_triangle = False):
                     ij, ik, jk = get_index(i,j,n), get_index(i,k,n), get_index(j,k,n)
                     M.constraint(Expr.sub(Expr.sub(X.index(ij,jk), X.index(ij,ik)), X.index(ik,jk)), Domain.equalsTo(-1.0))
 
-
         try:
             M.solve()
             
+            print("Root: ")
             M.acceptedSolutionStatus(AccSolutionStatus.Optimal)
-            print("Optimal primal objective: {0}".format(M.primalObjValue()))
+            print("Relaxation objective value: {0}".format(M.primalObjValue()))
+            print("Rank of X:", np.linalg.matrix_rank(X.level(),TOLERANCE))    
+
+            d = [0.0]*dim
+            mosek.LinAlg.syeig(mosek.uplo.lo, dim, X.level(), d)
+            rank = sum([d[i] > 1e-6 for i in range(dim)])
+            print(d)
+            print("Rank of X:", rank)
+
+            p_values = solution2permutation(X.level()[0:dim], n)
+            print("The permutation of this solution is:", [x[1] for x in p_values])
+            print("The objective value of this solution is:", permutation2objective(p_values, costs, lengths, pairs))
+            
+            element = np.argmin(np.absolute(X.level()[0:dim]))
+
+            print(f"\n\nX[0,{element}] = 1")
+            M.constraint(f"X_0_{element}_1",X.index([0,element]), Domain.equalsTo(1.0))
+            M.solve()
+            M.acceptedSolutionStatus(AccSolutionStatus.Optimal)
+            print("Relaxation objective value: {0}".format(M.primalObjValue()))
+            
+            d = [0.0]*dim
+            mosek.LinAlg.syeig(mosek.uplo.lo, dim, X.level(), d)
+            rank = sum([d[i] > TOLERANCE for i in range(dim)])
+            print("Rank of X:", rank)
+            #print("Rank of X:", np.linalg.matrix_rank(X.level(),TOLERANCE))
+
+
+            p_values = solution2permutation(X.level()[0:dim], n)
+            print("The permutation of this solution is:", [x[1] for x in p_values])
+            print("The objective value of this solution is:", permutation2objective(p_values, costs, lengths, pairs))
+
+            print(f"\n\nX[0,{element}] = -1")
+            M.getConstraint(f"X_0_{element}_1").remove()
+            M.constraint(f"X_0_{element}_0", X.index([0,element]), Domain.equalsTo(-1.0))
+            M.solve()
+            M.acceptedSolutionStatus(AccSolutionStatus.Optimal)
+            print("Relaxation objective value: {0}".format(M.primalObjValue()))
+            d = [0.0]*dim
+            mosek.LinAlg.syeig(mosek.uplo.lo, dim, X.level(), d)
+            rank = sum([d[i] > 1e-6 for i in range(dim)])
+            print("Rank of X:", rank)
+            #print("Rank of X:", np.linalg.matrix_rank(X.level(),TOLERANCE))
+
+            p_values = solution2permutation(X.level()[0:dim], n)
+            print("The permutation of this solution is:", [x[1] for x in p_values])
+            print("The objective value of this solution is:", permutation2objective(p_values, costs, lengths, pairs))
+
+            """
+            M.getConstraint(f"X_0_{element}_0").remove()
+            M.constraint(f"X_0_{element}_1",X.index([0,element]), Domain.equalsTo(1.0))
+
+            element = np.argmin(np.absolute(X.level()[0:dim]))
+            print(f"\n\nX[0,{element}] = -1")
+            #M.getConstraint(f"X_0_{element}_1").remove()
+            M.constraint(f"X_0_{element}_0", X.index([0,element]), Domain.equalsTo(-1.0))
+            M.solve()
+            M.acceptedSolutionStatus(AccSolutionStatus.Optimal)
+            print("Relaxation objective value: {0}".format(M.primalObjValue()))
+            print("Rank of X:", np.linalg.matrix_rank(X.level(),TOLERANCE))
+
+            p_values = solution2permutation(X.level()[0:dim], n)
+            print("The permutation of this solution is:", [x[1] for x in p_values])
+            print("The objective value of this solution is:", permutation2objective(p_values, costs, lengths, pairs))
+            """
+            # Check the rank of the matrix
+            #print("Rank of X:", np.linalg.matrix_rank(X.level(),TOLERANCE))
+            
+            
 
         except OptimizeError as e:
             print("Optimization failed. Error: {0}".format(e))
@@ -231,7 +302,7 @@ def problem_mosek(instance, sum_triangle = False):
 # Transform the solution of the optimization problem to a permutation
 def solution2permutation(X, n):
     R_values = []
-    for i in X.value[:][0]:
+    for i in X:
         R_values.append(i)
 
     p_values = []

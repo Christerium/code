@@ -60,4 +60,15 @@ For the branching, the question is which variable to choose from. I would at fir
 
 Additionally I need to transform the solution into a permutation such that it make sense. Maybe already translate the relaxation into a permutation, to find some patterns. 
 
+\section*{Branch and bound}
+
+\begin{itemize}
+    \item Solve the relaxation of the problem
+    \begin{itemize}
+        \item Check if the relaxation is infeasible
+        \item Check if the relaxation is integer (rank 1)
+        \item If none of the above, find the element with smallest absolute value in the first row and branch on it. (-1, +1)
+    \end{itemize}
+\end{itemize}
+
 \end{document}
