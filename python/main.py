@@ -72,6 +72,23 @@ def read_instance(file_path):
 
     return pairs, costs, lengths, cost_matrix
 
+def read_instance2(file_path):
+    with open(file_path, 'r') as file:
+        dim = int(file.readline())
+        lengths = [*map(int, file.readline().split(",")),]
+        costs = []
+        pairs = []
+        for i in range(0, dim):
+            line = file.readline().split(",")
+            for j in range(0, dim):
+                if i < j:
+                    pairs.append((i+1,j+1))
+                    costs.append(int(line[j]))
+    
+    cost_matrix = define_costmatrix(pairs, costs, lengths)
+
+    return pairs, costs, lengths, cost_matrix
+
 # Get the index of the element in the matrix
 def get_index(i, j, n):
     return int(n*(i-1)-(((i-1)*(i-1)+(i-1))/2)+(j-i)-1)
@@ -219,7 +236,7 @@ def define_costmatrix(pairs, costs, lengths):
     return costsub, costval
 
 # Define the optimization problem with the mosek solver
-def problem_mosek(instance):
+def problem_mosek(instance, sum_triangle = False):
     pairs, costs, lengths = instance.pairs, instance.costs, instance.lengths    
     costs_matrix = define_costmatrix(pairs, costs, lengths)
     K = np.sum(costs)*np.sum(lengths)/2
@@ -239,42 +256,56 @@ def problem_mosek(instance):
         M.constraint("diag",Expr.mulDiag(X, Matrix.eye(dim)), Domain.equalsTo(1.0))
 
         # Triangle constraints
-        """for i,j in pairs:
-            for k in range(j+1, n+1):
-                ij, ik, jk = get_index(i,j,n), get_index(i,k,n), get_index(j,k,n)
-                M.constraint(Expr.sub(Expr.sub(X.index(ij,jk), X.index(ij,ik)), X.index(ik,jk)), Domain.equalsTo(-1.0))
-        """
 
-        #X_1 = []
-        #X_2 = []
-        #X_3 = []
-        """for i,j in pairs:
-            for k in range(j+1, n+1):
-                ij, ik, jk = get_index(i,j,n), get_index(i,k,n), get_index(j,k,n)
-                X_1.append(X.index(ij,jk))
-                X_2.append(X.index(ij,ik))
-                X_3.append(X.index(ik,jk))
-        X_sum1 = []
-        X_sum2 = []
-        X_sum3 = []
-        for i,j in pairs:
-            X_1h = []
-            X_2h = []
-            X_3h = []
-            for k in range(j+1, n+1):
-                ij, ik, jk = get_index(i,j,n), get_index(i,k,n), get_index(j,k,n)
-                X_1h.append(X.index(ij,jk))
-                X_2h.append(X.index(ij,ik))
-                X_3h.append(X.index(ik,jk))
-            X_sum1.append(Expr.sum(X_1h))
-            X_sum2.append(Expr.sum(X_2h))
-            X_sum3.append(Expr.sum(X_3h))
+        if(sum_triangle):
+            for i,j in pairs:
+                subi = []
+                subj = []
+                val = []
+                for k in range(1, n+1):
+                    ij, ik, jk = get_index(i,j,n), get_index(i,k,n), get_index(j,k,n)
+                    if k == i or k == j:
+                        continue
+                    elif k < i:         # k < i < j -> ij * (-jk) = (-1) ||(-) ij * (-ik) = (+1) || (-) (-ik) * (-jk) = -1
+                        subi.append(ij)
+                        subj.append(jk)
+                        val.append(-1.0)
+                        subi.append(ij)
+                        subj.append(ik)
+                        val.append(1.0)
+                        subi.append(ik)
+                        subj.append(jk)
+                        val.append(-1.0)
+                    elif k < j:         # i < k < j -> ij * (-jk) = (-1) || (-) ij * (ik) = (-1) || (-) (ik) * (-jk) = +1
+                        subi.append(ij)
+                        subj.append(jk)
+                        val.append(-1.0)
+                        subi.append(ij)
+                        subj.append(ik)
+                        val.append(-1.0)
+                        subi.append(ik)
+                        subj.append(jk)
+                        val.append(1.0)
+                    else:               # i < j < k -> ij * jk = (+1) || (-) ij * ik = (-1) || (-) ik * jk = (-1)
+                        subi.append(ij)
+                        subj.append(jk)
+                        val.append(1.0)
+                        subi.append(ij)
+                        subj.append(ik)
+                        val.append(-1.0)
+                        subi.append(ik)
+                        subj.append(jk)
+                        val.append(-1.0)
 
-        #M.constraint(Expr.sub(Var.hstack(X_1), Expr.add(Var.hstack(X_2), Var.hstack(X_3))), Domain.greaterThan(-1.0))
-        M.constraint(Expr.sub(Var.hstack(X_sum1), Expr.add(Var.hstack(X_sum2), Var.hstack(X_sum3))), Domain.greaterThan(-1.0))"""
+                #print(subi, subj, val)
+                A = Matrix.sparse(dim, dim, subi, subj, val)   
 
-
-
+                M.constraint(Expr.dot(A, X), Domain.equalsTo(2-n))         
+        else:
+            for i,j in pairs:
+                for k in range(j+1, n+1):
+                    ij, ik, jk = get_index(i,j,n), get_index(i,k,n), get_index(j,k,n)
+                    M.constraint(Expr.sub(Expr.sub(X.index(ij,jk), X.index(ij,ik)), X.index(ik,jk)), Domain.equalsTo(-1.0))
 
 
         try:
@@ -360,19 +391,16 @@ def main(argv):
 
     start_time = time.time()
     inputfile = argument_parser(argv)
-    instance = Instance(*read_instance(inputfile))
+
+    # Read the instance file from the beginning
+    #instance = Instance(*read_instance(inputfile))
+
+    # Read the downloaded instance files from Hungerländer
+    instance = Instance(*read_instance2(inputfile))
 
     #problem, X = define_problem2(instance)
 
-   # problem_mosek(instance)  
-
-   # ToDo: Find a way to do the scalarization for the summed up triangle constraints   
-   # Idea at the moment to use one matrix for each triangle constraint
-    # As I should not have any matrix element double since i != j != k, therefore I should then be able to call <AX> >= 2-n
-    print(get_index(1,4,5))
-    print(get_index(2,4,5))
-    print(get_index(3,4,5))
-    print(get_index(4,5,5))
+    problem_mosek(instance, True)  
 
     #p_values = solution2permutation(X, len(instance.lengths))
 
