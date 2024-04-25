@@ -15,7 +15,7 @@ import old_functions
 # - Think about branch and cut algorithm
 # - Implement the heuristic of the paper of Anjos, Kennings and Vannelli
 
-TOLERANCE = None
+TOLERANCE = 1e-6
 
 # Define the instance structure
 class Instance(NamedTuple):
@@ -225,6 +225,7 @@ def problem_mosek(instance, sum_triangle = False):
             d = [0.0]*dim
             mosek.LinAlg.syeig(mosek.uplo.lo, dim, X.level(), d)
             rank = sum([d[i] > TOLERANCE for i in range(dim)])
+            print(d)
             print("Rank of X:", rank)
             #print("Rank of X:", np.linalg.matrix_rank(X.level(),TOLERANCE))
 
