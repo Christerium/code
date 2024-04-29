@@ -21,7 +21,7 @@ TOLERANCE = 1e-6
 class Node(NamedTuple):
     lb: float
     ub: float
-    constraints: list       # List of tupels (i, j, value)
+    constraints: list       # List of tupels (decisions)
 
 
 
@@ -31,6 +31,10 @@ class Instance(NamedTuple):
     costs: list
     lengths: list
     cost_matrix: np.matrix
+
+class Solution(NamedTuple):
+    permutation: list
+    objective: float
 
 # Parse the command line arguments
 def argument_parser(argv):
@@ -511,91 +515,98 @@ def getRank(Y, dim):
     mosek.LinAlg.syeig(mosek.uplo.lo, dim, Y.level(), d)
     return sum([d[i] > 1e-6 for i in range(dim)])
 
-def branch_and_bound(instance, M):
+def branch_and_bound(instance):
     optimal = False
     integer = False
-
+    incumbent = Solution([], float("inf"))
     dim = len(instance.pairs)
     n = len(instance.lengths)
 
-    open_nodes = []
-    processed_nodes = []
+    incumbent_upper = float("inf")
+
+    layers = []
     remaining_variables = []
     for i in range(0, dim):
         for j in range(i+1, dim):
             remaining_variables.append((i,j))
 
+    open_nodes = []
+    processed_nodes = []
+    
+    M = Model()
     M = problem_sdp3(instance, M, False)
     Z = M.getVariable("Z")
     Y = Z.slice([1,1] , [dim+1, dim+1])
-
     M.solve()
+    # Check for feasibility
     if M.getProblemStatus() != ProblemStatus.PrimalAndDualFeasible:
         print("The problem is not feasible")
         optimal = False
     else:
+        print("The problem is feasible")
         lb = M.primalObjValue()
-        ub = permutation2objective(solution2permutation(Y.level()[0:dim], n), instance)
-
-        if ub - lb < 0.5:
-            optimal = True
+        permutation = solution2permutation(Y.level()[0:dim], n)
+        ub = permutation2objective(permutation, instance)
+        if ub < incumbent_upper:
+            incumbent_upper = ub
+            incumbent = Solution(permutation, ub)
+            print("New incumbent upper bound")
+        if lb > incumbent_upper:
+            print("Prune by bound")
+        # Check for if lower bound is close enugh to upper bound
+        if incumbent_upper - lb < 0.5:
+            print("Branch cannot improve anymore")
         else:
-            optimal = False
             i,j = remaining_variables.pop(0)
-            open_nodes.append(Node(lb, ub, [(i,j,-1)]))
-            open_nodes.append(Node(lb, ub, [(i,j,1)]))
+            layers.append((i,j))
+            open_nodes.append(Node(lb, ub, [-1]))
+            open_nodes.append(Node(lb, ub, [1]))
+            print("\n Branching on", i, j)
+            M.dispose()
 
-    print(optimal)
-
-    print(open_nodes)
-
-    node = open_nodes.pop(0)
-    i,j,value = node.constraints[0]
-    M.constraint(f"X_{i}_{j}_{value}", Y.index(i,j), Domain.equalsTo(value))
-    M.solve()
-    if M.getProblemStatus() != ProblemStatus.PrimalAndDualFeasible:
-        print("The problem is not feasible")
-        optimal = False
-    else:
-        lb = M.primalObjValue()
-        ub = permutation2objective(solution2permutation(Y.level()[0:dim], n), instance)
-
-        if ub - lb < 0.5:
-            optimal = True
+    while len(open_nodes) != 0:
+        node = open_nodes.pop(0)
+        M = Model()
+        M = problem_sdp3(instance, M, False)
+        Z = M.getVariable("Z")
+        Y = Z.slice([1,1] , [dim+1, dim+1])
+        for i in range(len(layers)):
+            M.constraint(Y.index(layers[i][0], layers[i][1]), Domain.equalsTo(node.constraints[i]))
+        M.solve()
+        if M.getProblemStatus() != ProblemStatus.PrimalAndDualFeasible:
+            print("The problem is not feasible")
+            optimal = False
         else:
-            optimal = False
-            i,j = remaining_variables.pop(0)
-            open_nodes.append(Node(lb, ub, [(i,j,-1)]))
-            open_nodes.append(Node(lb, ub, [(i,j,1)]))
+            print("The problem is feasible")
+            lb = M.primalObjValue()
+            print(lb)
+            permutation = solution2permutation(Y.level()[0:dim], n)
+            ub = permutation2objective(permutation, instance)
+            if ub < incumbent_upper:
+                incumbent_upper = ub
+                incumbent = Solution(permutation, ub)
+                print("New incumbent upper bound")
+            if lb > incumbent_upper:
+                print("Prune by bound")
+            # Check for if lower bound is close enugh to upper bound
+            if incumbent_upper - lb < 0.5:
+                print("Branch cannot improve anymore")
+            else:
+                i,j = remaining_variables.pop(0)
+                layers.append((i,j))
+                open_nodes.append(Node(lb, ub, [-1]))
+                open_nodes.append(Node(lb, ub, [1]))
+                print("\n Branching on", i, j)
+                M.dispose()
 
-    print(optimal)
+    print("Optimal solution is", incumbent_upper)
+    print("Solution is", incumbent.permutation)
 
-    print(open_nodes)
 
-    node = open_nodes.pop(0)
-    i,j,value = node.constraints[0]
-    M.constraint(f"X_{i}_{j}_{value}", Y.index(i,j), Domain.equalsTo(value))
-    if M.getProblemStatus() != ProblemStatus.PrimalAndDualFeasible:
-        print("The problem is not feasible")
-        optimal = False
-    else:
-        lb = M.primalObjValue()
-        ub = permutation2objective(solution2permutation(Y.level()[0:dim], n), instance)
+    #print(optimal)
 
-        if ub - lb < 0.5:
-            optimal = True
-        else:
-            optimal = False
-            i,j = remaining_variables.pop(0)
-            open_nodes.append(Node(lb, ub, [(i,j,-1)]))
-            open_nodes.append(Node(lb, ub, [(i,j,1)]))
-
-    print(optimal)
-
-    print(open_nodes)
-    if len(open_nodes) == 0:
-        print("Optimal solution found")
-        
+    #print(open_nodes)
+    
 
 def main(argv):
 
@@ -609,13 +620,13 @@ def main(argv):
 
     #problem_mosek(instance, False)  
 
-    try:
-        M = Model("Test")    
+    #try:
+        #M = Model("Test")    
         
         #problem_sdp3(instance, M, False)
-        branch_and_bound(instance, M)
-    finally:
-        M.dispose()
+    branch_and_bound(instance)
+    #finally:
+    #    M.dispose()
     
 
 
