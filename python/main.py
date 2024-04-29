@@ -18,6 +18,10 @@ import old_functions
 TOLERANCE = 1e-6
 
 
+class Node(NamedTuple):
+    lb: float
+    ub: float
+    constraints: list       # List of tupels (i, j, value)
 
 
 
@@ -384,6 +388,7 @@ def problem_sdp3(instance, M, sum_betweeness = False):
                 ij, ik, jk = get_index(i,j,n), get_index(i,k,n), get_index(j,k,n)
                 M.constraint(Expr.sub(Expr.sub(Y.index(ij,jk), Y.index(ij,ik)), Y.index(ik,jk)), Domain.equalsTo(-1.0))
 
+    return M
     """
     # Triangle constraints
     test = np.array([[-1.0, -1.0, -1.0], [-1.0, 1.0, 1.0], [1.0, -1.0, 1.0], [1.0, 1.0, -1.0]])
@@ -509,19 +514,92 @@ def branch_and_bound(instance, M):
     optimal = False
     integer = False
 
-    lb = 9999999999
-    ub = 0
+    dim = len(instance.pairs)
+
+    open_nodes = []
+    processed_nodes = []
+    remaining_variables = []
+    for i in range(0, dim):
+        for j in range(i+1, dim):
+            remaining_variables.append((i,j))
+
+    M = problem_sdp3(instance, M, False)
+    Z = M.getVariable("Z")
+    Y = Z.slice([1,1] , [dim+1, dim+1])
+
+    M.solve()
+    lb = M.primalObjValue()
+    ub = permutation2objective(solution2permutation(Y.level()[0:dim], n), instance)
+
+    if ub - lb < 0.5:
+        optimal = True
+    else:
+        optimal = False
+        i,j = remaining_variables.pop(0)
+        open_nodes.append(Node(lb, ub, [(i,j,-1)]))
+        open_nodes.append(Node(lb, ub, [(i,j,1)]))
+
+    while not optimal:
+        node = open_nodes.pop(0)
+        if len(node.constraints) != 0:
+            M.constraitnt([Expr.sub(Y.index(i,j), value) for i,j,value in node.constraints], Domain.equalsTo(0.0))
+        M.solve()
+
+        lb = M.primalObjValue()
+        ub = permutation2objective(solution2permutation(Y.level()[0:dim], n), instance)
+        print(M.getPrimalObjValue())
+        open_nodes.append((lb, ub, (1,3,-1)))
+        open_nodes.append((lb, ub, (1,3,1)))
+
+
+    
+    root = Node(0, 9999999999, [])
+    open_nodes.append(root)
+
+    
+
+    while len(open_nodes) == 0:
+        node = open_nodes.pop(0)
+        if len(node.constraints) != 0:
+            M.constraitnt([Expr.sub(Y.index(i,j), value) for i,j,value in node.constraints], Domain.equalsTo(0.0))
+        M.solve()
+
+        lb = M.primalObjValue()
+        ub = permutation2objective(solution2permutation(Y.level()[0:dim], n), instance)
+        print(M.getPrimalObjValue())
+        open_nodes.append((lb, ub, (1,3,-1)))
+        open_nodes.append((lb, ub, (1,3,1)))
+
+    lb_open = []
 
     dim = len(instance.pairs)
     n = len(instance.lengths)
     
+    M = problem_sdp3(instance, M, False)
+
+
+    M.solve()
+    if M.getProblemStatus() == ProblemStatus.PrimalAndDualFeasible:
+        lb = M.primalObjValue()
+        ub = permutation2objective(solution2permutation(Y.level()[0:dim], n), instance)
+
+        if ub < ub_incumbent:
+            ub_incumbent = ub
+
+
+
+
+ """
     while not optimal:
         # Solve the relaxation
-        problem_sdp3(instance, M, False)
         Z = M.getVariable("Z")
         Y = Z.slice([1,1] , [dim+1, dim+1])
-        lb = M.primalObjValue()
-
+        
+        # Add Constraints for branching
+        #Constraint
+        #M.constraint(Z.index(1,2), Domain.equalsTo(1.0))
+        #M.constraint(Z.index(1,3), Domain.equalsTo(-1.0))
+        #M.constraint(Z.index(1,4), Domain.equalsTo(-1.0))
         try:
             M.solve()
         except OptimizeError as e:
@@ -552,23 +630,31 @@ def branch_and_bound(instance, M):
         except Exception as e:
             print("Unexpected error: {0}".format(e))
 
-        rank = getRank(Y, dim)
-        ub = permutation2objective(solution2permutation(Y.level()[0:dim], n), instance)
+        # Check if the solution is feasible
+        print(M.getProblemStatus())
+        if M.getProblemStatus() == ProblemStatus.PrimalAndDualFeasible:
+            lb = M.primalObjValue()
+            rank = getRank(Y, dim)
+            ub = permutation2objective(solution2permutation(Y.level()[0:dim], n), instance)
 
-        print (rank, lb, ub)
+            open_nodes.append((lb, ub, rank))
+        else:
+            print("Problem infeasible")
 
-        optimal = True
-        # Check if the solution is integer
+
+
+
+
+        #print(Y.level())
+        print(lb, ub, rank)
 
         # If not, branch
+        
         # If yes, check if it is better than the best solution
         # If yes, update the best solution
         # If no, prune the branch
-    
-
-
-
-
+        optimal = True
+"""
 
 def main(argv):
 
