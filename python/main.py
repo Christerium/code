@@ -434,6 +434,7 @@ def problem_sdp3(instance, M, sum_betweeness = False):
         print("Unexpected error: {0}".format(e))
 
     """
+
 # Print the solution of the optimization problem / still too much other stuff in there
 def print_solution(instance, M):
 
@@ -515,6 +516,7 @@ def branch_and_bound(instance, M):
     integer = False
 
     dim = len(instance.pairs)
+    n = len(instance.lengths)
 
     open_nodes = []
     processed_nodes = []
@@ -528,133 +530,72 @@ def branch_and_bound(instance, M):
     Y = Z.slice([1,1] , [dim+1, dim+1])
 
     M.solve()
-    lb = M.primalObjValue()
-    ub = permutation2objective(solution2permutation(Y.level()[0:dim], n), instance)
-
-    if ub - lb < 0.5:
-        optimal = True
-    else:
+    if M.getProblemStatus() != ProblemStatus.PrimalAndDualFeasible:
+        print("The problem is not feasible")
         optimal = False
-        i,j = remaining_variables.pop(0)
-        open_nodes.append(Node(lb, ub, [(i,j,-1)]))
-        open_nodes.append(Node(lb, ub, [(i,j,1)]))
-
-    while not optimal:
-        node = open_nodes.pop(0)
-        if len(node.constraints) != 0:
-            M.constraitnt([Expr.sub(Y.index(i,j), value) for i,j,value in node.constraints], Domain.equalsTo(0.0))
-        M.solve()
-
-        lb = M.primalObjValue()
-        ub = permutation2objective(solution2permutation(Y.level()[0:dim], n), instance)
-        print(M.getPrimalObjValue())
-        open_nodes.append((lb, ub, (1,3,-1)))
-        open_nodes.append((lb, ub, (1,3,1)))
-
-
-    
-    root = Node(0, 9999999999, [])
-    open_nodes.append(root)
-
-    
-
-    while len(open_nodes) == 0:
-        node = open_nodes.pop(0)
-        if len(node.constraints) != 0:
-            M.constraitnt([Expr.sub(Y.index(i,j), value) for i,j,value in node.constraints], Domain.equalsTo(0.0))
-        M.solve()
-
-        lb = M.primalObjValue()
-        ub = permutation2objective(solution2permutation(Y.level()[0:dim], n), instance)
-        print(M.getPrimalObjValue())
-        open_nodes.append((lb, ub, (1,3,-1)))
-        open_nodes.append((lb, ub, (1,3,1)))
-
-    lb_open = []
-
-    dim = len(instance.pairs)
-    n = len(instance.lengths)
-    
-    M = problem_sdp3(instance, M, False)
-
-
-    M.solve()
-    if M.getProblemStatus() == ProblemStatus.PrimalAndDualFeasible:
+    else:
         lb = M.primalObjValue()
         ub = permutation2objective(solution2permutation(Y.level()[0:dim], n), instance)
 
-        if ub < ub_incumbent:
-            ub_incumbent = ub
-
-
-
-
- """
-    while not optimal:
-        # Solve the relaxation
-        Z = M.getVariable("Z")
-        Y = Z.slice([1,1] , [dim+1, dim+1])
-        
-        # Add Constraints for branching
-        #Constraint
-        #M.constraint(Z.index(1,2), Domain.equalsTo(1.0))
-        #M.constraint(Z.index(1,3), Domain.equalsTo(-1.0))
-        #M.constraint(Z.index(1,4), Domain.equalsTo(-1.0))
-        try:
-            M.solve()
-        except OptimizeError as e:
-            print("Optimization failed. Error: {0}".format(e))
-
-        except SolutionError as e:
-            # The solution with at least the expected status was not available.
-            # We try to diagnoze why.
-            print("Requested solution was not available.")
-            prosta = M.getProblemStatus()
-
-            if prosta == ProblemStatus.DualInfeasible:
-                print("Dual infeasibility certificate found.")
-
-            elif prosta == ProblemStatus.PrimalInfeasible:
-                print("Primal infeasibility certificate found.")
-                
-            elif prosta == ProblemStatus.Unknown:
-            # The solutions status is unknown. The termination code
-            # indicates why the optimizer terminated prematurely.
-                print("The solution status is unknown.")
-                symname, desc = mosek.Env.getcodedesc(mosek.rescode(int(M.getSolverIntInfo("optimizeResponse"))))
-                print("   Termination code: {0} {1}".format(symname, desc))
-
-            else:
-                print("Another unexpected problem status {0} is obtained.".format(prosta))
-
-        except Exception as e:
-            print("Unexpected error: {0}".format(e))
-
-        # Check if the solution is feasible
-        print(M.getProblemStatus())
-        if M.getProblemStatus() == ProblemStatus.PrimalAndDualFeasible:
-            lb = M.primalObjValue()
-            rank = getRank(Y, dim)
-            ub = permutation2objective(solution2permutation(Y.level()[0:dim], n), instance)
-
-            open_nodes.append((lb, ub, rank))
+        if ub - lb < 0.5:
+            optimal = True
         else:
-            print("Problem infeasible")
+            optimal = False
+            i,j = remaining_variables.pop(0)
+            open_nodes.append(Node(lb, ub, [(i,j,-1)]))
+            open_nodes.append(Node(lb, ub, [(i,j,1)]))
 
+    print(optimal)
 
+    print(open_nodes)
 
+    node = open_nodes.pop(0)
+    i,j,value = node.constraints[0]
+    M.constraint(f"X_{i}_{j}_{value}", Y.index(i,j), Domain.equalsTo(value))
+    M.solve()
+    if M.getProblemStatus() != ProblemStatus.PrimalAndDualFeasible:
+        print("The problem is not feasible")
+        optimal = False
+    else:
+        lb = M.primalObjValue()
+        ub = permutation2objective(solution2permutation(Y.level()[0:dim], n), instance)
 
+        if ub - lb < 0.5:
+            optimal = True
+        else:
+            optimal = False
+            i,j = remaining_variables.pop(0)
+            open_nodes.append(Node(lb, ub, [(i,j,-1)]))
+            open_nodes.append(Node(lb, ub, [(i,j,1)]))
 
-        #print(Y.level())
-        print(lb, ub, rank)
+    print(optimal)
 
-        # If not, branch
+    print(open_nodes)
+
+    node = open_nodes.pop(0)
+    i,j,value = node.constraints[0]
+    M.constraint(f"X_{i}_{j}_{value}", Y.index(i,j), Domain.equalsTo(value))
+    if M.getProblemStatus() != ProblemStatus.PrimalAndDualFeasible:
+        print("The problem is not feasible")
+        optimal = False
+    else:
+        lb = M.primalObjValue()
+        ub = permutation2objective(solution2permutation(Y.level()[0:dim], n), instance)
+
+        if ub - lb < 0.5:
+            optimal = True
+        else:
+            optimal = False
+            i,j = remaining_variables.pop(0)
+            open_nodes.append(Node(lb, ub, [(i,j,-1)]))
+            open_nodes.append(Node(lb, ub, [(i,j,1)]))
+
+    print(optimal)
+
+    print(open_nodes)
+    if len(open_nodes) == 0:
+        print("Optimal solution found")
         
-        # If yes, check if it is better than the best solution
-        # If yes, update the best solution
-        # If no, prune the branch
-        optimal = True
-"""
 
 def main(argv):
 
