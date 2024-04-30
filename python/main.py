@@ -570,7 +570,8 @@ def branch_and_bound(instance):
         M = problem_sdp3(instance, M, False)
         Z = M.getVariable("Z")
         Y = Z.slice([1,1] , [dim+1, dim+1])
-        for i in range(len(layers)):
+        print(node.constraints)
+        for i in range(len(node.constraints)):   #range(len(layers)):
             M.constraint(Y.index(layers[i][0], layers[i][1]), Domain.equalsTo(node.constraints[i]))
         M.solve()
         if M.getProblemStatus() != ProblemStatus.PrimalAndDualFeasible:
@@ -594,8 +595,8 @@ def branch_and_bound(instance):
             else:
                 i,j = remaining_variables.pop(0)
                 layers.append((i,j))
-                open_nodes.append(Node(lb, ub, [-1]))
-                open_nodes.append(Node(lb, ub, [1]))
+                open_nodes.append(Node(lb, ub, node.constraints + [-1]))
+                open_nodes.append(Node(lb, ub, node.constraints + [1]))
                 print("\n Branching on", i, j)
                 M.dispose()
 
