@@ -393,7 +393,7 @@ def problem_sdp3(instance, M, sum_betweeness = False):
                 M.constraint(Expr.sub(Expr.sub(Y.index(ij,jk), Y.index(ij,ik)), Y.index(ik,jk)), Domain.equalsTo(-1.0))
 
     return M
-    """
+    
     # Triangle constraints
     test = np.array([[-1.0, -1.0, -1.0], [-1.0, 1.0, 1.0], [1.0, -1.0, 1.0], [1.0, 1.0, -1.0]])
     triangle = Matrix.dense(test)
@@ -404,7 +404,7 @@ def problem_sdp3(instance, M, sum_betweeness = False):
                 #triangle_Y = Matrix.dense(np.array([[Y.index(i,j)], [Y.index(j,k)], [Y.index(i,k)]]))
                 M.constraint(Expr.sub(Expr.mul(triangle, Expr.vstack([Y.index(i,j), Y.index(j,k), Y.index(i,k)])), Expr.ones(4)), Domain.lessThan(0.0) )
                 #pass
-    
+    """
     try:
         M.solve()
         #print_solution(instance, M)
@@ -561,8 +561,10 @@ def branch_and_bound(instance):
             layers.append((i,j))
             open_nodes.append(Node(lb, ub, [-1]))
             open_nodes.append(Node(lb, ub, [1]))
-            print("\n Branching on", i, j)
+            #print("\n Branching on", i, j)
             M.dispose()
+
+    rootlb = lb
 
     while len(open_nodes) != 0:
         node = open_nodes.pop(0)
@@ -570,35 +572,40 @@ def branch_and_bound(instance):
         M = problem_sdp3(instance, M, False)
         Z = M.getVariable("Z")
         Y = Z.slice([1,1] , [dim+1, dim+1])
-        print(node.constraints)
+        #print(node.constraints)
         for i in range(len(node.constraints)):   #range(len(layers)):
             M.constraint(Y.index(layers[i][0], layers[i][1]), Domain.equalsTo(node.constraints[i]))
         M.solve()
         if M.getProblemStatus() != ProblemStatus.PrimalAndDualFeasible:
-            print("The problem is not feasible")
+            #print("The problem is not feasible")
             optimal = False
         else:
-            print("The problem is feasible")
+            #print("The problem is feasible")
             lb = M.primalObjValue()
-            print(lb)
+            #print(lb)
             permutation = solution2permutation(Y.level()[0:dim], n)
             ub = permutation2objective(permutation, instance)
             if ub < incumbent_upper:
                 incumbent_upper = ub
                 incumbent = Solution(permutation, ub)
-                print("New incumbent upper bound")
+                #print("New incumbent upper bound:", incumbent_upper)
             if lb > incumbent_upper:
-                print("Prune by bound")
+                pass
+                #print("Prune by bound")
             # Check for if lower bound is close enugh to upper bound
             if incumbent_upper - lb < 0.5:
-                print("Branch cannot improve anymore")
+                pass
+                #print("\n Branch cannot improve anymore")
             else:
                 i,j = remaining_variables.pop(0)
                 layers.append((i,j))
                 open_nodes.append(Node(lb, ub, node.constraints + [-1]))
                 open_nodes.append(Node(lb, ub, node.constraints + [1]))
-                print("\n Branching on", i, j)
-                M.dispose()
+                #print("\n Branching on", i, j)
+
+            processed_nodes.append(Node(lb, ub, node.constraints))
+        print(f"Remaining nodes: {len(open_nodes)}, Processed nodes: {len(processed_nodes)}, upper bound: {incumbent_upper}, gaptoroot: {(incumbent_upper-rootlb)/incumbent_upper}")
+        M.dispose()
 
     print("Optimal solution is", incumbent_upper)
     print("Solution is", incumbent.permutation)
@@ -608,6 +615,59 @@ def branch_and_bound(instance):
 
     #print(open_nodes)
     
+
+def langrangian_relaxation(instance, M):
+    pairs, costs, lengths = instance.pairs, instance.costs, instance.lengths    
+    costs_matrix = define_costmatrix(pairs, costs, lengths)
+    K = np.sum(costs)*np.sum(lengths)/2
+    
+    n = len(lengths)
+    dim = len(pairs)
+    dim2 = int(comb(n,3))
+
+    #Z = M.variable("Z", Domain.inPSDCone(dim+1))
+    Y = M.variable("Y", Domain.inPSDCone(dim))
+    #Y = Z.slice([1,1] , [dim+1, dim+1])
+    #y = Z.slice([1,0], [1,dim+1])
+    gamma = M.variable("gamma", dim2, Domain.greaterThan(0.0))
+    
+    A2 = np.zeros((dim2, int(dim*dim)))
+    l = 0
+    for i,j in pairs:
+        for k in range(j+1,n+1):
+            ij, ik, jk = get_index(i,j,n), get_index(i,k,n), get_index(j,k,n)
+            A2[l][(ij)*dim+jk] = 1
+            A2[l][(ij)*dim+ik] = -1
+            A2[l][(ik)*dim+jk] = -1
+            l += 1
+
+    C = Matrix.sparse(costs_matrix)
+
+    A = Matrix.sparse(A2)
+    #C = C.reshape(dim*dim,1)
+    
+
+    
+
+    gamma = Matrix.dense(np.ones((dim2,1))*3.2)
+
+    e = Matrix.dense(np.ones((dim2,1)))
+
+    M.constraint("diag",Expr.mulDiag(Y, Matrix.eye(dim)), Domain.equalsTo(1.0))
+
+    Y = Y.reshape([dim*dim,1])
+    
+    M.objective(ObjectiveSense.Maximize, Expr.add(Expr.dot(C, Y), Expr.mul(gamma.transpose() ,Expr.sub(e, Expr.mul(A, Y)))))
+    
+
+    M.solve()
+    #print(Y.level())
+    print(M.primalObjValue())
+
+    print(f"f(gamma) - cTx = {M.primalObjValue() - np.dot(costs_matrix.flatten(),Y.level())}")
+
+    #print(np.ones((dim2,1)) - np.dot(A2,Y.level()))
+
 
 def main(argv):
 
@@ -625,10 +685,11 @@ def main(argv):
         #M = Model("Test")    
         
         #problem_sdp3(instance, M, False)
-    branch_and_bound(instance)
+    #branch_and_bound(instance)
     #finally:
     #    M.dispose()
-    
+    with Model("Test") as M:
+        langrangian_relaxation(instance, M)
 
 
     #p_values = solution2permutation(X, len(instance.lengths))
