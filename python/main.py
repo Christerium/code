@@ -7,25 +7,7 @@ import sys, getopt                  # Command line arguments
 from typing import NamedTuple       # C-like structure, but immutable (not changeable after creation)
 import argparse                     # For command line arguments
 from mosek.fusion import *          # For optimization
-import old_functions
 
-
-# ToDo:
-# - Branch and bound algorithm
-# - Think about branch and cut algorithm
-# - Implement the heuristic of the paper of Anjos, Kennings and Vannelli
-
-TOLERANCE = 1e-6
-
-
-class Node(NamedTuple):
-    lb: float
-    ub: float
-    constraints: list       # List of tupels (decisions)
-
-
-
-# Define the instance structure
 class Instance(NamedTuple):
     pairs: list
     costs: list
@@ -122,199 +104,6 @@ def define_costmatrix(pairs, costs, lengths):
     return cost_matrix
 
 
-    costsub = []
-    costval = []
-    for i in range(0, len(matrix)):
-        helpersub = []
-        helperval = []
-        for j in range(i, len(matrix)):
-            if matrix[i][j] != 0:
-                helpersub.append([i,j])
-                helperval.append(matrix[i][j])
-        costsub.append(helpersub)
-        costval.append(helperval)
-    
-    return costsub, costval
-
-# Define the optimization problem with the mosek solver
-def problem_mosek(instance, sum_triangle = False):
-    pairs, costs, lengths = instance.pairs, instance.costs, instance.lengths    
-    costs_matrix = define_costmatrix(pairs, costs, lengths)
-    K = np.sum(costs)*np.sum(lengths)/2
-
-    n = len(lengths)
-
-    with Model("Test") as M:
-
-        dim = len(pairs)
-        X = M.variable("X", Domain.inPSDCone(dim))
-        C = Matrix.sparse(costs_matrix) 
-
-        # Objective function
-        M.objective(ObjectiveSense.Minimize, Expr.sub(K, Expr.dot(C, X)))
-
-        # Diagonal constraint
-        M.constraint("diag",Expr.mulDiag(X, Matrix.eye(dim)), Domain.equalsTo(1.0))
-
-        # Betweenes constraints
-
-        if(sum_triangle):
-            for i,j in pairs:
-                subi = []
-                subj = []
-                val = []
-                for k in range(1, n+1):
-                    ij, ik, jk = get_index(i,j,n), get_index(i,k,n), get_index(j,k,n)
-                    if k == i or k == j:
-                        continue
-                    elif k < i:         # k < i < j -> ij * (-jk) = (-1) ||(-) ij * (-ik) = (+1) || (-) (-ik) * (-jk) = -1
-                        subi.append(ij)
-                        subj.append(jk)
-                        val.append(-1.0)
-                        subi.append(ij)
-                        subj.append(ik)
-                        val.append(1.0)
-                        subi.append(ik)
-                        subj.append(jk)
-                        val.append(-1.0)
-                    elif k < j:         # i < k < j -> ij * (-jk) = (-1) || (-) ij * (ik) = (-1) || (-) (ik) * (-jk) = +1
-                        subi.append(ij)
-                        subj.append(jk)
-                        val.append(-1.0)
-                        subi.append(ij)
-                        subj.append(ik)
-                        val.append(-1.0)
-                        subi.append(ik)
-                        subj.append(jk)
-                        val.append(1.0)
-                    else:               # i < j < k -> ij * jk = (+1) || (-) ij * ik = (-1) || (-) ik * jk = (-1)
-                        subi.append(ij)
-                        subj.append(jk)
-                        val.append(1.0)
-                        subi.append(ij)
-                        subj.append(ik)
-                        val.append(-1.0)
-                        subi.append(ik)
-                        subj.append(jk)
-                        val.append(-1.0)
-
-                #print(subi, subj, val)
-                A = Matrix.sparse(dim, dim, subi, subj, val)   
-
-                M.constraint(Expr.dot(A, X), Domain.equalsTo(2-n))         
-        else:
-            for i,j in pairs:
-                for k in range(j+1, n+1):
-                    ij, ik, jk = get_index(i,j,n), get_index(i,k,n), get_index(j,k,n)
-                    M.constraint(Expr.sub(Expr.sub(X.index(ij,jk), X.index(ij,ik)), X.index(ik,jk)), Domain.equalsTo(-1.0))
-
-        try:
-            M.solve()
-            print(X.level())
-            print(M.primalObjValue())
-            
-            """
-            print("Root: ")
-            M.acceptedSolutionStatus(AccSolutionStatus.Optimal)
-            print("Relaxation objective value: {0}".format(M.primalObjValue()))
-            print("Rank of X:", np.linalg.matrix_rank(X.level(),TOLERANCE))    
-
-            d = [0.0]*dim
-            mosek.LinAlg.syeig(mosek.uplo.lo, dim, X.level(), d)
-            rank = sum([d[i] > 1e-6 for i in range(dim)])
-            print(d)
-            print("Rank of X:", rank)
-
-            p_values = solution2permutation(X.level()[0:dim], n)
-            print("The permutation of this solution is:", [x[1] for x in p_values])
-            print("The objective value of this solution is:", permutation2objective(p_values, costs, lengths, pairs))
-            
-            element = np.argmin(np.absolute(X.level()[0:dim]))
-
-            print(f"\n\nX[0,{element}] = 1")
-            M.constraint(f"X_0_{element}_1",X.index([0,element]), Domain.equalsTo(1.0))
-            M.solve()
-            M.acceptedSolutionStatus(AccSolutionStatus.Optimal)
-            print("Relaxation objective value: {0}".format(M.primalObjValue()))
-            
-            d = [0.0]*dim
-            mosek.LinAlg.syeig(mosek.uplo.lo, dim, X.level(), d)
-            rank = sum([d[i] > TOLERANCE for i in range(dim)])
-            print(d)
-            print("Rank of X:", rank)
-            #print("Rank of X:", np.linalg.matrix_rank(X.level(),TOLERANCE))
-
-
-            p_values = solution2permutation(X.level()[0:dim], n)
-            print("The permutation of this solution is:", [x[1] for x in p_values])
-            print("The objective value of this solution is:", permutation2objective(p_values, costs, lengths, pairs))
-
-            print(f"\n\nX[0,{element}] = -1")
-            M.getConstraint(f"X_0_{element}_1").remove()
-            M.constraint(f"X_0_{element}_0", X.index([0,element]), Domain.equalsTo(-1.0))
-            M.solve()
-            M.acceptedSolutionStatus(AccSolutionStatus.Optimal)
-            print("Relaxation objective value: {0}".format(M.primalObjValue()))
-            d = [0.0]*dim
-            mosek.LinAlg.syeig(mosek.uplo.lo, dim, X.level(), d)
-            rank = sum([d[i] > 1e-6 for i in range(dim)])
-            print("Rank of X:", rank)
-            #print("Rank of X:", np.linalg.matrix_rank(X.level(),TOLERANCE))
-
-            p_values = solution2permutation(X.level()[0:dim], n)
-            print("The permutation of this solution is:", [x[1] for x in p_values])
-            print("The objective value of this solution is:", permutation2objective(p_values, costs, lengths, pairs))
-
-            
-            M.getConstraint(f"X_0_{element}_0").remove()
-            M.constraint(f"X_0_{element}_1",X.index([0,element]), Domain.equalsTo(1.0))
-
-            element = np.argmin(np.absolute(X.level()[0:dim]))
-            print(f"\n\nX[0,{element}] = -1")
-            #M.getConstraint(f"X_0_{element}_1").remove()
-            M.constraint(f"X_0_{element}_0", X.index([0,element]), Domain.equalsTo(-1.0))
-            M.solve()
-            M.acceptedSolutionStatus(AccSolutionStatus.Optimal)
-            print("Relaxation objective value: {0}".format(M.primalObjValue()))
-            print("Rank of X:", np.linalg.matrix_rank(X.level(),TOLERANCE))
-
-            p_values = solution2permutation(X.level()[0:dim], n)
-            print("The permutation of this solution is:", [x[1] for x in p_values])
-            print("The objective value of this solution is:", permutation2objective(p_values, costs, lengths, pairs))
-            
-            # Check the rank of the matrix
-            #print("Rank of X:", np.linalg.matrix_rank(X.level(),TOLERANCE))
-            """
-            
-
-        except OptimizeError as e:
-            print("Optimization failed. Error: {0}".format(e))
-
-        except SolutionError as e:
-            # The solution with at least the expected status was not available.
-            # We try to diagnoze why.
-            print("Requested solution was not available.")
-            prosta = M.getProblemStatus()
-
-            if prosta == ProblemStatus.DualInfeasible:
-                print("Dual infeasibility certificate found.")
-
-            elif prosta == ProblemStatus.PrimalInfeasible:
-                print("Primal infeasibility certificate found.")
-                
-            elif prosta == ProblemStatus.Unknown:
-            # The solutions status is unknown. The termination code
-            # indicates why the optimizer terminated prematurely.
-                print("The solution status is unknown.")
-                symname, desc = mosek.Env.getcodedesc(mosek.rescode(int(M.getSolverIntInfo("optimizeResponse"))))
-                print("   Termination code: {0} {1}".format(symname, desc))
-
-            else:
-                print("Another unexpected problem status {0} is obtained.".format(prosta))
-
-        except Exception as e:
-            print("Unexpected error: {0}".format(e))
-
 # Define the optimization problem with the triangle constraints and Z
 def problem_sdp3(instance, M, sum_betweeness = False):
     pairs, costs, lengths = instance.pairs, instance.costs, instance.lengths    
@@ -328,116 +117,92 @@ def problem_sdp3(instance, M, sum_betweeness = False):
     #with Model("SDP3") as M:
 
     dim = len(pairs)
+    dim2 = int(comb(n, 3))
 
     Z = M.variable("Z", Domain.inPSDCone(dim+1))
     Y = Z.slice([1,1] , [dim+1, dim+1])
     y = Z.slice([1,0], [1,dim+1])
+    
+    A2 = np.zeros((dim2, int(dim*dim)))
+    l = 0
+    for i,j in pairs:
+        for k in range(j+1,n+1):
+            ij, ik, jk = get_index(i,j,n), get_index(i,k,n), get_index(j,k,n)
+            A2[l][(ij)*dim+jk] = 1
+            A2[l][(ij)*dim+ik] = -1
+            A2[l][(ik)*dim+jk] = -1
+            l += 1
+            
+    A = Matrix.sparse(A2)
 
     C = Matrix.sparse(costs_matrix)
+    e = Matrix.dense(np.ones((dim2,1))*-1)
+
+    print(e)
 
     # Objective function
     M.objective(ObjectiveSense.Minimize, Expr.sub(K, Expr.dot(C, Y)))
+    
+    
 
     M.constraint("diag",Expr.mulDiag(Y, Matrix.eye(dim)), Domain.equalsTo(1.0))
 
+    Y = Y.reshape([dim*dim, 1])
+    M.constraint(Expr.mul(A, Y), Domain.equalsTo(e))
+
     # Betweenes constraints
 
-    if(sum_betweeness):
-        for i,j in pairs:
-            subi = []
-            subj = []
-            val = []
-            for k in range(1, n+1):
-                ij, ik, jk = get_index(i,j,n), get_index(i,k,n), get_index(j,k,n)
-                if k == i or k == j:
-                    continue
-                elif k < i:         # k < i < j -> ij * (-jk) = (-1) ||(-) ij * (-ik) = (+1) || (-) (-ik) * (-jk) = -1
-                    subi.append(ij)
-                    subj.append(jk)
-                    val.append(-1.0)
-                    subi.append(ij)
-                    subj.append(ik)
-                    val.append(1.0)
-                    subi.append(ik)
-                    subj.append(jk)
-                    val.append(-1.0)
-                elif k < j:         # i < k < j -> ij * (-jk) = (-1) || (-) ij * (ik) = (-1) || (-) (ik) * (-jk) = +1
-                    subi.append(ij)
-                    subj.append(jk)
-                    val.append(-1.0)
-                    subi.append(ij)
-                    subj.append(ik)
-                    val.append(-1.0)
-                    subi.append(ik)
-                    subj.append(jk)
-                    val.append(1.0)
-                elif k > j:               # i < j < k -> ij * jk = (+1) || (-) ij * ik = (-1) || (-) ik * jk = (-1)
-                    subi.append(ij)
-                    subj.append(jk)
-                    val.append(1.0)
-                    subi.append(ij)
-                    subj.append(ik)
-                    val.append(-1.0)
-                    subi.append(ik)
-                    subj.append(jk)
-                    val.append(-1.0)
+    # if(sum_betweeness):
+    #     for i,j in pairs:
+    #         subi = []
+    #         subj = []
+    #         val = []
+    #         for k in range(1, n+1):
+    #             ij, ik, jk = get_index(i,j,n), get_index(i,k,n), get_index(j,k,n)
+    #             if k == i or k == j:
+    #                 continue
+    #             elif k < i:         # k < i < j -> ij * (-jk) = (-1) ||(-) ij * (-ik) = (+1) || (-) (-ik) * (-jk) = -1
+    #                 subi.append(ij)
+    #                 subj.append(jk)
+    #                 val.append(-1.0)
+    #                 subi.append(ij)
+    #                 subj.append(ik)
+    #                 val.append(1.0)
+    #                 subi.append(ik)
+    #                 subj.append(jk)
+    #                 val.append(-1.0)
+    #             elif k < j:         # i < k < j -> ij * (-jk) = (-1) || (-) ij * (ik) = (-1) || (-) (ik) * (-jk) = +1
+    #                 subi.append(ij)
+    #                 subj.append(jk)
+    #                 val.append(-1.0)
+    #                 subi.append(ij)
+    #                 subj.append(ik)
+    #                 val.append(-1.0)
+    #                 subi.append(ik)
+    #                 subj.append(jk)
+    #                 val.append(1.0)
+    #             elif k > j:               # i < j < k -> ij * jk = (+1) || (-) ij * ik = (-1) || (-) ik * jk = (-1)
+    #                 subi.append(ij)
+    #                 subj.append(jk)
+    #                 val.append(1.0)
+    #                 subi.append(ij)
+    #                 subj.append(ik)
+    #                 val.append(-1.0)
+    #                 subi.append(ik)
+    #                 subj.append(jk)
+    #                 val.append(-1.0)
 
-            #print(subi, subj, val)
-            A = Matrix.sparse(dim, dim, subi, subj, val)   
+    #         #print(subi, subj, val)
+    #         A = Matrix.sparse(dim, dim, subi, subj, val)   
 
-            M.constraint(Expr.dot(A, Y), Domain.equalsTo(2-n))         
-    else:
-        for i,j in pairs:
-            for k in range(j+1, n+1):
-                ij, ik, jk = get_index(i,j,n), get_index(i,k,n), get_index(j,k,n)
-                M.constraint(Expr.sub(Expr.sub(Y.index(ij,jk), Y.index(ij,ik)), Y.index(ik,jk)), Domain.equalsTo(-1.0))
+    #         M.constraint(Expr.dot(A, Y), Domain.equalsTo(2-n))         
+    # else:
+    #     for i,j in pairs:
+    #         for k in range(j+1, n+1):
+    #             ij, ik, jk = get_index(i,j,n), get_index(i,k,n), get_index(j,k,n)
+    #             M.constraint(Expr.sub(Expr.sub(Y.index(ij,jk), Y.index(ij,ik)), Y.index(ik,jk)), Domain.equalsTo(-1.0))
 
     return M
-    
-    # Triangle constraints
-    test = np.array([[-1.0, -1.0, -1.0], [-1.0, 1.0, 1.0], [1.0, -1.0, 1.0], [1.0, 1.0, -1.0]])
-    triangle = Matrix.dense(test)
-
-    for i in range(1, n+1):
-        for j in range(i+1, n+1):
-            for k in range(j+1, n+1):
-                #triangle_Y = Matrix.dense(np.array([[Y.index(i,j)], [Y.index(j,k)], [Y.index(i,k)]]))
-                M.constraint(Expr.sub(Expr.mul(triangle, Expr.vstack([Y.index(i,j), Y.index(j,k), Y.index(i,k)])), Expr.ones(4)), Domain.lessThan(0.0) )
-                #pass
-    """
-    try:
-        M.solve()
-        #print_solution(instance, M)
-
-    except OptimizeError as e:
-        print("Optimization failed. Error: {0}".format(e))
-
-    except SolutionError as e:
-        # The solution with at least the expected status was not available.
-        # We try to diagnoze why.
-        print("Requested solution was not available.")
-        prosta = M.getProblemStatus()
-
-        if prosta == ProblemStatus.DualInfeasible:
-            print("Dual infeasibility certificate found.")
-
-        elif prosta == ProblemStatus.PrimalInfeasible:
-            print("Primal infeasibility certificate found.")
-            
-        elif prosta == ProblemStatus.Unknown:
-        # The solutions status is unknown. The termination code
-        # indicates why the optimizer terminated prematurely.
-            print("The solution status is unknown.")
-            symname, desc = mosek.Env.getcodedesc(mosek.rescode(int(M.getSolverIntInfo("optimizeResponse"))))
-            print("   Termination code: {0} {1}".format(symname, desc))
-
-        else:
-            print("Another unexpected problem status {0} is obtained.".format(prosta))
-
-    except Exception as e:
-        print("Unexpected error: {0}".format(e))
-
-    """
 
 # Print the solution of the optimization problem / still too much other stuff in there
 def print_solution(instance, M):
@@ -454,17 +219,14 @@ def print_solution(instance, M):
     print("Root: ")
     M.acceptedSolutionStatus(AccSolutionStatus.Optimal)
     print("Relaxation objective value: {0}".format(M.primalObjValue()))
-    #print("Rank of X:", np.linalg.matrix_rank(Y.level(),TOLERANCE))    
-
-    d = [0.0]*dim
-    mosek.LinAlg.syeig(mosek.uplo.lo, dim, Y.level(), d)
-    rank = sum([d[i] > 1e-6 for i in range(dim)])
-    #print(d)
+    
+    rank = getRank(Y, dim)
+    
     print("Rank of Y:", rank)
 
     p_values = solution2permutation(Y.level()[0:dim], n)
     print("The permutation of this solution is:", [x[1] for x in p_values])
-    print("The objective value of this solution is:", permutation2objective(p_values, costs, lengths, pairs))
+    print("The objective value of this solution is:", permutation2objective(p_values, instance))
     
 # Transform the solution of the optimization problem to a permutation
 def solution2permutation(X, n):
@@ -610,97 +372,16 @@ def branch_and_bound(instance):
     print("Optimal solution is", incumbent_upper)
     print("Solution is", incumbent.permutation)
 
-
-    #print(optimal)
-
-    #print(open_nodes)
-    
-
-def langrangian_relaxation(instance, M):
-    pairs, costs, lengths = instance.pairs, instance.costs, instance.lengths    
-    costs_matrix = define_costmatrix(pairs, costs, lengths)
-    K = np.sum(costs)*np.sum(lengths)/2
-    
-    n = len(lengths)
-    dim = len(pairs)
-    dim2 = int(comb(n,3))
-
-    #Z = M.variable("Z", Domain.inPSDCone(dim+1))
-    Y = M.variable("Y", Domain.inPSDCone(dim))
-    #Y = Z.slice([1,1] , [dim+1, dim+1])
-    #y = Z.slice([1,0], [1,dim+1])
-    gamma = M.variable("gamma", dim2, Domain.greaterThan(0.0))
-    
-    A2 = np.zeros((dim2, int(dim*dim)))
-    l = 0
-    for i,j in pairs:
-        for k in range(j+1,n+1):
-            ij, ik, jk = get_index(i,j,n), get_index(i,k,n), get_index(j,k,n)
-            A2[l][(ij)*dim+jk] = 1
-            A2[l][(ij)*dim+ik] = -1
-            A2[l][(ik)*dim+jk] = -1
-            l += 1
-
-    C = Matrix.sparse(costs_matrix)
-
-    A = Matrix.sparse(A2)
-    #C = C.reshape(dim*dim,1)
-    
-
-    
-
-    gamma = Matrix.dense(np.ones((dim2,1))*3.2)
-
-    e = Matrix.dense(np.ones((dim2,1)))
-
-    M.constraint("diag",Expr.mulDiag(Y, Matrix.eye(dim)), Domain.equalsTo(1.0))
-
-    Y = Y.reshape([dim*dim,1])
-    
-    M.objective(ObjectiveSense.Maximize, Expr.add(Expr.dot(C, Y), Expr.mul(gamma.transpose() ,Expr.sub(e, Expr.mul(A, Y)))))
-    
-
-    M.solve()
-    #print(Y.level())
-    print(M.primalObjValue())
-
-    print(f"f(gamma) - cTx = {M.primalObjValue() - np.dot(costs_matrix.flatten(),Y.level())}")
-
-    #print(np.ones((dim2,1)) - np.dot(A2,Y.level()))
-
-
 def main(argv):
-
-    start_time = time.time()
-    inputfile = argument_parser(argv)
-
-    # Read the downloaded instance files from Hungerländer
-    instance = Instance(*read_instance(inputfile))
-
-    #problem, X = define_problem2(instance)
-
-    #problem_mosek(instance, False)  
-
-    #try:
-        #M = Model("Test")    
-        
-        #problem_sdp3(instance, M, False)
-    #branch_and_bound(instance)
-    #finally:
-    #    M.dispose()
-    with Model("Test") as M:
-        langrangian_relaxation(instance, M)
-
-
-    #p_values = solution2permutation(X, len(instance.lengths))
-
-    #print(permutation2objective(p_values, instance.costs, instance.lengths, instance.pairs))
-
-    #print(X.value)
-    print("--- %s seconds ---" % (time.time() - start_time))
-
-    #print(X.value())
-    #print(M.primalObjValue())
     
+    inputfile = argument_parser(argv)
+    
+    instance = Instance(*read_instance(inputfile))
+    
+    with Model("SRFLP") as M:
+        M = problem_sdp3(instance, M, True)
+        M.solve()
+        print_solution(instance, M)
+
 if __name__ == "__main__":
     main(sys.argv[1:])
