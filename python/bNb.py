@@ -61,12 +61,6 @@ def checkIntegerFeasible(solution, vl):
     else: 
         return False
     
-def updateLB(node, lb):
-    pass
-
-def updateUB():
-    pass
-
 def checkOptimal(incumbent, global_ub, global_lb):
     if incumbent.feasible:
         if incumbent.obj1 - global_lb < 0.5:
@@ -106,10 +100,6 @@ def update_bounds(openNodes, global_lb, global_ub):
             global_ub = node.ub
     return global_lb, global_ub
             
-
-def pruneNodes(openNodes):
-    pass
-
 def bNb(instance, vl):
     incumbent = Solution(-1, -1, 0, MAX_INT, MAX_INT, [], [])
     rootNode = Node(0, 0, 0, MAX_INT, [], False)

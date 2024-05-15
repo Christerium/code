@@ -9,38 +9,47 @@ import argparse                     # For command line arguments
 from mosek.fusion import *          # For optimization
 import os
 import matplotlib.pyplot as plt
+import math
 
 EPSILON = 0.5
 MAX_INT = 999999999
+EPSOPT = 1e-6
  
-class Instance(NamedTuple):
-    pairs: list
-    costs: list
-    lengths: list
-    cost_matrix: np.matrix
-    cost_matrix2: np.matrix
-    costs2: list
+class Node():
+    def __init__(self, index, level, lb, ub, constraints, solved):
+        self.index = index
+        self.level = level
+        self.lb = lb
+        self.ub = ub
+        self.constraints = constraints
+        self.solved = solved
+    
+    def __str__(self):
+        return f"Node {self.index}, level {self.level}, lb {self.lb}, ub {self.ub}, constraints {self.constraints}"
 
-# class Solution(NamedTuple):
-#     permutation: list
-#     objective1: float
-#     objective2: float
-#     Y: list
-
-class Node(NamedTuple):
-    index: int
-    layer: int
-    lb: float
-    ub: float
-    constraints: list       # List of tupels (decisions)
+    def __lt__(self, other):
+        return self.lb < other.lb
 
 class Solution(NamedTuple):
     feasible: bool
+    index: int
+    level: int
     lb: float
     obj1: float
     obj2: float
     permutation: list
     Y: list
+    
+class Instance(NamedTuple):
+    pairs: list
+    lengths: list
+    costs1: list
+    costs2: list
+    cost_matrix1: np.matrix
+    cost_matrix2: np.matrix
+    dim: int
+    n: int
+    K: float
     
 # Parse the command line arguments
 def argument_parser(argv):
@@ -90,6 +99,7 @@ def read_instance(file_path):
                     costs.append(int(line[j]))
     
     cost_matrix = define_costmatrix(pairs, costs, lengths)
+    K = np.sum(costs)*np.sum(lengths)/2
     
     if os.path.exists("cost_vector_"+str(len(costs))+".txt"):
         costs2 = read_cost_vector("cost_vector_"+str(len(costs))+".txt")
@@ -100,7 +110,7 @@ def read_instance(file_path):
         costs2 = read_cost_vector("cost_vector_"+str(len(costs))+".txt")
         cost_matrix2 = define_costmatrix(pairs, costs2, lengths)
 
-    return pairs, costs, lengths, cost_matrix, cost_matrix2, costs2
+    return Instance(pairs, lengths, costs, costs2, cost_matrix, cost_matrix2, len(pairs), len(lengths), K)
 
 # Get the index of the element in the matrix
 def get_index(i, j, n):
@@ -136,60 +146,6 @@ def define_costmatrix(pairs, costs, lengths):
 
     return cost_matrix
 
-# Define the optimization problem with the triangle constraints and Z
-def problem_sdp3(instance, M, sum_betweeness = False):
-    pairs, costs, lengths = instance.pairs, instance.costs, instance.lengths    
-    costs_matrix = define_costmatrix(pairs, costs, lengths)
-    K = np.sum(costs)*np.sum(lengths)/2
-
-    n = len(lengths)
-
-    #M = Model("SDP3")
-
-    #with Model("SDP3") as M:
-
-    dim = len(pairs)
-    dim2 = int(comb(n, 3))
-
-    Z = M.variable("Z", Domain.inPSDCone(dim+1))
-    Y = Z.slice([1,1] , [dim+1, dim+1])
-    y = Z.slice([1,0], [1,dim+1])
-    
-    A2 = np.zeros((dim2, int(dim*dim)))
-    l = 0
-    for i,j in pairs:
-        for k in range(j+1,n+1):
-            ij, ik, jk = get_index(i,j,n), get_index(i,k,n), get_index(j,k,n)
-            A2[l][(ij)*dim+jk] = 1
-            A2[l][(ij)*dim+ik] = -1
-            A2[l][(ik)*dim+jk] = -1
-            l += 1
-            
-    A = Matrix.sparse(A2)
-
-    C = Matrix.sparse(costs_matrix)
-    e = Matrix.dense(np.ones((dim2,1))*-1)
-    e2 = Matrix.dense(np.ones((3,1)))
-    
-    # Objective function
-    M.objective(ObjectiveSense.Minimize, Expr.sub(K, Expr.dot(C, Y)))
-
-    # Diagonal equals to 1 constraints
-    M.constraint("diag",Expr.mulDiag(Y, Matrix.eye(dim)), Domain.equalsTo(1.0))
-
-    # Betweenes constraints
-    Y = Y.reshape([dim*dim, 1])
-    M.constraint(Expr.mul(A, Y), Domain.equalsTo(e))
-
-    # M constraints (triangle constraints)
-    # T = [[-1, -1, -1],[-1, 1, 1], [1, -1, 1], [1, 1, -1]]
-    # for i,j in pairs:
-    #     for k in range(j+1,n+1):
-    #         pass
-    #         M.constraint(Expr.mul(T, Z.pick([[i,j],[i,k],[j,k]])), Domain.lessThan(1.0))
-        
-    return M
-
 # Print the solution of the optimization problem / still too much other stuff in there
 def print_solution(instance, M):
 
@@ -215,10 +171,10 @@ def print_solution(instance, M):
     print("The objective value of this solution is:", permutation2objective(p_values, instance))
     
 # Transform the solution of the optimization problem to a permutation
-def solution2permutation(X, n):
+def solution2permutation(X, n, switch):
     R_values = []
     for i in X:
-        R_values.append(i)
+        R_values.append(i-EPSOPT)
 
     p_values = []
     for i in range(1, n+1):
@@ -227,9 +183,9 @@ def solution2permutation(X, n):
             if i == j:
                 continue
             elif i < j:
-                sum += R_values[get_index(i,j,n)]
+                sum += R_values[get_index(i,j,n)]*switch
             else:
-                sum -= R_values[get_index(j,i,n)]
+                sum -= R_values[get_index(j,i,n)]*switch
         p_values.append(((sum+n+1)/2, i))
     p_values.sort(reverse=True)
     return p_values
@@ -265,109 +221,14 @@ def getRank(Y, dim):
     mosek.LinAlg.syeig(mosek.uplo.lo, dim, Y.level(), d)
     return sum([d[i] > 1e-6 for i in range(dim)])
 
-def branch_and_bound(instance):
-    optimal = False
-    integer = False
-    incumbent = Solution([], float("inf"))
-    dim = len(instance.pairs)
-    n = len(instance.lengths)
+def multi_obj_model(instance, M, vl):
+    pairs, costs, costs2, lengths = instance.pairs, instance.costs1, instance.costs2, instance.lengths    
+    costs_matrix = instance.cost_matrix1
+    cost_matrix_2 = instance.cost_matrix2
+    K = instance.K
 
-    incumbent_upper = float("inf")
-
-    layers = []
-    remaining_variables = []
-    for i in range(0, dim):
-        for j in range(i+1, dim):
-            remaining_variables.append((i,j))
-
-    open_nodes = []
-    processed_nodes = []
-    
-    M = Model()
-    M = problem_sdp3(instance, M, False)
-    Z = M.getVariable("Z")
-    Y = Z.slice([1,1] , [dim+1, dim+1])
-    M.solve()
-    # Check for feasibility
-    if M.getProblemStatus() != ProblemStatus.PrimalAndDualFeasible:
-        print("The problem is not feasible")
-        optimal = False
-    else:
-        print("The problem is feasible")
-        lb = M.primalObjValue()
-        permutation = solution2permutation(Y.level()[0:dim], n)
-        ub = permutation2objective(permutation, instance)
-        if ub < incumbent_upper:
-            incumbent_upper = ub
-            incumbent = Solution(permutation, ub)
-            print("New incumbent upper bound")
-        if lb > incumbent_upper:
-            print("Prune by bound")
-        # Check for if lower bound is close enugh to upper bound
-        if incumbent_upper - lb < 0.5:
-            print("Branch cannot improve anymore")
-        else:
-            i,j = remaining_variables.pop(0)
-            layers.append((i,j))
-            open_nodes.append(Node(lb, ub, [-1]))
-            open_nodes.append(Node(lb, ub, [1]))
-            #print("\n Branching on", i, j)
-            M.dispose()
-
-    rootlb = lb
-
-    while len(open_nodes) != 0:
-        node = open_nodes.pop(0)
-        M = Model()
-        M = problem_sdp3(instance, M, False)
-        Z = M.getVariable("Z")
-        Y = Z.slice([1,1] , [dim+1, dim+1])
-        #print(node.constraints)
-        for i in range(len(node.constraints)):   #range(len(layers)):
-            M.constraint(Y.index(layers[i][0], layers[i][1]), Domain.equalsTo(node.constraints[i]))
-        M.solve()
-        if M.getProblemStatus() != ProblemStatus.PrimalAndDualFeasible:
-            #print("The problem is not feasible")
-            optimal = False
-        else:
-            #print("The problem is feasible")
-            lb = M.primalObjValue()
-            #print(lb)
-            permutation = solution2permutation(Y.level()[0:dim], n)
-            ub = permutation2objective(permutation, instance)
-            if ub < incumbent_upper:
-                incumbent_upper = ub
-                incumbent = Solution(permutation, ub)
-                #print("New incumbent upper bound:", incumbent_upper)
-            if lb > incumbent_upper:
-                pass
-                #print("Prune by bound")
-            # Check for if lower bound is close enugh to upper bound
-            if incumbent_upper - lb < 0.5:
-                pass
-                #print("\n Branch cannot improve anymore")
-            else:
-                i,j = remaining_variables.pop(0)
-                layers.append((i,j))
-                open_nodes.append(Node(lb, ub, node.constraints + [-1]))
-                open_nodes.append(Node(lb, ub, node.constraints + [1]))
-                #print("\n Branching on", i, j)
-
-            processed_nodes.append(Node(lb, ub, node.constraints))
-        #print(f"Remaining nodes: {len(open_nodes)}, Processed nodes: {len(processed_nodes)}, upper bound: {incumbent_upper}, gaptoroot: {(incumbent_upper-rootlb)/incumbent_upper}")
-        M.dispose()
-
-    print("Optimal solution is", incumbent_upper)
-    print("Solution is", incumbent.permutation)
-
-def multi_obj_model(instance2, M, vl):
-    pairs, costs, costs2, lengths = instance2.pairs, instance2.costs, instance2.costs2, instance2.lengths    
-    costs_matrix = define_costmatrix(pairs, costs, lengths)
-    cost_matrix_2 = define_costmatrix(pairs, costs2, lengths)
-    K = np.sum(costs)*np.sum(lengths)/2
-
-    n = len(lengths)
-    dim = len(pairs)
+    n = instance.n
+    dim =  instance.dim
     dim2 = int(comb(n, 3))
 
     Z = M.variable("Z", Domain.inPSDCone(dim+1))
@@ -416,414 +277,207 @@ def multi_obj_model(instance2, M, vl):
     #         M.constraint(Expr.mul(T, Z.pick([[i,j],[i,k],[j,k]])), Domain.lessThan(1.0))
         
     return M
-
-def branch_and_bound2(instance, vl):
-    cost_matrix2 = define_costmatrix(instance.pairs, instance.costs2, instance.lengths)
-    optimal = False
-    feasible = True
-    obj1, obj2 = 99999999,99999999
-    
-    incumbent = Solution([], float("inf"),float("inf"), [])
-    dim = len(instance.pairs)
-    n = len(instance.lengths)
-
-    incumbent_upper = float("inf")
-
-    layers = []
-    remaining_variables = []
-    for i in range(0, dim):
-        for j in range(i+1, dim):
-            remaining_variables.append((i,j))
-
-    open_nodes = []
-    processed_nodes = []
-    
-    M = Model()
-    M = multi_obj_model(instance, M, vl)
-    Z = M.getVariable("Z")
-    Y = Z.slice([1,1] , [dim+1, dim+1])
-    M.solve()
-    lb = 9999999999
-    prune = False
-    # Check for feasibility
-    if M.getProblemStatus() != ProblemStatus.PrimalAndDualFeasible:
-        #print("The problem is not feasible")
-        optimal = False
-        feasible = False
-    else:
-        #print("The problem is feasible")
-        feasible = True
-        lb = M.primalObjValue()
-        permutation = solution2permutation(Y.level()[0:dim], n)
-        ub_helper = permutation2objective(permutation, instance)
-        
-        Y_int = permutation2Y([j for i,j in permutation], instance)
-        obj2_helper = (sum(cost_matrix2.flatten() * Y_int.flatten()))
-
-        # Check if epsilon constraint is fulfilled
-        print("tester:",obj2_helper, vl-EPSILON, feasible)
-        if obj2_helper > vl-EPSILON:
-            print("prune by epsilon")
-            prune = True
-        else:
-            ub = ub_helper
-        
-        if lb > incumbent_upper:
-            #print("Prune by bound")
-            prune = True
-        
-        if ub < incumbent_upper:
-            incumbent_upper = ub
-            incumbent = Solution(permutation, ub, obj2_helper, Y.level())
-           # print("New incumbent upper bound")
-
-        # Check for if lower bound is close enugh to upper bound
-        if incumbent_upper - lb < 0.5:
-           # print("Branch cannot improve anymore")
-            pass
-        else:
-            i,j = remaining_variables.pop(0)
-            layers.append((i,j))
-            open_nodes.append(Node(lb, ub, [-1]))
-            open_nodes.append(Node(lb, ub, [1]))
-            #print("\n Branching on", i, j)
-            M.dispose()
-
-    #print(feasible)
-    if feasible == True:
-        rootlb = lb
-
-        while len(open_nodes) != 0:
-            prune = False
-            node = open_nodes.pop(0)
-            M = Model()
-            M = multi_obj_model(instance, M, vl)
-            Z = M.getVariable("Z")
-            Y = Z.slice([1,1] , [dim+1, dim+1])
-            #print(node.constraints)
-            for i in range(len(node.constraints)):   #range(len(layers)):
-                M.constraint(Y.index(layers[i][0], layers[i][1]), Domain.equalsTo(node.constraints[i]))
-            M.solve()
-            if M.getProblemStatus() != ProblemStatus.PrimalAndDualFeasible:
-                print("The problem is not feasible")
-                optimal = False
-            else:
-               # print("The problem is feasible")
-                lb = M.primalObjValue()
-                #print(lb)
-                permutation = solution2permutation(Y.level()[0:dim], n)
-                ub_helper = permutation2objective(permutation, instance)
-                
-                Y_int = permutation2Y([j for i,j in permutation], instance)
-                obj2_helper = (sum(cost_matrix2.flatten() * Y_int.flatten()))
-
-                # Check if epsilon constraint is fulfilled
-                print("tester:",obj2_helper, vl-EPSILON, feasible)
-                if obj2_helper > vl-EPSILON:
-                    print("prune by epsilon")
-                    prune = True
-                else:
-                    ub = ub_helper
-                
-                if lb > incumbent_upper:
-                    #print("Prune by bound")
-                    prune = True
-                
-                if ub < incumbent_upper:
-                    incumbent_upper = ub
-                    incumbent = Solution(permutation, ub, obj2_helper, Y.level())
-                # print("New incumbent upper bound")
-
-                # Check for if lower bound is close enugh to upper bound
-                if incumbent_upper - lb < 0.5:
-                    #print("\n Branch cannot improve anymore")
-                    pass
-                else:
-                    i,j = remaining_variables.pop(0)
-                    layers.append((i,j))
-                    open_nodes.append(Node(lb, ub, node.constraints + [-1]))
-                    open_nodes.append(Node(lb, ub, node.constraints + [1]))
-                    #print("\n Branching on", i, j)
-
-                processed_nodes.append(Node(lb, ub, node.constraints))
-            print(f"Remaining nodes: {len(open_nodes)}, Processed nodes: {len(processed_nodes)}, upper bound: {incumbent_upper}, gaptoroot: {(incumbent_upper-rootlb)/incumbent_upper}")
-            M.dispose()
-
-        #print("Optimal solution is", incumbent_upper)
-        #print("Solution is", incumbent.permutation)
-        
-        #obj1, obj2 = permutation2objective(incumbent.permutation, instance)
-        
-        # Y_int = permutation2Y([j for i,j in permutation], instance)
-        # obj2 = (sum(cost_matrix2.flatten() * Y_int.flatten()))
-        
-        # cost_matrix2 = define_costmatrix(instance.pairs, instance.costs2, instance.lengths)
-        # cost_matrix = define_costmatrix(instance.pairs, instance.costs, instance.lengths)
-        # test = [round(elem, 0) for elem in incumbent.Y]
-    
-        # K = np.sum(instance.costs)*np.sum(instance.lengths)/2
-        #obj1 = K - sum(cost_matrix.flatten()*test)
-        #obj2 = sum(cost_matrix2.flatten()*test)
-        
-        # print("Obj1:", K - sum(cost_matrix.flatten()*test))
-        # print("Obj2:", sum(cost_matrix2.flatten()*test) )
-        #print(incumbent.permutation)
-        #print(test)
-        
-        print("Obj1:", incumbent.objective)
-        print("Obj2:", incumbent.objective2) 
-        
-        
-        return feasible, incumbent.objective, incumbent.objective2
-    else:
-        return feasible, incumbent.objective, incumbent.objective2
-
-def solve_node(node, instance, vl, global_ub):
-    dim = len(instance.pairs)
-    n = len(instance.lengths)
+ 
+def solveNode(node: Node, instance, vl):
     M = multi_obj_model(instance, Model(), vl)
     Z = M.getVariable("Z")
-    Y = Z.slice([1,1] , [dim+1, dim+1])
-    K = np.sum(instance.costs)*np.sum(instance.lengths)/2
-    local_lb = 0
-    local_ub1 = MAX_INT
-    local_ub2 = MAX_INT
-    feasible = True
-    
-    for i,j,k in node.constraints:  
-            M.constraint(Y.index(i,j), Domain.equalsTo(k))
+    Y = Z.slice([1,1] , [instance.dim+1, instance.dim+1])
+    if node.constraints:
+        for i,j,k in node.constraints:  
+                M.constraint(Y.index(i,j), Domain.equalsTo(k))
     M.solve()
     
+    node.solved = True
     
     if M.getProblemStatus() != ProblemStatus.PrimalAndDualFeasible:
-        feasible = False
-        return Solution(feasible, 0, MAX_INT, MAX_INT, [], [])
-    else:
-        local_lb = M.primalObjValue()
-        permutation = solution2permutation(Y.level()[0:dim], n)
-        Y_int = permutation2Y([j for i,j in permutation], instance)
-        local_ub1 = K - (sum(instance.cost_matrix.flatten() * Y_int.flatten()))
-        local_ub2 = (sum(instance.cost_matrix2.flatten() * Y_int.flatten()))
-        #print(feasible, local_ub2, vl-EPSILON, local_lb, global_ub)
-        if local_lb > global_ub:
-            feasible = False
-        return Solution(feasible, local_lb, local_ub1, local_ub2, permutation, Y.level())
-            
-            
-
-
-def b_and_b(instance, vl):
-    # Parameters
-    dim = len(instance.pairs)
-    n = len(instance.lengths)
-    feasible = True
-    cost_matrix = define_costmatrix(instance.pairs, instance.costs, instance.lengths)
-    cost_matrix2 = define_costmatrix(instance.pairs, instance.costs2, instance.lengths)
-    K = np.sum(instance.costs)*np.sum(instance.lengths)/2
-    
-    # Variables
-    #incumbent = Solution([], float("inf"),float("inf"), [])
-    incumbent = Solution(False, 0, MAX_INT, MAX_INT, [], [])
-    global_lb = MAX_INT
-    remaining_variables = []
-    for i in range(0, dim):
-        for j in range(i+1, dim):
-            remaining_variables.append((i,j))
-            
-    #print("Remaining variables", remaining_variables)
-    open_nodes = []
-    processed_nodes = []
-    layers = [[]*dim]
-    
-    # Solve model
-    M = multi_obj_model(instance, Model(), vl)
-    Z = M.getVariable("Z")
-    Y = Z.slice([1,1] , [dim+1, dim+1])
-    M.solve()
-    
-    # Check for feasibility
-    if M.getProblemStatus() != ProblemStatus.PrimalAndDualFeasible:
-        feasible = False
-    else:
-        feasible = True
-    
-    # Root node
-    if feasible:
-        # Get lower bound
-        global_lb = M.primalObjValue()
-        
-        # Get permutation
-        permutation = solution2permutation(Y.level()[0:dim], n)
-        #print(permutation2objective(permutation, instance))
-        
-        # Get objective values
-        Y_int = permutation2Y([j for i,j in permutation], instance)
-        #print("HERE", cost_matrix.flatten())
-        #print("HERE", Y_int.flatten())
-        obj1_ub = K - (sum(cost_matrix.flatten() * Y_int.flatten()))
-        obj2_ub = (sum(cost_matrix2.flatten() * Y_int.flatten()))
-
-        # Check if epsilon constraint is fulfilled
-        if obj2_ub <= vl-EPSILON and obj1_ub < incumbent.obj1:
-            #print("Root fulfills epsilon constraint")
-            incumbent = Solution(True, global_lb, obj1_ub, obj2_ub, permutation, Y.level())
-            #vl = obj2_ub
-        
-        if incumbent.obj1 - global_lb < 0.5:
-            M.dispose()
-            return incumbent
-        else:
-            # Branching
-            i,j = remaining_variables.pop(0)
-            
-            layers.append((i,j))
-            lb_local = M.primalObjValue()
-            open_nodes.append(Node(1, 1, lb_local, obj1_ub, [(i,j,-1)]))
-            open_nodes.append(Node(2, 1, lb_local, obj1_ub, [(i,j,1)]))
-            M.dispose()
-    else:
-        feasible = False
-        
-    #print(incumbent.obj1, global_lb)
-    
-    solution1 = solve_node(open_nodes[0], instance, vl, incumbent.obj1)
-    solution2 = solve_node(open_nodes[1], instance, vl, incumbent.obj1)
-    branching_list = []
-    
-    print(solution1.lb, solution2.lb, global_lb, incumbent.obj1, solution1.obj2, solution2.obj2)
-    #print(solution1.feasible, solution2.feasible)
-        
-    # if solution1.feasible and solution2.feasible:
-    #     global_lb = min(solution1.lb, solution2.lb)
-    
-    if solution1.feasible:
-        if solution2.feasible: # Both feasible
-            branching_list.append(open_nodes[0])
-            branching_list.append(open_nodes[1])
-            if solution1.lb < solution2.lb:
-                global_lb = solution1.lb
-                if solution1.obj2 < vl-EPSILON:
-                    if solution1.obj1 - global_lb < 0.5:
-                        #print("Optimal found through gap 1")
-                        return solution1
-                    else:
-                        incumbent = solution1
-            else:
-                global_lb = solution2.lb
-                if solution2.obj2 < vl-EPSILON:
-                    if solution2.obj2 - global_lb < 0.5:
-                        #print("Optimal found through gap 2")
-                        return solution2
-                    else:
-                        incumbent = solution2
-        else: # solution2 not feasible
-            global_lb = solution1.lb
-            if solution1.obj2 < vl-EPSILON:
-                if solution1.obj1 - global_lb < 0.5:
-                    #print("Optimal found through gap 3")
-                    return solution1
-                else:
-                    incumbent = solution1
-            branching_list.append(open_nodes[0])
-    else: # solution1 not feasible
-        if solution2.feasible:
-            global_lb = solution2.lb
-            branching_list.append(open_nodes[1])
-            if solution2.obj2 < vl-EPSILON:
-                if solution2.obj2 - global_lb < 0.5:
-                    #print("Optimal found through gap 4")
-                    return solution2
-                else: 
-                    incumbent = solution2
-        else: # Both not feasible
-            return incumbent
-            
-    print(global_lb)
-    print(branching_list)
-    
-    x = 1 / 0
-    
-    
-    print(incumbent.objective1, incumbent.objective2)    
-    while feasible and len(open_nodes) != 0:
-        node = open_nodes.pop(0)
-        #print(vl)
-        M = multi_obj_model(instance, Model(), vl)
-        Z = M.getVariable("Z")
-        Y = Z.slice([1,1] , [dim+1, dim+1])
-        
-        # Add branching constraints
-        for i in range(len(node.constraints)):  
-            M.constraint(Y.index(layers[i][0], layers[i][1]), Domain.equalsTo(node.constraints[i]))
-
-        # Solve the model
-        M.solve()
-        
-        #print(M.getProblemStatus())
-        if M.getProblemStatus() != ProblemStatus.PrimalAndDualFeasible:
-            feasible = False
-        else:
-            feasible = True
-        
-        if feasible:
-            # Get lower bound
-            local_lb = M.primalObjValue()
-            #global_lb = M.primalObjValue()
-            
-            # Get permutation
-            permutation = solution2permutation(Y.level()[0:dim], n)
-            
-            # Get objective values
-            Y_int = permutation2Y([j for i,j in permutation], instance)
-            obj1_ub = K - (sum(cost_matrix.flatten() * Y_int.flatten()))
-            obj2_ub = (sum(cost_matrix2.flatten() * Y_int.flatten()))
-            print(obj1_ub, obj2_ub, local_lb, incumbent.objective1, incumbent.objective2, open_nodes)
-
-            # Check if epsilon constraint is fulfilled
-            if obj2_ub <= vl-EPSILON and obj1_ub < incumbent.objective1:
-                incumbent = Solution(permutation, obj1_ub, obj2_ub, Y.level())
-                #vl = obj2_ub
-                
-            if local_lb <= incumbent.objective1:
-                #print(local_lb, incumbent.objective1)
-                if incumbent.objective1 - global_lb < 0.5:
-                    #M.dispose()
-                    print("Optimal found through gap")
-                    return feasible, incumbent
-                else:
-                    # Branching
-                    if len(remaining_variables) != 0:
-                        #print("Branching on", remaining_variables[0])
-                        i,j = remaining_variables.pop(0)
-                        layers.append((i,j))
-                        open_nodes.append(Node(lb_local, obj1_ub, [-1]))
-                        open_nodes.append(Node(lb_local, obj1_ub, [1]))
-                    #M.dispose()   
-            else:
-                feasible = True
-                #M.dispose()
-        else:
-            feasible = True    
-            #M.dispose()
         M.dispose()
+        return Solution(False, -1, -1, MAX_INT, MAX_INT, MAX_INT, [], [])
+    else:
+        lb = M.primalObjValue()
+        Y_test = Y.level()[0:instance.dim]
+        if node.constraints:
+            permutation = solution2permutation(Y_test, instance.n, node.constraints[0][2])
+            Y_int = permutation2Y([j for i,j in permutation], instance, 1)
+        else:
+            permutation = solution2permutation(Y_test, instance.n, 1)
+            Y_int = permutation2Y([j for i,j in permutation], instance, 1)
+        #Y_test = Y.level()
+        #Y_test = Y_int.reshape([instance.dim,instance.dim])
+        #print(np.linalg.matrix_rank(Y_test))
+        #print(np.allclose(Y_test, Y_test.T, atol=1e-8))
+        #test = instance.K-(sum(instance.cost_matrix1.flatten()*Y.level().flatten()))
+        obj1 = instance.K-(sum(instance.cost_matrix1.flatten()*Y_int.flatten()))
+        obj2 = sum(instance.cost_matrix2.flatten()*Y_int.flatten())
+        M.dispose()
+        return Solution(True, node.index, node.level, lb, obj1, obj2, permutation, Y_int) 
+
+def checkIntegerFeasible(solution, vl):
+    if solution.feasible and solution.obj2 <= vl-EPSILON and solution.obj2 >= 0:
+        return True
+    else: 
+        return False
+    
+def checkOptimal(incumbent, global_ub, global_lb):
+    if incumbent.feasible:
+        if incumbent.obj1 - global_lb - EPSOPT< 0.5:
+            return True
+    else:
+        return False
+        
+def branching(openNodes, remainingVar):
+    openNodes.sort()
+    currentNode = openNodes[0]
+    #print("Branching:", [(x.lb, x.index, x.level) for x in openNodes])
+    #print(currentNode)
+    #print(currentNode.level, len(remainingVar))
+    if currentNode.level < len(remainingVar):
+        
+        #i,j = remainingVar.pop(0)
+        #print(currentNode.level)
+        i,j = remainingVar[currentNode.level]
+        constraint1 = currentNode.constraints.copy()
+        constraint1.append((i,j,-1))
+        constraint2 = currentNode.constraints.copy()
+        constraint2.append((i,j,1))
+        level = currentNode.level
+        node1 = Node(currentNode.index+1, level+1, currentNode.lb, currentNode.ub, constraint1, False)
+        node2 = Node(currentNode.index+2, level+1, currentNode.lb, currentNode.ub, constraint2, False)
+        openNodes.append(node1)
+        openNodes.append(node2)
+    return openNodes
+    
+def initRemainingVar(dim):
+    remainingVar = []
+    for i in range(0, dim):
+        for j in range(i+1, dim):
+            remainingVar.append((i,j))
+    return remainingVar
+
+def updateNode(node, solution, vl):
+    if solution.feasible:
+        node.lb = solution.lb
+        if checkIntegerFeasible(solution, vl):
+            node.ub = solution.obj1
+        else:
+            pass
+            # node.ub = MAX_INT
+                
+def update_bounds(openNodes, global_lb, global_ub):
+    sortedNodes = sorted(openNodes)
+    
+    #print("Update:", [(x.lb, x.index, x.level) for x in sortedNodes])
+    betterLB = math.ceil(sortedNodes[0].lb * 2.0) / 2.0
+    #print(betterLB, sortedNodes[0].lb)
+    global_lb = betterLB
+    
+    for node in openNodes:
+        if node.ub < global_ub:
+            global_ub = node.ub
+    return global_lb, global_ub
             
-    if incumbent.objective1 == float("inf") or incumbent.objective2 == float("inf"):
-        feasible = False
-    print("Optimal found through no more nodes")
-    print(global_lb)
-    print(open_nodes)
-    return feasible, incumbent
+def bNb(instance, vl):
+    incumbent = Solution(False, -1, -1, 0, MAX_INT, MAX_INT, [], [])
+    rootNode = Node(0, 0, 0, MAX_INT, [], False)
+    var2branch = initRemainingVar(instance.dim)
+    #print(len(var2branch))
+    openNodes = [rootNode]
+    currentSol = solveNode(rootNode, instance, vl)
+    
+    global_lb = 0
+    global_ub = MAX_INT
+    
+    if currentSol.feasible:
+        if checkIntegerFeasible(currentSol, vl): # True if primal/dual feasible and integer feasible
+            incumbent = currentSol
+            global_ub = currentSol.obj1
+            rootNode.ub = currentSol.obj1
+        global_lb = currentSol.lb
+        rootNode.lb = currentSol.lb   
+    
+    if checkOptimal(incumbent, global_ub, global_lb):
+        print("Root is optimal")
+        return incumbent
+    
+    
+    # while from here
+    while openNodes:
+    # Branching
+        openNodes = branching(openNodes, var2branch)
+        #print(global_lb, global_ub)
+        #print(len(openNodes))
+        # Solve the two new nodes
+        if len(openNodes) < 2:
+            #print(len(openNodes))
+            #print("No nodes:",[(x.lb, x.index, x.level) for x in openNodes])
+            #print(openNodes[0].constraints)
+            #print("No more nodes to explore. Returning incumbent.", global_lb, global_ub)
+            #print("One node:",[(x.lb, x.index, x.level) for x in openNodes])
+            return incumbent
+        node1 = openNodes[-1]
+        node2 = openNodes[-2]
+        solution1 = solveNode(node1, instance, vl)
+        if solution1.feasible:
+            updateNode(node1, solution1, vl)
+            if checkIntegerFeasible(solution1, vl):
+                if solution1.obj1 < incumbent.obj1:
+                    incumbent = solution1
+                incumbent = solution1
+        else:
+            openNodes.remove(node1)
+            
+        
+        
+        
+        solution2 = solveNode(node2, instance, vl)
+        if solution2.feasible:
+            updateNode(node2, solution2, vl)
+            if checkIntegerFeasible(solution2, vl):
+                if solution2.obj1 < incumbent.obj1:
+                    incumbent = solution2
+        else:
+            openNodes.remove(node2)
+        
+        #print(node1.lb, node2.lb, global_lb)
+    
+        # Remove the branched node from the openNodes list
+        
+        #print("Before pop:",[(x.lb, x.index, x.level) for x in openNodes])
+        
+        openNodes.pop(0)
+        #print(solution1.lb, solution2.lb)
+        
+        # Update the global bounds
+        if openNodes:
+            global_lb, global_ub = update_bounds(openNodes, global_lb, global_ub)
+        
+            # Prune the open nodes & update the incumbent
+            #print("After pop:",[(x.lb, x.index, x.level) for x in openNodes])
+            
+            for node in openNodes:
+                if node.lb > global_ub:
+                    openNodes.remove(node)
+        
+        # Check if the incumbent is optimal
+        if checkOptimal(incumbent, global_ub, global_lb):
+            return incumbent      
+        
+        #print(global_lb, global_ub)
+        #print("")
+    # Repeat the process    
+    
+    print("No more nodes to explore. Returning incumbent.", global_lb, global_ub)
+    return incumbent 
     
 def epsilon_constraint(instance):
     # Create a model
-    vl = 9999999999
+    vl = MAX_INT
     dominatedpoints = []
     feasible = True
     
     while feasible == True:
         #print("VL", vl)
         #feasible, obj1, obj2 = branch_and_bound2(instance, vl)
-        incumbent = b_and_b(instance, vl)
+        incumbent = bNb(instance, vl)
         feasible = incumbent.feasible
         obj1 = incumbent.obj1
         obj2 = incumbent.obj2
@@ -844,13 +498,13 @@ def epsilon_constraint(instance):
 
     # print solution
     
-def permutation2Y(permutation, instance):
+def permutation2Y(permutation, instance, switch):
     Y_help = []
     for i,j in instance.pairs:
         if permutation.index(i) < permutation.index(j):
-            Y_help.append(-1)
+            Y_help.append(-1*switch)
         else:
-            Y_help.append(1)
+            Y_help.append(1*switch)
     Y = np.outer(np.array(Y_help),np.array(Y_help).T)
     return Y
     
@@ -869,22 +523,22 @@ def main(argv):
     
     inputfile = argument_parser(argv)
     
-    instance = Instance(*read_instance(inputfile))
+    inputfile = "code/instance/S/S8H"
     
-    #feasible, obj1, obj2 = branch_and_bound2(instance, 5000)
-    
-    #print(obj1, obj2)
+    instance = read_instance(inputfile)
     
     start_time = time.time()
     
-    dominatedpoints = epsilon_constraint(instance)
-    print(dominatedpoints)
+    # vl = 9999999
+    # solution = bNb(instance, vl)
+    # print(solution.obj1, solution.obj2)
     
+    domiantedpoints = epsilon_constraint(instance)
+    domiantedpoints = domiantedpoints[0:-1]
+    print(domiantedpoints)
     print("--- %s seconds ---" % (time.time() - start_time))
 
-    
-    
-    plt.scatter(*zip(*dominatedpoints))
+    plt.scatter(*zip(*domiantedpoints))
     plt.show()
 
 if __name__ == "__main__":
