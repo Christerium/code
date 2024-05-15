@@ -11,6 +11,7 @@ import os
 import matplotlib.pyplot as plt
 
 EPSILON = 0.5
+MAX_INT = 999999999
  
 class Instance(NamedTuple):
     pairs: list
@@ -584,17 +585,19 @@ def solve_node(node, instance, vl, global_ub):
     Z = M.getVariable("Z")
     Y = Z.slice([1,1] , [dim+1, dim+1])
     K = np.sum(instance.costs)*np.sum(instance.lengths)/2
-    local_lb = float("inf")
-    local_ub1 = float("inf")
-    local_ub2 = float("inf")
+    local_lb = 0
+    local_ub1 = MAX_INT
+    local_ub2 = MAX_INT
     feasible = True
     
     for i,j,k in node.constraints:  
             M.constraint(Y.index(i,j), Domain.equalsTo(k))
     M.solve()
     
+    
     if M.getProblemStatus() != ProblemStatus.PrimalAndDualFeasible:
         feasible = False
+        return Solution(feasible, 0, MAX_INT, MAX_INT, [], [])
     else:
         local_lb = M.primalObjValue()
         permutation = solution2permutation(Y.level()[0:dim], n)
@@ -602,11 +605,9 @@ def solve_node(node, instance, vl, global_ub):
         local_ub1 = K - (sum(instance.cost_matrix.flatten() * Y_int.flatten()))
         local_ub2 = (sum(instance.cost_matrix2.flatten() * Y_int.flatten()))
         #print(feasible, local_ub2, vl-EPSILON, local_lb, global_ub)
-        if local_ub2 > vl-EPSILON:
-            feasible = False
         if local_lb > global_ub:
             feasible = False
-    return Solution(feasible, local_lb, local_ub1, local_ub2, permutation, Y.level())
+        return Solution(feasible, local_lb, local_ub1, local_ub2, permutation, Y.level())
             
             
 
@@ -622,8 +623,8 @@ def b_and_b(instance, vl):
     
     # Variables
     #incumbent = Solution([], float("inf"),float("inf"), [])
-    incumbent = Solution(False, float("inf"), float("inf"),float("inf"), [], [])
-    global_lb = float("inf")
+    incumbent = Solution(False, 0, MAX_INT, MAX_INT, [], [])
+    global_lb = MAX_INT
     remaining_variables = []
     for i in range(0, dim):
         for j in range(i+1, dim):
@@ -683,15 +684,17 @@ def b_and_b(instance, vl):
     else:
         feasible = False
         
-    #print(open_nodes)
+    #print(incumbent.obj1, global_lb)
     
     solution1 = solve_node(open_nodes[0], instance, vl, incumbent.obj1)
     solution2 = solve_node(open_nodes[1], instance, vl, incumbent.obj1)
     branching_list = []
     
-    
-    if solution1.feasible and solution2.feasible:
-        global_lb = min(solution1.lb, solution2.lb)
+    print(solution1.lb, solution2.lb, global_lb, incumbent.obj1, solution1.obj2, solution2.obj2)
+    #print(solution1.feasible, solution2.feasible)
+        
+    # if solution1.feasible and solution2.feasible:
+    #     global_lb = min(solution1.lb, solution2.lb)
     
     if solution1.feasible:
         if solution2.feasible: # Both feasible
@@ -699,33 +702,47 @@ def b_and_b(instance, vl):
             branching_list.append(open_nodes[1])
             if solution1.lb < solution2.lb:
                 global_lb = solution1.lb
-                if solution1.obj1 - global_lb < 0.5:
-                    return solution1
-                incumbent = solution1
+                if solution1.obj2 < vl-EPSILON:
+                    if solution1.obj1 - global_lb < 0.5:
+                        #print("Optimal found through gap 1")
+                        return solution1
+                    else:
+                        incumbent = solution1
             else:
                 global_lb = solution2.lb
-                if solution1.obj2 - global_lb < 0.5:
-                    return solution2
-                incumbent = solution2
+                if solution2.obj2 < vl-EPSILON:
+                    if solution2.obj2 - global_lb < 0.5:
+                        #print("Optimal found through gap 2")
+                        return solution2
+                    else:
+                        incumbent = solution2
         else: # solution2 not feasible
             global_lb = solution1.lb
-            if solution1.obj1 - global_lb < 0.5:
+            if solution1.obj2 < vl-EPSILON:
+                if solution1.obj1 - global_lb < 0.5:
+                    #print("Optimal found through gap 3")
                     return solution1
-            incumbent = solution1
+                else:
+                    incumbent = solution1
             branching_list.append(open_nodes[0])
     else: # solution1 not feasible
         if solution2.feasible:
             global_lb = solution2.lb
-            if solution1.obj2 - global_lb < 0.5:
-                    return solution2
-            incumbent = solution2
             branching_list.append(open_nodes[1])
+            if solution2.obj2 < vl-EPSILON:
+                if solution2.obj2 - global_lb < 0.5:
+                    #print("Optimal found through gap 4")
+                    return solution2
+                else: 
+                    incumbent = solution2
         else: # Both not feasible
             return incumbent
             
-            
+    print(global_lb)
     print(branching_list)
+    
     x = 1 / 0
+    
     
     print(incumbent.objective1, incumbent.objective2)    
     while feasible and len(open_nodes) != 0:
