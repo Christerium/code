@@ -1,4 +1,5 @@
 #import cvxpy as cp                  # For optimization
+import glob
 import numpy as np                  # For matrix operations
 from scipy.special import comb      # For binomnial coefficient
 import mosek                        # Solver
@@ -10,10 +11,11 @@ from mosek.fusion import *          # For optimization
 import os
 import matplotlib.pyplot as plt
 import math
+import random
 
 EPSILON = 0.5
 MAX_INT = 999999999
-EPSOPT = 1e-6
+EPSOPT = 1e-4
  
 class Node():
     def __init__(self, index, level, lb, ub, constraints, solved):
@@ -117,7 +119,7 @@ def get_index(i, j, n):
     return int(n*(i-1)-(((i-1)*(i-1)+(i-1))/2)+(j-i)-1)
 
 # Create the cost matrix for the optimization problem
-def define_costmatrix(pairs, costs, lengths):
+def define_costmatrix(pairs, costs, lengths):   # Try to build it as sparse matrix, as it has a lot of 0s
     m = len(costs)
     n = len(lengths)
     cost_matrix = np.zeros((m,m))
@@ -171,23 +173,38 @@ def print_solution(instance, M):
     print("The objective value of this solution is:", permutation2objective(p_values, instance))
     
 # Transform the solution of the optimization problem to a permutation
-def solution2permutation(X, n, switch):
-    R_values = []
-    for i in X:
-        R_values.append(i-EPSOPT)
+def solution2permutation(X, n, switch, pairs):
+    # R_values = []
+    # for i in X:
+    #     R_values.append(i-EPSOPT)
 
-    p_values = []
-    for i in range(1, n+1):
-        sum = 0
-        for j in range(1, n+1):
-            if i == j:
-                continue
-            elif i < j:
-                sum += R_values[get_index(i,j,n)]*switch
-            else:
-                sum -= R_values[get_index(j,i,n)]*switch
-        p_values.append(((sum+n+1)/2, i))
+    # R_values = np.array(X)
+
+    # p_values = []
+    # for i in range(1, n+1):
+    #     sum = 0
+    #     for j in range(1, n+1):
+    #         if i == j:
+    #             continue
+    #         elif i < j:
+    #             sum += R_values[get_index(i,j,n)]*switch
+    #         else:
+    #             sum -= R_values[get_index(j,i,n)]*switch
+    #     p_values.append(((sum+n+1)/2, i))
+    # #p_values.sort(reverse=True)
+
+    R_values = np.zeros((n,n-1))    
+    for i in range(len(pairs)):
+        x=pairs[i][1]-2
+        y=pairs[i][0]-1
+        R_values[y,x] = X[i]
+        R_values[x+1,y] = -X[i]
+    
+    p_help = R_values.sum(axis = 1)
+    p_values = list(zip(p_help, range(1, n+1)))
     p_values.sort(reverse=True)
+    # print("P_help", p_values)
+                
     return p_values
 
 # Get the length of facilities between i and j in the permutation
@@ -221,7 +238,7 @@ def getRank(Y, dim):
     mosek.LinAlg.syeig(mosek.uplo.lo, dim, Y.level(), d)
     return sum([d[i] > 1e-6 for i in range(dim)])
 
-def multi_obj_model(instance, M, vl):
+def multi_obj_model(instance, M, vl, lb):
     pairs, costs, costs2, lengths = instance.pairs, instance.costs1, instance.costs2, instance.lengths    
     costs_matrix = instance.cost_matrix1
     cost_matrix_2 = instance.cost_matrix2
@@ -235,20 +252,20 @@ def multi_obj_model(instance, M, vl):
     Y = Z.slice([1,1] , [dim+1, dim+1])
     y = Z.slice([1,0], [1,dim+1])
     
-    A2 = np.zeros((dim2, int(dim*dim)))
-    l = 0
-    for i,j in pairs:
-        for k in range(j+1,n+1):
-            ij, ik, jk = get_index(i,j,n), get_index(i,k,n), get_index(j,k,n)
-            A2[l][(ij)*dim+jk] = 1
-            A2[l][(ij)*dim+ik] = -1
-            A2[l][(ik)*dim+jk] = -1
-            l += 1
+    # A2 = np.zeros((dim2, int(dim*dim)))
+    # l = 0
+    # for i,j in pairs:
+    #     for k in range(j+1,n+1):
+    #         ij, ik, jk = get_index(i,j,n), get_index(i,k,n), get_index(j,k,n)
+    #         A2[l][(ij)*dim+jk] = 1
+    #         A2[l][(ij)*dim+ik] = -1
+    #         A2[l][(ik)*dim+jk] = -1
+    #         l += 1
             
-    A = Matrix.sparse(A2)
+    # A = Matrix.sparse(A2)
 
     C = Matrix.sparse(costs_matrix)
-    e = Matrix.dense(np.ones((dim2,1))*-1)
+    #e = Matrix.dense(np.ones((dim2,1))*-1)
     #e2 = Matrix.dense(np.ones((3,1)))
     
     # Objective function
@@ -256,6 +273,8 @@ def multi_obj_model(instance, M, vl):
     #obj1 = Expr.dot(C, Y)
     obj2 = Expr.dot(cost_matrix_2, Y)
     M.objective(ObjectiveSense.Minimize, obj1)
+    
+    #M.constraint("lb", obj1, Domain.greaterThan(lb))
 
     ## Second objective constraint
     #print("vl", vl)
@@ -263,30 +282,41 @@ def multi_obj_model(instance, M, vl):
     M.constraint(obj2, Domain.lessThan(vl-EPSILON))
     
     ## Diagonal equals to 1 constraints
-    M.constraint("diag",Expr.mulDiag(Y, Matrix.eye(dim)), Domain.equalsTo(1.0))
+    M.constraint("diag",Expr.mulDiag(Z, Matrix.eye(dim+1)), Domain.equalsTo(1.0)) # dim+1 constraints
 
-    ## Betweenes constraints
-    Y = Y.reshape([dim*dim, 1])
-    M.constraint(Expr.mul(A, Y), Domain.equalsTo(e))
-
-    ## M constraints (triangle constraints)
     # T = [[-1, -1, -1],[-1, 1, 1], [1, -1, 1], [1, 1, -1]]
-    # for i,j in pairs:
-    #     for k in range(j+1,n+1):
-    #         pass
-    #         M.constraint(Expr.mul(T, Z.pick([[i,j],[i,k],[j,k]])), Domain.lessThan(1.0))
-        
+    # for i in range(0, dim-3):
+    #     for j in range(i+1, dim-2):
+    #         for k in range(j+1, dim-1):
+    #             #print(i,j,k)
+    #             M.constraint(Expr.mul(T, Y.pick([[i,j],[i,k],[j,k]])), Domain.lessThan(1.0))
+    
+    ## Betweenes constraints (not feasible for large instances -> memory problems)
+    # Y = Y.reshape([dim*dim, 1])
+    # M.constraint(Expr.mul(A, Y), Domain.equalsTo(e))    # n over 3 constraints
+
+    for i,j in pairs:
+        for k in range(j+1,n+1):
+            M.constraint(Expr.sub(Expr.sub(Y.index(get_index(i,j,n), get_index(i,k,n)), Y.index(get_index(i,j,n),get_index(i,k,n))), Y.index(get_index(i,k,n), get_index(j,k,n))), Domain.equalsTo(-1.0))
+
+    # M constraints (triangle constraints)
+    T = [[-1, -1, -1],[-1, 1, 1], [1, -1, 1], [1, 1, -1]]
+    for i,j in pairs:
+        for k in range(j+1,n+1):
+            M.constraint(Expr.mul(T, Z.pick([[i,j],[i,k],[j,k]])), Domain.lessThan(1.0))
+
     return M
  
-def solveNode(node: Node, instance, vl):
-    M = multi_obj_model(instance, Model(), vl)
+def solveNode(node: Node, instance, vl, lb):
+    M = multi_obj_model(instance, Model(), vl, lb)
     Z = M.getVariable("Z")
     Y = Z.slice([1,1] , [instance.dim+1, instance.dim+1])
     if node.constraints:
         for i,j,k in node.constraints:  
                 M.constraint(Y.index(i,j), Domain.equalsTo(k))
-    
+    start_time = time.time()
     M.solve()
+    #print("---Relax %s seconds ---" % (time.time() - start_time))
     
     node.solved = True
     
@@ -296,12 +326,15 @@ def solveNode(node: Node, instance, vl):
     else:
         lb = M.primalObjValue()
         Y_test = Y.level()[0:instance.dim]
-        if node.constraints:
-            permutation = solution2permutation(Y_test, instance.n, node.constraints[0][2])
-            Y_int = permutation2Y([j for i,j in permutation], instance, 1)
-        else:
-            permutation = solution2permutation(Y_test, instance.n, 1)
-            Y_int = permutation2Y([j for i,j in permutation], instance, 1)
+        # if node.constraints:
+        #     permutation = solution2permutation(Y_test, instance.n, node.constraints[0][2])
+        #     Y_int = permutation2Y([j for i,j in permutation], instance, 1)
+        # else:
+        Y_rank = np.array(Y.level())
+        if np.all(np.equal(np.mod(Y_rank, 1), 0)):
+            print("Integer") 
+        permutation = solution2permutation(Y_test, instance.n, 1, instance.pairs)
+        Y_int = permutation2Y([j for i,j in permutation], instance, 1)
         #Y_test = Y.level()
         #Y_test = Y_int.reshape([instance.dim,instance.dim])
         #print(np.linalg.matrix_rank(Y_test))
@@ -309,7 +342,7 @@ def solveNode(node: Node, instance, vl):
         #test = instance.K-(sum(instance.cost_matrix1.flatten()*Y.level().flatten()))
         obj1 = instance.K-(sum(instance.cost_matrix1.flatten()*Y_int.flatten()))
         obj2 = sum(instance.cost_matrix2.flatten()*Y_int.flatten())
-        test = sum(instance.cost_matrix2.flatten()*Y.level().flatten())
+        #test = sum(instance.cost_matrix2.flatten()*Y.level().flatten())
         M.dispose()
         return Solution(True, node.index, node.level, lb, obj1, obj2, permutation, Y_int) 
 
@@ -320,9 +353,8 @@ def checkIntegerFeasible(solution, vl):
         return False
     
 def checkOptimal(incumbent, global_ub, global_lb):
-    if incumbent.feasible:
-        if incumbent.obj1 - global_lb - EPSOPT< 0.5:
-            return True
+    if incumbent.feasible and incumbent.obj1 - global_lb - EPSOPT< 0.5:
+        return True
     else:
         return False
         
@@ -350,9 +382,13 @@ def branching(openNodes, remainingVar):
     
 def initRemainingVar(dim):
     remainingVar = []
-    for i in range(0, dim):
-        for j in range(i+1, dim):
-            remainingVar.append((i,j))
+    # for i in range(0, dim):
+    #     for j in range(i+1, dim):
+    #         remainingVar.append((i,j))
+    for j in range(0, dim):
+        remainingVar.append((0,j))        
+    
+            
     return remainingVar
 
 def updateNode(node, solution, vl):
@@ -377,18 +413,20 @@ def update_bounds(openNodes, global_lb, global_ub):
             global_ub = node.ub
     return global_lb, global_ub
             
-def bNb(instance, vl):
+def bNb(instance, vl, lb):
     incumbent = Solution(False, -1, -1, 0, MAX_INT, MAX_INT, [], [])
     rootNode = Node(0, 0, 0, MAX_INT, [], False)
     var2branch = initRemainingVar(instance.dim)
+    random.shuffle(var2branch)
     #print(len(var2branch))
     openNodes = [rootNode]
-    start_time = time.time()
-    currentSol = solveNode(rootNode, instance, vl)
-    print("--- %s seconds ---" % (time.time() - start_time))
     
-    global_lb = 0
+    global_lb = lb
     global_ub = MAX_INT
+    
+    start_time = time.time()
+    currentSol = solveNode(rootNode, instance, vl, global_lb)
+    #print("--- %s seconds ---" % (time.time() - start_time))
     
     if currentSol.feasible:
         if checkIntegerFeasible(currentSol, vl): # True if primal/dual feasible and integer feasible
@@ -396,7 +434,7 @@ def bNb(instance, vl):
             global_ub = currentSol.obj1
             rootNode.ub = currentSol.obj1
         #global_lb = currentSol.lb
-        global_lb = math.ceil(currentSol.lb * 2.0) / 2.0
+        global_lb = math.ceil((currentSol.lb-EPSOPT) * 2.0) / 2.0
         rootNode.lb = currentSol.lb   
     
     if checkOptimal(incumbent, global_ub, global_lb):
@@ -408,19 +446,11 @@ def bNb(instance, vl):
     while openNodes:
     # Branching
         openNodes = branching(openNodes, var2branch)
-        #print(global_lb, global_ub)
-        #print(len(openNodes))
-        # Solve the two new nodes
         if len(openNodes) < 2:
-            #print(len(openNodes))
-            #print("No nodes:",[(x.lb, x.index, x.level) for x in openNodes])
-            #print(openNodes[0].constraints)
-            #print("No more nodes to explore. Returning incumbent.", global_lb, global_ub)
-            #print("One node:",[(x.lb, x.index, x.level) for x in openNodes])
             return incumbent
         node1 = openNodes[-1]
         node2 = openNodes[-2]
-        solution1 = solveNode(node1, instance, vl)
+        solution1 = solveNode(node1, instance, vl, global_lb)
         if solution1.feasible:
             updateNode(node1, solution1, vl)
             if checkIntegerFeasible(solution1, vl):
@@ -430,10 +460,7 @@ def bNb(instance, vl):
         else:
             openNodes.remove(node1)
             
-        
-        
-        
-        solution2 = solveNode(node2, instance, vl)
+        solution2 = solveNode(node2, instance, vl, global_lb)
         if solution2.feasible:
             updateNode(node2, solution2, vl)
             if checkIntegerFeasible(solution2, vl):
@@ -454,19 +481,17 @@ def bNb(instance, vl):
         # Update the global bounds
         if openNodes:
             global_lb, global_ub = update_bounds(openNodes, global_lb, global_ub)
-        
-            # Prune the open nodes & update the incumbent
-            #print("After pop:",[(x.lb, x.index, x.level) for x in openNodes])
-            
             for node in openNodes:
-                if node.lb - EPSOPT > global_ub:
+                if node.lb + EPSOPT > incumbent.obj1:
                     openNodes.remove(node)
+                elif node.lb - EPSOPT > global_ub:
+                        openNodes.remove(node)
         
         # Check if the incumbent is optimal
         if checkOptimal(incumbent, global_ub, global_lb):
             return incumbent      
         
-        print(global_lb, global_ub)
+        #print(global_lb, global_ub)
         #print("")
     # Repeat the process    
     
@@ -478,25 +503,20 @@ def epsilon_constraint(instance):
     vl = MAX_INT
     dominatedpoints = []
     feasible = True
+    lb = 0
     
     while feasible == True:
         #print("VL", vl)
         #feasible, obj1, obj2 = branch_and_bound2(instance, vl)
-        incumbent = bNb(instance, vl)
+        incumbent = bNb(instance, vl, lb)
         feasible = incumbent.feasible
         obj1 = incumbent.obj1
         obj2 = incumbent.obj2
         vl = obj2
+        lb = obj1
         dominatedpoints.append((obj1, obj2))
         print(obj1, obj2)
-        #print(incumbent.permutation)
-        
-        # K = np.sum(instance.costs)*np.sum(instance.lengths)/2
-        # cost_matrix = define_costmatrix(instance.pairs, instance.costs, instance.lengths)
-        # cost_matrix2 = define_costmatrix(instance.pairs, instance.costs2, instance.lengths)
-        # Y_int = permutation2Y([j for i,j in incumbent.permutation], instance)
-        # print("Obj1:",K - (sum(cost_matrix.flatten() * Y_int.flatten())))
-        # print("Obj2:",(sum(cost_matrix2.flatten() * Y_int.flatten())))
+
         print("")
     return dominatedpoints
 
@@ -528,23 +548,43 @@ def main(argv):
     
     inputfile = argument_parser(argv)
     
-    inputfile = "code/instance/H/H20"
+    #inputfile = "code/instance/S/S11"
     
     instance = read_instance(inputfile)
     
     start_time = time.time()
     
-    vl = 9999999
-    solution = bNb(instance, vl)
-    print(solution.obj1, solution.obj2)
+    # vl = 999999
+    # solution = bNb(instance, vl, 0)
+    # print(solution.obj1, solution.obj2)
+    #S11 (without triangle 1773 sec)
     
-    # domiantedpoints = epsilon_constraint(instance)
-    # domiantedpoints = domiantedpoints[0:-1]
-    # print(domiantedpoints)
+    domiantedpoints = epsilon_constraint(instance)
+    domiantedpoints = domiantedpoints[0:-1]
+    print(domiantedpoints)
     print("--- %s seconds ---" % (time.time() - start_time))
 
     plt.scatter(*zip(*domiantedpoints))
     plt.show()
+    
+    # M = Model()
+    # vl = 2401.5
+    # lb = 0
+    # M = multi_obj_model(instance, Model(), vl, lb)
+    # Z = M.getVariable("Z")
+    # Y = Z.slice([1,1] , [instance.dim+1, instance.dim+1])
+    
+    
+    # M.setLogHandler(sys.stdout)
+    # M.solve()
+    
+    # print(M.primalObjValue())
+    
+    # permutation = solution2permutation(Y.level()[0:instance.dim], instance.n, 1, instance.pairs)
+    # Y_int = permutation2Y([j for i,j in permutation], instance, 1)
+    # print(instance.K-(sum(instance.cost_matrix1.flatten()*Y_int.flatten())))
+    # print(sum(instance.cost_matrix2.flatten()*Y_int.flatten()))
+    
 
 if __name__ == "__main__":
     main(sys.argv[1:])
