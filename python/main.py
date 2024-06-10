@@ -70,9 +70,9 @@ def argument_parser(argv):
         args = parser.parse_args()
 
         if args.ifile:
-            inputfile = "code/instance/"+args.ifile
+            inputfile = "instance/"+args.ifile
         if args.jfile:
-            inputfile2 = "code/instance/"+args.jfile
+            inputfile2 = "instance/"+args.jfile
         #if args.generate:
             #generate_instance(int(args.generate))
             #inputfile = "instance/instance.txt"
