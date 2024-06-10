@@ -844,7 +844,7 @@ def main(argv):
     print("Mean time:", np.mean(time_list))
 
     plt.scatter(*zip(*domiantedpoints))
-    plot_name = "./plots/plot_"+inputfile.split("/")[-1]+"_"+inputfile2.split("/")[-1]+".pdf"
+    plot_name = "plots/plot_"+inputfile.split("/")[-1]+"_"+inputfile2.split("/")[-1]+".pdf"
     plt.savefig(plot_name)
     #plt.show()
     
