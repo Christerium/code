@@ -1,5 +1,5 @@
 #import cvxpy as cp                  # For optimization
-import glob
+#import glob
 import numpy as np                  # For matrix operations
 from scipy.special import comb      # For binomnial coefficient
 import mosek                        # Solver
@@ -8,10 +8,10 @@ import sys, getopt                  # Command line arguments
 from typing import NamedTuple       # C-like structure, but immutable (not changeable after creation)
 import argparse                     # For command line arguments
 from mosek.fusion import *          # For optimization
-import os
+#import os
 import matplotlib.pyplot as plt
 import math
-import random
+#import random
 
 EPSILON = 0.5
 MAX_INT = 999999999
@@ -57,27 +57,32 @@ class Instance(NamedTuple):
     
 # Parse the command line arguments
 def argument_parser(argv):
-    inputfile = ''
+    inputfile1 = ''
+    inputfile2 = ''
 
     try:
         parser = argparse.ArgumentParser()
-        group = parser.add_mutually_exclusive_group()
-        group.add_argument("-i", "--ifile", help="input file")
-        group.add_argument("-g", "--generate", help="generate instance", type=int)
+        #group = parser.add_mutually_exclusive_group()
+        parser.add_argument("-i", "--ifile", help="input file1")
+        parser.add_argument("-j", "--jfile", help="input file2")
+        #group.add_argument("-g", "--generate", help="generate instance", type=int)
         
         args = parser.parse_args()
 
         if args.ifile:
             inputfile = "instance/"+args.ifile
-        if args.generate:
-            generate_instance(int(args.generate))
-            inputfile = "instance/instance.txt"
+        if args.jfile:
+            inputfile2 = "instance/"+args.jfile
+        #if args.generate:
+            #generate_instance(int(args.generate))
+            #inputfile = "instance/instance.txt"
     except getopt.GetoptError:
-        print('main.py -i <inputfile> -o <outputfile> -g <instance size>')
+        print('main.py -i <inputfile> -j <inputfile> -o <outputfile>')
         sys.exit(2)
-    print('Input file is "', inputfile)
+    print('Input file 1 is "', inputfile)
+    print('Input file 2 is "', inputfile2)
 
-    return inputfile
+    return inputfile, inputfile2
 
 # Generate a instance file with n elements
 def generate_instance(n):
@@ -89,8 +94,8 @@ def generate_instance(n):
             file.write("l {} \n".format(np.random.randint(1, 10)))
 
 # Read in the instances from the file
-def read_instance(file_path):
-    with open(file_path, 'r') as file:
+def read_instance(instance_file1, instance_file2):
+    with open(instance_file1, 'r') as file:
         dim = int(file.readline())
         lengths = [*map(int, file.readline().split(",")),]
         costs = []
@@ -119,7 +124,7 @@ def read_instance(file_path):
     K2 = np.sum(costs2)*np.sum(lengths)/2"""
     
     costs2 = []
-    with open("instance/S8H", 'r') as file:
+    with open(instance_file2, 'r') as file:
         file.readline()
         file.readline()
         costs2 = []
@@ -814,11 +819,11 @@ def read_cost_vector(file_path):
             
 def main(argv):
     
-    inputfile = argument_parser(argv)
+    inputfile, inputfile2 = argument_parser(argv)
     
     #inputfile = "code/instance/S/S8H"
     
-    instance = read_instance(inputfile)
+    instance = read_instance(inputfile, inputfile2)
     
     
     start_time = time.time()
@@ -827,16 +832,9 @@ def main(argv):
     # solution = bNb(instance, vl, 0)
     # print(solution.obj1, solution.obj2)
     
-    
-    
-    
-    
     # vl = 1941.5
     # branch_and_bound2(instance, vl)
-    
-    
-    
-    
+
     domiantedpoints, time_list = epsilon_constraint(instance)
     domiantedpoints = domiantedpoints[0:-1]
     print(domiantedpoints)
@@ -845,10 +843,12 @@ def main(argv):
     print("Mean time:", np.mean(time_list))
 
     plt.scatter(*zip(*domiantedpoints))
-    plt.show()
+    plot_name = "./plots/plot_"+inputfile.split("/")[-1]+"_"+inputfile2.split("/")[-1]+".pdf"
+    plt.savefig(plot_name)
+    #plt.show()
     
-    plt.plot(time_list)
-    plt.show()
+    #plt.plot(time_list)
+    #plt.show()
 
     # print("##################")
     # M = Model()

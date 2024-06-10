@@ -1,4 +1,4 @@
-#!/home/user/MOSRFLP/code/.venv/bin/python3
+#!/home/user/MOSRFLP/code/.venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys
