@@ -18,13 +18,14 @@ MAX_INT = 999999999
 EPSOPT = 1e-4
  
 class Node():
-    def __init__(self, index, level, lb, ub, constraints, solved):
+    def __init__(self, index, level, lb, ub, constraints, Y, solved):
         self.index = index
         self.level = level
         self.lb = lb
         self.ub = ub
         self.constraints = constraints
         self.solved = solved
+        self.Y = Y
     
     def __str__(self):
         return f"Node {self.index}, level {self.level}, lb {self.lb}, ub {self.ub}, constraints {self.constraints}"
@@ -52,6 +53,7 @@ class Instance(NamedTuple):
     dim: int
     n: int
     K: float
+    K2: float
     
 # Parse the command line arguments
 def argument_parser(argv):
@@ -103,6 +105,8 @@ def read_instance(file_path):
     cost_matrix = define_costmatrix(pairs, costs, lengths)
     K = np.sum(costs)*np.sum(lengths)/2
     
+    # Code for the second objective function / not working with existing instances
+    """
     if os.path.exists("cost_vector_"+str(len(costs))+".txt"):
         costs2 = read_cost_vector("cost_vector_"+str(len(costs))+".txt")
         cost_matrix2 = define_costmatrix(pairs, costs2, lengths)
@@ -112,7 +116,23 @@ def read_instance(file_path):
         costs2 = read_cost_vector("cost_vector_"+str(len(costs))+".txt")
         cost_matrix2 = define_costmatrix(pairs, costs2, lengths)
 
-    return Instance(pairs, lengths, costs, costs2, cost_matrix, cost_matrix2, len(pairs), len(lengths), K)
+    K2 = np.sum(costs2)*np.sum(lengths)/2"""
+    
+    costs2 = []
+    with open("instance/S8H", 'r') as file:
+        file.readline()
+        file.readline()
+        costs2 = []
+        for i in range(0, dim):
+            line = file.readline().split(",")
+            for j in range(0, dim):
+                if i < j:
+                    costs2.append(int(line[j]))
+    
+    cost_matrix2 = define_costmatrix(pairs, costs2, lengths)
+    K2 = np.sum(costs2)*np.sum(lengths)/2
+    
+    return Instance(pairs, lengths, costs, costs2, cost_matrix, cost_matrix2, len(pairs), len(lengths), K, K2)
 
 # Get the index of the element in the matrix
 def get_index(i, j, n):
@@ -239,78 +259,50 @@ def getRank(Y, dim):
     return sum([d[i] > 1e-6 for i in range(dim)])
 
 def multi_obj_model(instance, M, vl, lb):
-    pairs, costs, costs2, lengths = instance.pairs, instance.costs1, instance.costs2, instance.lengths    
+    pairs = instance.pairs
     costs_matrix = instance.cost_matrix1
     cost_matrix_2 = instance.cost_matrix2
     K = instance.K
 
     n = instance.n
     dim =  instance.dim
-    dim2 = int(comb(n, 3))
 
     Z = M.variable("Z", Domain.inPSDCone(dim+1))
     Y = Z.slice([1,1] , [dim+1, dim+1])
-    y = Z.slice([1,0], [1,dim+1])
-    
-    # A2 = np.zeros((dim2, int(dim*dim)))
-    # l = 0
-    # for i,j in pairs:
-    #     for k in range(j+1,n+1):
-    #         ij, ik, jk = get_index(i,j,n), get_index(i,k,n), get_index(j,k,n)
-    #         A2[l][(ij)*dim+jk] = 1
-    #         A2[l][(ij)*dim+ik] = -1
-    #         A2[l][(ik)*dim+jk] = -1
-    #         l += 1
-            
-    # A = Matrix.sparse(A2)
 
     C = Matrix.sparse(costs_matrix)
-    #e = Matrix.dense(np.ones((dim2,1))*-1)
-    #e2 = Matrix.dense(np.ones((3,1)))
-    
+    C2 = Matrix.sparse(cost_matrix_2)
+
     # Objective function
     obj1 = Expr.sub(K, Expr.dot(C, Y))
-    #obj1 = Expr.dot(C, Y)
-    obj2 = Expr.dot(cost_matrix_2, Y)
+    obj2 = Expr.sub(instance.K2, Expr.dot(C2, Y))
     M.objective(ObjectiveSense.Minimize, obj1)
 
-    # Second objective constraint
-    #print("vl", vl)
-    #print("Epsilon", EPSILON)
+    # Second objective constraint / Epsilon constraint
     M.constraint(obj2, Domain.lessThan(vl-EPSILON))
     
-    ## Diagonal equals to 1 constraints
-    M.constraint("diag",Expr.mulDiag(Z, Matrix.eye(dim+1)), Domain.equalsTo(1.0)) # dim+1 constraints
-
     # Diagonal equals to 1 constraints
-    M.constraint("diag",Expr.mulDiag(Y, Matrix.eye(dim)), Domain.equalsTo(1.0))
+    M.constraint("diag",Z.diag(), Domain.equalsTo(np.ones(dim+1))) # dim+1 constraints
 
-    # Betweenes constraints
-    Y = Y.reshape([dim*dim, 1])
-    M.constraint(Expr.mul(A, Y), Domain.equalsTo(e))
-
-    # M constraints (triangle constraints)
-    # T = [[-1, -1, -1],[-1, 1, 1], [1, -1, 1], [1, 1, -1]]
-    # for i in range(0, dim-3):
-    #     for j in range(i+1, dim-2):
-    #         for k in range(j+1, dim-1):
-    #             #print(i,j,k)
-    #             M.constraint(Expr.mul(T, Y.pick([[i,j],[i,k],[j,k]])), Domain.lessThan(1.0))
-    
-    ## Betweenes constraints (not feasible for large instances -> memory problems)
-    # Y = Y.reshape([dim*dim, 1])
-    # M.constraint(Expr.mul(A, Y), Domain.equalsTo(e))    # n over 3 constraints
-
-    for i,j in pairs:
+    ## Betweeness constraints
+    for i,j in pairs: 
         for k in range(j+1,n+1):
-            M.constraint(Expr.sub(Expr.sub(Y.index(get_index(i,j,n), get_index(i,k,n)), Y.index(get_index(i,j,n),get_index(i,k,n))), Y.index(get_index(i,k,n), get_index(j,k,n))), Domain.equalsTo(-1.0))
+            # ij = get_index(i,j,n)
+            # jk = get_index(j,k,n)
+            # ik = get_index(i,k,n)
+            # M.constraint(Expr.sub(Y.index(ij,jk), Expr.sub(Y.index(ij,ik), Y.index(ik,jk))), Domain.equalsTo(-1.0))
+            M.constraint(Expr.sub(Expr.sub(Y.index(get_index(i,j,n), get_index(j,k,n)), Y.index(get_index(i,j,n),get_index(i,k,n))), Y.index(get_index(i,k,n), get_index(j,k,n))), Domain.equalsTo(-1.0))
 
-    # M constraints (triangle constraints)
-    T = [[-1, -1, -1],[-1, 1, 1], [1, -1, 1], [1, 1, -1]]
-    for i,j in pairs:
-        for k in range(j+1,n+1):
-            M.constraint(Expr.mul(T, Z.pick([[i,j],[i,k],[j,k]])), Domain.lessThan(1.0))
-
+    ## Triangel constraints
+    # end_index = int(comb(n, 2))
+    # for i in range(0, end_index):
+    #     for j in range(0+1, end_index):
+    #         for k in range(0+1, end_index):
+    #             M.constraint(Expr.add(Expr.add(Y.index(i,j), Y.index(i,k)), Y.index(j,k)), Domain.greaterThan(-1.0))
+    #             M.constraint(Expr.add(Expr.add(Y.index(i,j), Expr.neg(Y.index(i,k))), Expr.neg(Y.index(j,k))), Domain.greaterThan(-1.0))
+    #             M.constraint(Expr.add(Expr.add(Expr.neg(Y.index(i,j)), Y.index(i,k)), Expr.neg(Y.index(j,k))), Domain.greaterThan(-1.0))
+    #             M.constraint(Expr.add(Expr.add(Expr.neg(Y.index(i,j)), Expr.neg(Y.index(i,k))), Y.index(j,k)), Domain.greaterThan(-1.0))
+            
     return M
  
 def solveNode(node: Node, instance, vl, lb):
@@ -347,13 +339,74 @@ def solveNode(node: Node, instance, vl, lb):
         #print(np.allclose(Y_test, Y_test.T, atol=1e-8))
         #test = instance.K-(sum(instance.cost_matrix1.flatten()*Y.level().flatten()))
         obj1 = instance.K-(sum(instance.cost_matrix1.flatten()*Y_int.flatten()))
-        obj2 = sum(instance.cost_matrix2.flatten()*Y_int.flatten())
+        obj2 = instance.K2 - sum(instance.cost_matrix2.flatten()*Y_int.flatten())
         #test = sum(instance.cost_matrix2.flatten()*Y.level().flatten())
         M.dispose()
         return Solution(True, node.index, node.level, lb, obj1, obj2, permutation, Y_int) 
 
+# Rework of solveNode
+def solveNode2(node, instance, vl, lb):
+    # Initialize the model
+    M = multi_obj_model(instance, Model(), vl, lb)
+    Z = M.getVariable("Z")
+    Y = Z.slice([1,1] , [instance.dim+1, instance.dim+1])
+    
+    # Add the branching constraints to the model
+    if node.constraints:
+        for i,j,k in node.constraints:  
+                M.constraint(Y.index(i,j), Domain.equalsTo(k))
+    
+    # Solve the model
+    M.solve()
+    
+    # Check if the relaxation is primal and dual feasible
+    if M.getProblemStatus() != ProblemStatus.PrimalAndDualFeasible:
+        M.dispose()
+        #print("Relaxation is not primal and dual feasible, returning -1")
+        return -1
+    else:
+        # Return the variable matrix Y
+        #print("Relaxation obj1:", M.primalObjValue())
+        #print("Relaxation obj2:", instance.K2 - sum(instance.cost_matrix2.flatten()*Y.level().flatten()))
+        Y_sol = Y.level().copy()
+        M.dispose()
+        return Y_sol
+
+def heuristic(Y, instance):
+    # Create the permutation
+    R_values = np.zeros((instance.n,instance.n-1))    
+    for i in range(len(instance.pairs)):
+        x=instance.pairs[i][1]-2
+        y=instance.pairs[i][0]-1
+        R_values[y,x] = Y[i]
+        R_values[x+1,y] = -Y[i]
+    
+    p_help = R_values.sum(axis = 1)
+    p_values = list(zip(p_help, range(1, instance.n+1)))
+    p_values.sort(reverse=True)
+    permutation = [j for i,j in p_values]
+    
+    # Create the Y matrix with only 1 and -1
+    Y_help = []
+    for i,j in instance.pairs:
+        if permutation.index(i) < permutation.index(j):
+            Y_help.append(-1)
+        else:
+            Y_help.append(1)
+            
+    Y_int = np.outer(np.array(Y_help),np.array(Y_help).T)
+    
+    # for i,j in instance.pairs:
+    #     for k in range(j+1, instance.n+1):
+    #         if Y_int[get_index(i,j,instance.n), get_index(j,k,instance.n)] - Y_int[get_index(i,j,instance.n), get_index(i,k,instance.n)] - Y_int[get_index(i,j,instance.n), get_index(j,k,instance.n)] != -1:
+    #             print("Constraint violated")
+    
+    return Y_int
+        
+                
+
 def checkIntegerFeasible(solution, vl):
-    if solution.feasible and solution.obj2 <= vl-EPSILON and solution.obj2 >= 0:
+    if solution.feasible and solution.obj2+EPSILON <= vl and solution.obj2 >= 0:
         return True
     else: 
         return False
@@ -365,11 +418,9 @@ def checkOptimal(incumbent, global_ub, global_lb):
         return False
         
 def branching(openNodes, remainingVar):
+    # Sort the openNodes list to get the node with
     openNodes.sort()
     currentNode = openNodes[0]
-    #print("Branching:", [(x.lb, x.index, x.level) for x in openNodes])
-    #print(currentNode)
-    #print(currentNode.level, len(remainingVar))
     if currentNode.level < len(remainingVar):
         
         #i,j = remainingVar.pop(0)
@@ -409,31 +460,33 @@ def updateNode(node, solution, vl):
 def update_bounds(openNodes, global_lb, global_ub):
     sortedNodes = sorted(openNodes)
     
-    #print("Update:", [(x.lb, x.index, x.level) for x in sortedNodes])
+    # Calculate the new lower bound
     betterLB = math.ceil(sortedNodes[0].lb * 2.0) / 2.0
     #print(betterLB, sortedNodes[0].lb)
     global_lb = betterLB
     
+    # Calculate the new upper bound
     for node in openNodes:
         if node.ub < global_ub:
             global_ub = node.ub
+            
     return global_lb, global_ub
             
 def bNb(instance, vl, lb):
     incumbent = Solution(False, -1, -1, 0, MAX_INT, MAX_INT, [], [])
     rootNode = Node(0, 0, 0, MAX_INT, [], False)
     var2branch = initRemainingVar(instance.dim)
-    random.shuffle(var2branch)
-    #print(len(var2branch))
+    #random.shuffle(var2branch)
+    #print(var2branch)
     openNodes = [rootNode]
-    currentSol = solveNode(rootNode, instance, vl)
+    #currentSol = solveNode(rootNode, instance, vl, lb)
     
     global_lb = lb
     global_ub = MAX_INT
     
     start_time = time.time()
     currentSol = solveNode(rootNode, instance, vl, global_lb)
-    #print("--- %s seconds ---" % (time.time() - start_time))
+    print("--- %s seconds ---" % (time.time() - start_time))
     
     if currentSol.feasible:
         if checkIntegerFeasible(currentSol, vl): # True if primal/dual feasible and integer feasible
@@ -448,6 +501,7 @@ def bNb(instance, vl, lb):
         return incumbent
     
     
+    
     # while from here
     while openNodes:
     # Branching
@@ -457,6 +511,7 @@ def bNb(instance, vl, lb):
         node1 = openNodes[-1]
         node2 = openNodes[-2]
         solution1 = solveNode(node1, instance, vl, global_lb)
+        print("Node1:", solution1.obj1, solution1.obj2, node1.index)
         if solution1.feasible:
             updateNode(node1, solution1, vl)
             if checkIntegerFeasible(solution1, vl):
@@ -467,6 +522,7 @@ def bNb(instance, vl, lb):
             openNodes.remove(node1)
             
         solution2 = solveNode(node2, instance, vl, global_lb)
+        print("Node2:", solution2.obj1, solution2.obj2, node2.index)
         if solution2.feasible:
             updateNode(node2, solution2, vl)
             if checkIntegerFeasible(solution2, vl):
@@ -481,6 +537,8 @@ def bNb(instance, vl, lb):
         
         #print("Before pop:",[(x.lb, x.index, x.level) for x in openNodes])
         
+        print([(x.lb, x.index) for x in openNodes])
+        
         openNodes.pop(0)
         #print(solution1.lb, solution2.lb)
         
@@ -493,36 +551,242 @@ def bNb(instance, vl, lb):
         
         # Check if the incumbent is optimal
         if checkOptimal(incumbent, global_ub, global_lb):
+            print("Incumbent is optimal")
             return incumbent      
         
         #print(global_lb, global_ub)
         #print("")
     # Repeat the process    
-    
+        print("Incumbent", incumbent.obj1, incumbent.obj2)
+        print("##########################")
     print("No more nodes to explore. Returning incumbent.", global_lb, global_ub)
     return incumbent 
     
+def calculateObjective(Y, instance, obj):
+    if obj == 1:
+        return instance.K - np.inner(instance.cost_matrix1.flatten(), Y.flatten())
+    else:
+        return instance.K2 - np.inner(instance.cost_matrix2.flatten(), Y.flatten())
+    
+def branch_and_bound2(instance, vl):
+    ## Initialize the tree
+    ## Initialize the incumbent solution
+    incumbent = Solution(False, -1, -1, 0, MAX_INT, MAX_INT, [], [])
+    
+    ## Initialize the root node
+    openNodes = []
+    rootNode = Node(0, 0, 0, MAX_INT, [], [], False)
+    openNodes.append(rootNode)
+    
+    ## Set the global tree bounds
+    global_lb = 0
+    global_ub = MAX_INT
+    global_obj2 = MAX_INT
+    
+    ## Solve the root node of the tree
+    Y = solveNode2(rootNode, instance, vl, global_lb)
+    
+    try:
+        if Y == -1:
+            #print("Root node is infeasible")
+            return (global_lb, global_ub, global_obj2)
+    except:
+        pass
+    
+    heur_sol = heuristic(Y, instance)    
+    
+    """ ## It needs to fulfill the constraints by construction
+    # Check if the heuristic solution computed in the root node is feasible
+    # Check if it violates the betweeness constraints
+    for i,j in instance.pairs:
+        for k in range(j+1,instance.n+1):
+            i_j = get_index(i,j,instance.n)
+            i_k = get_index(i,k,instance.n)
+            j_k = get_index(j,k,instance.n)
+            if heur_sol[i_j, j_k] - heur_sol[i_j, i_k] - heur_sol[i_k, j_k] == 1:
+                print("Constraint violated")
+    
+    # Check if it violates the diagonal constraints
+    if np.array_equal(np.diag(heur_sol), np.ones_like(heur_sol)):
+        print("Diagonal constraint violated")
+    
+    # Check if it violates the rank one constraint
+    if np.linalg.matrix_rank(heur_sol) != 1:
+        print("Rank constraint violated")"""
+    
+    # Update the root node
+    openNodes[0].Y = Y
+    openNodes[0].solved = True
+    openNodes[0].lb = calculateObjective(Y, instance, 1)
+    global_lb = openNodes[0].lb
+    
+    # Check if the heuristic solution is feasible for the second objective function
+    heur_obj2 = calculateObjective(heur_sol, instance, 2)
+    if heur_obj2 <= vl - EPSILON:
+        #print("Heuristic solution is feasible")
+        # Calculate the objective value 1 of the heuristic solution
+        heur_obj1 = calculateObjective(heur_sol, instance, 1)
+        
+        # As root, set the incumbent to the heuristic solution and the bounds to the relaxed solution
+        global_ub = heur_obj1
+        if global_ub - global_lb < EPSILON:
+            #print("Root is optimal")
+            print(global_lb, global_ub, heur_obj2)
+            return (global_lb, global_ub, heur_obj2)
+        incumbent = Solution(True, 0, 0, global_lb, heur_obj1, heur_obj2, [], heur_sol)
+    
+    ## Start with the branching process
+    
+    while openNodes:
+    # Get variable to branch on
+        openNodes.sort()
+        node0 = openNodes[0]
+        Y = node0.Y
+        #print(Y)
+        Y_first = Y[0:instance.dim]
+        mostfrac = most_fractional(Y[0:instance.dim])
+        if mostfrac == -1:
+            #print("None fractional")
+            print(global_lb, global_ub, global_obj2)
+            #return (global_lb, global_ub, global_obj2)
+        else:
+            openNodes = branching2(openNodes, mostfrac)
+            # Pick the last two nodes in the openNodes list
+            node1 = openNodes[-1]
+            node2 = openNodes[-2]
+            
+            # Solve the first node
+            solution1 = solveNode2(node1, instance, vl, global_lb)
+            node1.solved = True
+            node1.Y = solution1
+            #openNodes[-1].solved = True
+            openNodes[-1].Y = solution1
+            try:
+                if solution1 == -1:
+                    #print("Node1 is infeasible")
+                    openNodes.remove(node1)
+            except:
+                # Calculate heuristic solution
+                heur_sol1 = heuristic(solution1, instance)
+                # Check if the solution is feasible for the second objective function
+                lb = calculateObjective(solution1, instance, 1)
+                node1.lb = lb
+                #openNodes[-1].lb = lb
+                obj2 = calculateObjective(heur_sol1, instance, 2)
+                if obj2 <= vl - EPSILON:
+                    # Obj2 is feasible
+                    obj1 = calculateObjective(heur_sol1, instance, 1)
+                    node1.ub = obj1
+                    #openNodes[-1].ub = obj1
+                    if obj1 < incumbent.obj1:
+                        incumbent = Solution(True, node1.index, node1.level, lb, obj1, obj2, [], heur_sol1)
+                        global_obj2 = obj2
+                    
+
+            
+            # Solve the second node
+            solution2 = solveNode2(node2, instance, vl, global_lb)
+            node2.solved = True
+            node2.Y = solution2
+            #openNodes[-2].solved = True
+            #openNodes[-2].Y = solution2
+            try:
+                if solution2 == -1:
+                    #print("Node2 is infeasible")
+                    openNodes.remove(node2)
+            except:
+                # Calculate heuristic solution
+                heur_sol2 = heuristic(solution2, instance)
+                # Check if the solution is feasible for the second objective function
+                lb = calculateObjective(solution2, instance, 1)
+                #openNodes[-2].lb = lb
+                node2.lb = lb
+                obj2 = calculateObjective(heur_sol2, instance, 2)
+                if obj2 <= vl - EPSILON:
+                    # Obj2 is feasible
+                    lb = calculateObjective(solution2, instance, 1)
+                    obj1 = calculateObjective(heur_sol2, instance, 1)
+                    node2.ub = obj1
+                    #openNodes[-2].ub = obj1
+                    if obj1 < incumbent.obj1:
+                        incumbent = Solution(True, node2.index, node2.level, lb, obj1, obj2, [], heur_sol2)
+                        global_obj2 = obj2
+            
+        # Remove the branched node from the openNodes list
+        openNodes.remove(node0)
+        
+        # Update the global bounds and remove nodes that are infeasible by bounds
+        if openNodes:
+            global_lb, global_ub = update_bounds(openNodes, global_lb, global_ub)
+            for node in openNodes:
+                if node.lb > global_ub:
+                    openNodes.remove(node)
+        else:
+            pass
+            #print("No more nodes to explore. Returning incumbent.", global_lb, global_ub)
+            #return (global_lb, global_ub, global_obj2)
+        
+        # Check if the incumbent is optimal
+        if global_ub - global_lb < EPSILON:
+            pass
+            #print("Incumbent is optimal")
+            #return (global_lb, global_ub, global_obj2)
+    
+    #print("No more nodes to explore. Returning incumbent.", incumbent.obj1, incumbent.obj2)
+    return incumbent
+    
+            
+def branching2(openNodes, mostfrac):
+    # Sort the openNodes list to get the node with the lowest lower bound
+    openNodes.sort()
+    # Pick the node with the lowest lower bound
+    currentNode = openNodes[0]
+    # Create two new nodes with the branching constraint
+    constraint1 = currentNode.constraints.copy()
+    constraint1.append((0, mostfrac, -1))
+    constraint2 = currentNode.constraints.copy()
+    constraint2.append((0, mostfrac, 1))
+    node1 = Node(currentNode.index+1, currentNode.level+1, currentNode.lb, currentNode.ub, constraint1, [], False)
+    node2 = Node(currentNode.index+2, currentNode.level+1, currentNode.lb, currentNode.ub, constraint2, [], False)
+    openNodes.append(node1)
+    openNodes.append(node2)
+    return openNodes
+
+def most_fractional(Y):
+    variable = -1
+    distance = 1
+    for i in range(0, len(Y)):
+        if abs(Y[i]) < distance:
+            variable = i
+            distance = abs(Y[i])
+    return variable
+
 def epsilon_constraint(instance):
     # Create a model
     vl = MAX_INT
     dominatedpoints = []
     feasible = True
     lb = 0
+    time_list = []
     
     while feasible == True:
         #print("VL", vl)
-        #feasible, obj1, obj2 = branch_and_bound2(instance, vl)
-        incumbent = bNb(instance, vl, lb)
+        start_time = time.time()
+        incumbent = branch_and_bound2(instance, vl)
+        #incumbent = bNb(instance, vl, lb)
         feasible = incumbent.feasible
         obj1 = incumbent.obj1
         obj2 = incumbent.obj2
         vl = obj2
-        lb = obj1
+        #lb = obj1
         dominatedpoints.append((obj1, obj2))
         print(obj1, obj2)
+        timer = time.time() - start_time
+        time_list.append(timer)
+        print("--- %s seconds ---" % (timer))
 
         print("")
-    return dominatedpoints
+    return dominatedpoints, time_list
 
 
     # print solution
@@ -552,41 +816,66 @@ def main(argv):
     
     inputfile = argument_parser(argv)
     
-    inputfile = "code/instance/S/S8H"
+    #inputfile = "code/instance/S/S8H"
     
     instance = read_instance(inputfile)
     
+    
     start_time = time.time()
     
-    # vl = 9999999
-    # solution = bNb(instance, vl)
+    # vl = 2012.5
+    # solution = bNb(instance, vl, 0)
     # print(solution.obj1, solution.obj2)
     
-    domiantedpoints = epsilon_constraint(instance)
+    
+    
+    
+    
+    # vl = 1941.5
+    # branch_and_bound2(instance, vl)
+    
+    
+    
+    
+    domiantedpoints, time_list = epsilon_constraint(instance)
     domiantedpoints = domiantedpoints[0:-1]
     print(domiantedpoints)
     print("--- %s seconds ---" % (time.time() - start_time))
 
+    print("Mean time:", np.mean(time_list))
+
     plt.scatter(*zip(*domiantedpoints))
     plt.show()
     
+    plt.plot(time_list)
+    plt.show()
+
+    # print("##################")
     # M = Model()
-    # vl = 2401.5
+    # vl = 2012.5
     # lb = 0
     # M = multi_obj_model(instance, Model(), vl, lb)
+    
+    
     # Z = M.getVariable("Z")
     # Y = Z.slice([1,1] , [instance.dim+1, instance.dim+1])
     
+    # #M.constraint(Y.index(0,18), Domain.equalsTo(-1))
+    # #M.constraint(Y.index(0,25), Domain.equalsTo(1))
     
-    # M.setLogHandler(sys.stdout)
+    
+    # #M.setLogHandler(sys.stdout)
     # M.solve()
     
-    # print(M.primalObjValue())
+    # print("SDP-Objective 1:", M.primalObjValue())
     
     # permutation = solution2permutation(Y.level()[0:instance.dim], instance.n, 1, instance.pairs)
+    # #print(Y.level()[0:instance.dim])
     # Y_int = permutation2Y([j for i,j in permutation], instance, 1)
-    # print(instance.K-(sum(instance.cost_matrix1.flatten()*Y_int.flatten())))
-    # print(sum(instance.cost_matrix2.flatten()*Y_int.flatten()))
+    # #print(Y_int[0])
+    # print("Objective 1:", instance.K-(sum(instance.cost_matrix1.flatten()*Y_int.flatten())))
+    # print("Objective 2:", instance.K2 - sum(instance.cost_matrix2.flatten()*Y_int.flatten()))
+    # print("Obj2:", instance.K2 - sum(instance.cost_matrix2.flatten()*Y.level().flatten()))
     
 
 if __name__ == "__main__":

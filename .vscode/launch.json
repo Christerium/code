@@ -22,7 +22,7 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "args" : ["-i", "S/S11"]
+            "args" : ["-i", "S8"]
         }
     ]
 }
