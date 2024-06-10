@@ -70,9 +70,9 @@ def argument_parser(argv):
         args = parser.parse_args()
 
         if args.ifile:
-            inputfile = "instance/"+args.ifile
+            inputfile = "code/instance/"+args.ifile
         if args.jfile:
-            inputfile2 = "instance/"+args.jfile
+            inputfile2 = "code/instance/"+args.jfile
         #if args.generate:
             #generate_instance(int(args.generate))
             #inputfile = "instance/instance.txt"
@@ -362,6 +362,7 @@ def solveNode2(node, instance, vl, lb):
                 M.constraint(Y.index(i,j), Domain.equalsTo(k))
     
     # Solve the model
+    #M.setLogHandler(sys.stdout)
     M.solve()
     
     # Check if the relaxation is primal and dual feasible
