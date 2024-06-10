@@ -273,10 +273,8 @@ def multi_obj_model(instance, M, vl, lb):
     #obj1 = Expr.dot(C, Y)
     obj2 = Expr.dot(cost_matrix_2, Y)
     M.objective(ObjectiveSense.Minimize, obj1)
-    
-    #M.constraint("lb", obj1, Domain.greaterThan(lb))
 
-    ## Second objective constraint
+    # Second objective constraint
     #print("vl", vl)
     #print("Epsilon", EPSILON)
     M.constraint(obj2, Domain.lessThan(vl-EPSILON))
@@ -284,6 +282,14 @@ def multi_obj_model(instance, M, vl, lb):
     ## Diagonal equals to 1 constraints
     M.constraint("diag",Expr.mulDiag(Z, Matrix.eye(dim+1)), Domain.equalsTo(1.0)) # dim+1 constraints
 
+    # Diagonal equals to 1 constraints
+    M.constraint("diag",Expr.mulDiag(Y, Matrix.eye(dim)), Domain.equalsTo(1.0))
+
+    # Betweenes constraints
+    Y = Y.reshape([dim*dim, 1])
+    M.constraint(Expr.mul(A, Y), Domain.equalsTo(e))
+
+    # M constraints (triangle constraints)
     # T = [[-1, -1, -1],[-1, 1, 1], [1, -1, 1], [1, 1, -1]]
     # for i in range(0, dim-3):
     #     for j in range(i+1, dim-2):
@@ -420,6 +426,7 @@ def bNb(instance, vl, lb):
     random.shuffle(var2branch)
     #print(len(var2branch))
     openNodes = [rootNode]
+    currentSol = solveNode(rootNode, instance, vl)
     
     global_lb = lb
     global_ub = MAX_INT
@@ -433,8 +440,7 @@ def bNb(instance, vl, lb):
             incumbent = currentSol
             global_ub = currentSol.obj1
             rootNode.ub = currentSol.obj1
-        #global_lb = currentSol.lb
-        global_lb = math.ceil((currentSol.lb-EPSOPT) * 2.0) / 2.0
+        global_lb = currentSol.lb
         rootNode.lb = currentSol.lb   
     
     if checkOptimal(incumbent, global_ub, global_lb):
@@ -456,7 +462,7 @@ def bNb(instance, vl, lb):
             if checkIntegerFeasible(solution1, vl):
                 if solution1.obj1 < incumbent.obj1:
                     incumbent = solution1
-                #incumbent = solution1
+                incumbent = solution1
         else:
             openNodes.remove(node1)
             
@@ -482,10 +488,8 @@ def bNb(instance, vl, lb):
         if openNodes:
             global_lb, global_ub = update_bounds(openNodes, global_lb, global_ub)
             for node in openNodes:
-                if node.lb + EPSOPT > incumbent.obj1:
+                if node.lb > global_ub:
                     openNodes.remove(node)
-                elif node.lb - EPSOPT > global_ub:
-                        openNodes.remove(node)
         
         # Check if the incumbent is optimal
         if checkOptimal(incumbent, global_ub, global_lb):
@@ -548,16 +552,15 @@ def main(argv):
     
     inputfile = argument_parser(argv)
     
-    #inputfile = "code/instance/S/S11"
+    inputfile = "code/instance/S/S8H"
     
     instance = read_instance(inputfile)
     
     start_time = time.time()
     
-    # vl = 999999
-    # solution = bNb(instance, vl, 0)
+    # vl = 9999999
+    # solution = bNb(instance, vl)
     # print(solution.obj1, solution.obj2)
-    #S11 (without triangle 1773 sec)
     
     domiantedpoints = epsilon_constraint(instance)
     domiantedpoints = domiantedpoints[0:-1]
