@@ -1,0 +1,9 @@
+Input file 1 is instance/H15
+Input file 2 is instance/SRFLP15
+
+Total solver time: 35.8976514339447 seconds
+Total bNb time: 1.0404977798461914 seconds
+Number of nodes processed: 15
+Total time: 36.93818020820618 seconds
+Objective1: 33220.0, Objective2: 40300.0 
+

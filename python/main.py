@@ -12,11 +12,25 @@ from mosek.fusion import *                 # For optimization
 import matplotlib.pyplot as plt
 import math
 import mosek.fusion.pythonic
-#import random
+import random
 
-EPSILON = 0.5
+EPSILON = 1
 MAX_INT = 999999999
 EPSOPT = 1e-4
+ 
+class Logger:
+ 
+    def __init__(self, filename):
+        self.console = sys.stdout
+        self.file = open(filename, 'w')
+ 
+    def write(self, message):
+        self.console.write(message)
+        self.file.write(message)
+ 
+    def flush(self):
+        self.console.flush()
+        self.file.flush()
  
 class Node():
     def __init__(self, index, level, lb, ub, constraints, Y, solved):
@@ -82,9 +96,6 @@ def argument_parser(argv):
     except getopt.GetoptError:
         print('main.py -i <inputfile> -j <inputfile> -o <outputfile>')
         sys.exit(2)
-    print('Input file 1 is "', inputfile)
-    print('Input file 2 is "', inputfile2)
-    print("")
 
     return inputfile, inputfile2
 
@@ -272,6 +283,7 @@ def multi_obj_model(instance, M, vl, lb):
     costs_matrix = instance.cost_matrix1
     cost_matrix_2 = instance.cost_matrix2
     K = instance.K
+    K2 = instance.K2
 
     n = instance.n
     dim =  instance.dim
@@ -284,19 +296,33 @@ def multi_obj_model(instance, M, vl, lb):
 
     # Objective function
     obj1 = Expr.sub(K, Expr.dot(C, Y))
-    obj2 = Expr.sub(instance.K2, Expr.dot(C2, Y))
+    obj2 = Expr.sub(K2, Expr.dot(C2, Y))
     M.objective(ObjectiveSense.Minimize, obj1)
 
     # Second objective constraint / Epsilon constraint
     M.constraint(obj2, Domain.lessThan(vl-EPSILON))
     
     # Diagonal equals to 1 constraints
-    M.constraint("diag",Z.diag(), Domain.equalsTo(np.ones(dim+1))) # dim+1 constraints
+    M.constraint("diag",Z.diag(), Domain.equalsTo(np.ones(dim+1))) # dim+1 constraints -> n over 2 + 1 constraints
 
-    ## Betweeness constraints
+    ## Betweeness constraints / 3-cycle constraints with vectorization -> way faster -> n over 3 constraints
+    express = []
+    A = Matrix.dense([[1, -1, -1]])
     for i,j in pairs: 
         for k in range(j+1,n+1):
-            M.constraint(Expr.sub(Expr.sub(Y.index(get_index(i,j,n), get_index(j,k,n)), Y.index(get_index(i,j,n),get_index(i,k,n))), Y.index(get_index(i,k,n), get_index(j,k,n))), Domain.equalsTo(-1.0))
+            ij = get_index(i,j,n)
+            jk = get_index(j,k,n)
+            ik = get_index(i,k,n)
+            express.append(Expr.dot(A, Y.pick([[ij,jk], [ij,ik], [ik,jk]])))
+    M.constraint("3-cycle", Expr.vstack(express), Domain.equalsTo(-1))
+    
+    #M.constraint("Symmetry", Y[0,0], Domain.equalsTo(1.0))
+
+    
+    ## Betweeness constraints
+    # for i,j in pairs: 
+    #     for k in range(j+1,n+1):
+    #         M.constraint(Expr.sub(Expr.sub(Y.index(get_index(i,j,n), get_index(j,k,n)), Y.index(get_index(i,j,n),get_index(i,k,n))), Y.index(get_index(i,k,n), get_index(j,k,n))), Domain.equalsTo(-1.0))
 
     # Triangel constraints
     # A = np.array([[1,1,1],[1,-1,-1],[-1,1,-1],[-1,-1,1]])
@@ -347,22 +373,91 @@ def solveNode(node: Node, instance, vl, lb):
         M.dispose()
         return Solution(True, node.index, node.level, lb, obj1, obj2, permutation, Y_int) 
 
-# Rework of solveNode
 def solveNode2(node, instance, vl, lb):
-    # Initialize the model
+    ## Initialize the model
     M = multi_obj_model(instance, Model(), vl, lb)
     Z = M.getVariable("Z")
     Y = Z.slice([1,1] , [instance.dim+1, instance.dim+1])
     
-    # Add the branching constraints to the model
-    if node.constraints:
-        for i,j,k in node.constraints:  
-                M.constraint(Y.index(i,j), Domain.equalsTo(k))
-    
-    # Solve the model
-    #M.setLogHandler(sys.stdout)
+    ## Add the branching constraints to the model
+    if node.constraints:  
+        M.constraint(Y.pick([[i,j] for i,j,k in node.constraints]), Domain.equalsTo([k for i,j,k in node.constraints]))
+
+    ## Solve the model
+    #start_time = time.time()
     M.solve()
-        
+    # try:
+    #     print("Without triangle:", M.primalObjValue())
+    # except:
+    #     pass
+    
+    ## Commands to get a single constraint of a stack of constraints and the primal value of the constraint
+    #print(M.getConstraint("3-cycle").index([10]).remove())
+     
+    # print(constraint_help.index([0]).level())
+    
+    #print("---Relax %s seconds ---" % (time.time() - start_time))
+    
+    # Code for the separation of the triangle constraints TODO needs further improvement 
+    # if M.getProblemStatus() == ProblemStatus.PrimalAndDualFeasible:
+    #     ## Get the triangle constraints
+    #     T = Matrix.dense([[1,1,1],[1,-1,-1],[-1,1,-1],[-1,-1,1]])
+    #     triangle = separate_triangle(Y.level(), instance, 0)
+    #     #triangle.sort(key=lambda x: x[4])
+    #     #variables = Var.hstack([Y.pick([[i,j], [i,k], [j,k]]) for i,j,k,row,result in triangle[0:min(100, len(triangle))]])
+    #     variables = Var.hstack([Y.pick([[i,j], [i,k], [j,k]]) for i,j,k,row,result in triangle])
+    #     M.constraint("Triangle", Expr.mul(T, variables), Domain.greaterThan(-1.0))
+    #     #count = 0
+    #     # for i,j,k,row,result in triangle[0:min(400, len(triangle))]:
+    #     #     count += 1
+    #     #     #print(type([Y.index(i,j), Y.index(i,k), Y.index(j,k)]))
+    #     #     M.constraint(Expr.add(Expr.add(row[0]*Y.index(i,j), row[1]*Y.index(i,k)), row[2]*Y.index(j,k)), Domain.greaterThan(-1.0))
+    #     # #print("Number of constraints added:", count)
+    #     #start_time = time.time()
+    #     M.solve()
+    #     #print("---Triangle %s seconds ---" % (time.time() - start_time))
+    #     try:
+    #         const_values = np.array(M.getConstraint("Triangle").level())
+    #         #print(f"{np.count_nonzero(const_values <= -1 + EPSOPT)} tight of {len(const_values)} constraints")
+            
+    #     except:
+    #         pass
+            
+    ## Check if the relaxation is primal and dual feasible
+    if M.getProblemStatus() != ProblemStatus.PrimalAndDualFeasible:
+        M.dispose()
+        return Solution(False, node.index, node.level, 0, MAX_INT, MAX_INT, [], [])
+    else:
+        # Return the solution
+        Y_sol = Y.level().copy()
+        relax_sol = M.primalObjValue()
+        M.dispose()
+        return Solution(True, node.index, node.level, relax_sol, MAX_INT, MAX_INT, [], Y_sol)
+
+## Solve the root node with the separation of the triangle constraints
+def solveRootSep(node, instance, vl, lb, constraints, previous_solution):
+    ## Initialize the model
+    M = multi_obj_model(instance, Model(), vl, lb)
+    Z = M.getVariable("Z")
+    Y = Z.slice([1,1] , [instance.dim+1, instance.dim+1])
+    
+    ## Solve the model
+    #start_time = time.time()
+    M.solve()
+    #print(M.getSolverIntInfo("optNumcon")) # -> Always after the solve, gives the number of constraints in the model
+    #print("---Relax %s seconds ---" % (time.time() - start_time))
+    
+    ## Speparation of the triangle constraints
+    # triangle = separate_triangle(Y.level(), instance, 0)
+    
+    ## solve again
+    
+    ## While num_of_tight < num_of_constraints
+    ## Check which constraints are tight and remove the others
+    ## Separate for violated constraints
+    ## Add the violated constraints to the model
+    ## Solve the model again
+            
     # Check if the relaxation is primal and dual feasible
     if M.getProblemStatus() != ProblemStatus.PrimalAndDualFeasible:
         M.dispose()
@@ -374,32 +469,80 @@ def solveNode2(node, instance, vl, lb):
         M.dispose()
         return Solution(True, node.index, node.level, relax_sol, MAX_INT, MAX_INT, [], Y_sol)
 
-def heuristic(Y, instance):
-    # Create the permutation
-    R_values = np.zeros((instance.n,instance.n-1))    
-    for i in range(len(instance.pairs)):
-        x=instance.pairs[i][1]-2
-        y=instance.pairs[i][0]-1
-        R_values[y,x] = Y[i]
-        R_values[x+1,y] = -Y[i]
+
+def heuristic(Y, instance, vl):
+    Y_shaped = Y.reshape(instance.dim, instance.dim)
+    Y_int_opt = []
+    Y_int_obj = MAX_INT
     
-    # Sort the permutation
-    p_help = R_values.sum(axis = 1)
-    p_values = list(zip(p_help, range(1, instance.n+1)))
-    p_values.sort(reverse=True)
-    permutation = [j for i,j in p_values]
-    
-    # Create the Y matrix with only 1 and -1 from the permutation
-    Y_help = []
-    for i,j in instance.pairs:
-        if permutation.index(i) < permutation.index(j):
-            Y_help.append(-1)
+    for i in range(0, instance.dim):
+        
+        omega_values = []
+        for k in range(1,instance.n+1):
+            omega = (instance.n+1)/2
+            for l in range(1, instance.n+1):
+                if k == l:
+                    continue
+                if k > l:
+                    omega -= Y[get_index(l,k,instance.n)]/2
+                elif k < l:
+                    omega += Y[get_index(k,l,instance.n)]/2
+            omega_values.append(omega)
+        permutation_helper = list(zip(omega_values, range(1, instance.n+1)))
+        permutation_helper.sort(reverse=True)
+        permutation = [j for i,j in permutation_helper]
+        
+        Y_help = []
+        for i,j in instance.pairs:
+            if permutation.index(i) < permutation.index(j):
+                Y_help.append(-1)
+            else:
+                Y_help.append(1)
+                
+        Y_int = np.outer(np.array(Y_help),np.array(Y_help).T)
+        
+        if calculateObjective(Y_int, instance, 2) <= vl:
+            if calculateObjective(Y_int, instance, 1) < Y_int_obj:
+                Y_int_obj = calculateObjective(Y_int, instance, 1)
+                Y_int_opt = Y_int
         else:
-            Y_help.append(1)
+            if calculateObjective(Y_int, instance, 1) < Y_int_obj:
+                Y_int_obj = calculateObjective(Y_int, instance, 1)
+                Y_int_opt = Y_int
+                
+    return Y_int_opt
             
-    Y_int = np.outer(np.array(Y_help),np.array(Y_help).T)
+        
+        
+        
+    ## OLD
+    # # Create the permutation
+    # R_values = np.zeros((instance.n,instance.n-1))    
+    # for i in range(len(instance.pairs)):
+    #     x=instance.pairs[i][1]-2
+    #     y=instance.pairs[i][0]-1
+    #     R_values[y,x] = Y[i]
+    #     R_values[x+1,y] = -Y[i]
     
-    return Y_int
+    # # Sort the permutation
+    # p_help = R_values.sum(axis = 1)
+    # p_values = list(zip(p_help, range(1, instance.n+1)))
+    # p_values.sort(reverse=True)
+    # permutation = [j for i,j in p_values]
+
+    # Create the Y matrix with only 1 and -1 from the permutation
+    # Y_help = []
+    # for i,j in instance.pairs:
+    #     if permutation.index(i) < permutation.index(j):
+    #         Y_help.append(-1)
+    #     else:
+    #         Y_help.append(1)
+            
+    # Y_int = np.outer(np.array(Y_help),np.array(Y_help).T)
+    
+    
+    #return Y_int
+
         
 def checkIntegerFeasible(solution, vl):
     if solution.feasible and solution.obj2+EPSILON <= vl and solution.obj2 >= 0:
@@ -577,13 +720,15 @@ def branch_and_bound2(instance, vl):
     solver_time = []
     
     ## Initialize the root node
-    openNodes = [Node(0, 0, 0, MAX_INT, [], False, [])]
+    openNodes = [Node(index=0, level=0, lb=0, ub=MAX_INT, constraints=[], solved=False, Y=[])]
     rootNode = openNodes[0]
     
     ## Set the global tree bounds
     global_lb = 0
     global_ub = MAX_INT
     global_obj2 = MAX_INT
+    
+    number_of_nodes = 1
     
     ## Solve the root node of the tree
     start_time = time.time()
@@ -603,7 +748,8 @@ def branch_and_bound2(instance, vl):
         # TODO In general, try to only have a openNodes list, nodes and solution, maybe a processed nodes list
         
         ## Calculate the heuristic solution of the root node and the objective values
-        heur_Y = heuristic(root_sol.Y, instance) 
+        #heur_Y = heuristic(root_sol.Y, instance)
+        heur_Y = heuristic(root_sol.Y, instance,vl) 
         obj1 = calculateObjective(heur_Y, instance, 1)
         obj2 = calculateObjective(heur_Y, instance, 2)
         
@@ -633,6 +779,7 @@ def branch_and_bound2(instance, vl):
             
             ## Process the nodes
             for node in nodesToProcess:
+                number_of_nodes += 1
                 solver_start = time.time()
                 solution = solveNode2(node, instance, vl, global_lb)
                 solver_time.append(time.time() - solver_start)
@@ -643,7 +790,8 @@ def branch_and_bound2(instance, vl):
                 if not solution.feasible:
                     openNodes.remove(node)
                 else:
-                    heurSol = heuristic(solution.Y, instance)
+                    #heurSol = heuristic(solution.Y, instance)
+                    heurSol = heuristic(solution.Y, instance, vl)
                     obj1 = calculateObjective(heurSol, instance, 1)
                     obj2 = calculateObjective(heurSol, instance, 2)
                     if obj2 <= vl - EPSILON:
@@ -666,11 +814,14 @@ def branch_and_bound2(instance, vl):
             if global_ub - global_lb < EPSILON:
                 break
             
+            #print("Gap", global_ub - global_lb)
+            
     print("Total solver time: %s seconds" % (sum(solver_time)))
     print("Total bNb time: %s seconds" % (time.time() - bNb_time - sum(solver_time)))
-    return incumbent
+    print("Number of nodes processed:", number_of_nodes)
     
-            
+    return incumbent
+          
 def branching2(openNodes, branchNode, mostfrac):
     # Create two new nodes with the branching constraint
     constraint1 = branchNode.constraints.copy()
@@ -726,7 +877,7 @@ def permutation2Y(permutation, instance, switch):
             Y_help.append(1*switch)
     Y = np.outer(np.array(Y_help),np.array(Y_help).T)
     return Y
-    
+  
 def generate_cost_vector(n):
     print(n)
     costs = [np.random.randint(1, 10) for i in range(0,n)]
@@ -737,8 +888,7 @@ def read_cost_vector(file_path):
     with open(file_path, 'r') as file:
         costs = [*map(int, file.readline().split(" ")),]
     return costs
-            
-            
+                        
 def get_branching_node(openNodes):
     openNodes.sort()
     return openNodes[0]
@@ -747,10 +897,66 @@ def get_branching_variable(node, instance):
     #print(node.Y)
     return most_fractional(node.Y[0:instance.dim])
     
-
+def separate_triangle(Y, instance, number):
+    Y_reshape = Y.reshape([instance.dim,instance.dim])
+    A = np.array([[1,1,1],[1,-1,-1],[-1,1,-1],[-1,-1,1]])
+    count = 0
+    triangle_constraints = []
+    # for i in range(0, instance.dim):
+    #     for j in range(i+1, instance.dim):
+    #         if Y_reshape[i,j] > 1-EPSOPT:
+    #             rows = A[2:4]
+    #         elif Y_reshape[i,j] < -1+EPSOPT:
+    #             rows = A[0:2]
+    #         else:
+    #             rows = A[0:4]
+    #         for k in range(j+1, instance.dim):
+    #             for row in rows:
+    #                 result = np.inner(row, [Y_reshape[i,j], Y_reshape[i,k], Y_reshape[j,k]])
+    #                 if result + EPSOPT < -1:
+    #                     count += 1
+    #                     triangle_constraints.append((i,j,k,row,result))
+    #                     if count == number:
+    #                         return triangle_constraints  
+    #print("In separation loop")  
+    while count < number:               
+        for pairOne in instance.pairs:
+            for pairTwo in instance.pairs[1:]:
+                for pairThree in instance.pairs[2:]:
+                    i,j = pairOne
+                    k,l = pairTwo
+                    m,n = pairThree
+                    if i < j and j < k:
+                        continue
+                    else:
+                        for rows in A:
+                            p1 = get_index(i,j,instance.n)
+                            p2 = get_index(k,l,instance.n)
+                            p3 = get_index(m,n,instance.n)
+                            result = np.inner(rows, [Y_reshape[p1, p2], Y_reshape[p1, p3], Y_reshape[p2, p3]])
+                            #print(result)
+                            if result < -1:
+                                count += 1
+                                triangle_constraints.append((p1,p2,p3,rows,result)) 
+    triangle_constraints.sort(key=lambda x: x[4])
+    #print("Number of violated triangles:", count)
+    #print("Out of separation loop")
+    return triangle_constraints
+        
 def main(argv):
     ## Read the arguments
     inputfile, inputfile2 = argument_parser(argv)
+      
+    ## Set the path to the output file
+    output_file = "plots/"+inputfile.split("/")[-1]+"_"+inputfile2.split("/")[-1]+".txt"
+    
+    ## Set the standard output to the output file and console
+    sys.stdout = Logger(output_file)
+    
+    ## Print the names of the input files
+    print('Input file 1 is', inputfile)
+    print('Input file 2 is', inputfile2)
+    print("")
     
     ## Read the instance
     instance = read_instance(inputfile, inputfile2)

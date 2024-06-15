@@ -1,31 +1,13 @@
 import mosek
 from   mosek.fusion import *
+import numpy as np
 
 def main():
-    with Model("sdo1") as M:
-        
-        # Setting up the variables
-        X = M.variable("X", Domain.inPSDCone(3))
-        #x = M.variable("x", Domain.inQCone(3))
-
-        # Setting up constant coefficient matrices
-        C  = Matrix.dense ( [[2.,1.,0.],[1.,2.,1.],[0.,1.,2.]] )
-        #A1 = Matrix.eye(3)
-        #A2 = Matrix.ones(3,3)
-
-        # Objective
-        M.objective(ObjectiveSense.Minimize, Expr.dot(C, X))
-
-        # Constraints
-        #M.constraint("c1", Expr.add(Expr.dot(A1, X), x.index(0)), Domain.equalsTo(1.0))
-        #M.constraint("c2", Expr.add(Expr.dot(A2, X), Expr.sum(x.slice(1,3))), Domain.equalsTo(0.5))
-
-        M.solve()
-
-        M.writeTask("test2.ptf")
-
-        print(X.level())
-        #print(x.level())
+    np_array1 = np.array([[1,2,3],[4,5,6],[7,8,9]])
+    np_array2 = np.array([[1,2,3],[4,5,6],[7,8,9]])
+    np_array3 = np.array([[1,2,3],[4,5,6],[7,8,9]])
+    print(f"{np_array1[1,2]} - {np_array2[2,2]} - {np_array3[0,2]}")
+    
 
     
 if __name__ == "__main__":
