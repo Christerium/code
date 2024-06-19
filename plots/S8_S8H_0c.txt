@@ -1,0 +1,151 @@
+Input file 1 is instance/S8
+Input file 2 is instance/S8H
+
+Out of while loop - Root
+Total solver time: 0.1207723617553711 seconds
+Total bNb time: 0.010427236557006836 seconds
+Number of nodes processed: 5
+Total time: 0.13121747970581055 seconds
+Objective1: 801.0, Objective2: 2060.5 
+
+Out of while loop - Root
+Total solver time: 0.3286714553833008 seconds
+Total bNb time: 0.025276899337768555 seconds
+Number of nodes processed: 13
+Total time: 0.35396695137023926 seconds
+Objective1: 805.0, Objective2: 1941.5 
+
+Out of while loop - Root
+Total solver time: 0.3729884624481201 seconds
+Total bNb time: 0.024010419845581055 seconds
+Number of nodes processed: 13
+Total time: 0.3970186710357666 seconds
+Objective1: 813.0, Objective2: 1925.5 
+
+Out of while loop - Root
+Total solver time: 0.7107627391815186 seconds
+Total bNb time: 0.04796767234802246 seconds
+Number of nodes processed: 25
+Total time: 0.7587504386901855 seconds
+Objective1: 825.0, Objective2: 1917.5 
+
+Out of while loop - Root
+Total solver time: 0.6417722702026367 seconds
+Total bNb time: 0.04709148406982422 seconds
+Number of nodes processed: 25
+Total time: 0.6888823509216309 seconds
+Objective1: 828.0, Objective2: 1913.5 
+
+Out of while loop - Root
+Total solver time: 0.8439624309539795 seconds
+Total bNb time: 0.0598604679107666 seconds
+Number of nodes processed: 33
+Total time: 0.9038455486297607 seconds
+Objective1: 834.0, Objective2: 1890.5 
+
+Out of while loop - Root
+Total solver time: 1.0514750480651855 seconds
+Total bNb time: 0.07234621047973633 seconds
+Number of nodes processed: 39
+Total time: 1.1238486766815186 seconds
+Objective1: 854.0, Objective2: 1880.5 
+
+Out of while loop - Root
+Total solver time: 1.1763184070587158 seconds
+Total bNb time: 0.07071495056152344 seconds
+Number of nodes processed: 37
+Total time: 1.2471327781677246 seconds
+Objective1: 863.0, Objective2: 1876.5 
+
+Out of while loop - Root
+Total solver time: 1.3380746841430664 seconds
+Total bNb time: 0.09051299095153809 seconds
+Number of nodes processed: 49
+Total time: 1.4286282062530518 seconds
+Objective1: 870.0, Objective2: 1869.5 
+
+Out of while loop - Root
+Total solver time: 0.787877082824707 seconds
+Total bNb time: 0.04819512367248535 seconds
+Number of nodes processed: 29
+Total time: 0.8360910415649414 seconds
+Objective1: 871.0, Objective2: 1844.5 
+
+Out of while loop - Root
+Total solver time: 0.9609994888305664 seconds
+Total bNb time: 0.06077313423156738 seconds
+Number of nodes processed: 35
+Total time: 1.021791696548462 seconds
+Objective1: 891.0, Objective2: 1841.5 
+
+Out of while loop - Root
+Total solver time: 1.08660888671875 seconds
+Total bNb time: 0.07058238983154297 seconds
+Number of nodes processed: 41
+Total time: 1.157214641571045 seconds
+Objective1: 895.0, Objective2: 1839.5 
+
+Out of while loop - Root
+Total solver time: 0.7521789073944092 seconds
+Total bNb time: 0.04719090461730957 seconds
+Number of nodes processed: 27
+Total time: 0.7993903160095215 seconds
+Objective1: 895.0, Objective2: 1833.5 
+
+Out of while loop - Root
+Total solver time: 1.184427261352539 seconds
+Total bNb time: 0.07026958465576172 seconds
+Number of nodes processed: 45
+Total time: 1.254715919494629 seconds
+Objective1: 921.0, Objective2: 1826.5 
+
+Out of while loop - Root
+Total solver time: 1.4014112949371338 seconds
+Total bNb time: 0.08538818359375 seconds
+Number of nodes processed: 55
+Total time: 1.486828327178955 seconds
+Objective1: 925.0, Objective2: 1818.5 
+
+Out of while loop - Root
+Total solver time: 0.829007625579834 seconds
+Total bNb time: 0.04640555381774902 seconds
+Number of nodes processed: 35
+Total time: 0.8754322528839111 seconds
+Objective1: 943.0, Objective2: 1799.5 
+
+Out of while loop - Root
+Total solver time: 0.7868187427520752 seconds
+Total bNb time: 0.04056048393249512 seconds
+Number of nodes processed: 31
+Total time: 0.827399730682373 seconds
+Objective1: 997.0, Objective2: 1798.5 
+
+Out of while loop - Root
+Total solver time: 0.7392363548278809 seconds
+Total bNb time: 0.03401827812194824 seconds
+Number of nodes processed: 27
+Total time: 0.7732746601104736 seconds
+Objective1: 997.0, Objective2: 1792.5 
+
+Out of while loop - Root
+Total solver time: 0.6663634777069092 seconds
+Total bNb time: 0.03168773651123047 seconds
+Number of nodes processed: 27
+Total time: 0.6980690956115723 seconds
+Objective1: 1023.0, Objective2: 1785.5 
+
+Out of while loop - Root
+Total solver time: 0.46132731437683105 seconds
+Total bNb time: 0.022264480590820312 seconds
+Number of nodes processed: 21
+Total time: 0.4836099147796631 seconds
+Objective1: 1027.0, Objective2: 1777.5 
+
+Out of while loop - Root
+Total time: 0.029740095138549805 seconds
+Objective1: 999999999, Objective2: 999999999 
+
+[(801.0, 2060.5), (805.0, 1941.5), (813.0, 1925.5), (825.0, 1917.5), (828.0, 1913.5), (834.0, 1890.5), (854.0, 1880.5), (863.0, 1876.5), (870.0, 1869.5), (871.0, 1844.5), (891.0, 1841.5), (895.0, 1839.5), (895.0, 1833.5), (921.0, 1826.5), (925.0, 1818.5), (943.0, 1799.5), (997.0, 1798.5), (997.0, 1792.5), (1023.0, 1785.5), (1027.0, 1777.5)]
+
+--- 17.277554273605347 seconds ---
+Mean time: 0.8227070853823707

@@ -1,130 +1,202 @@
 Input file 1 is instance/S8
 Input file 2 is instance/S8H
 
-Total solver time: 0.3355734348297119 seconds
-Total bNb time: 0.004245281219482422 seconds
+'NoneType' object has no attribute 'remove'
+799.417064548901
+Out of while loop - Root
+Total solver time: 0.5304310321807861 seconds
+Total bNb time: 0.007464408874511719 seconds
 Number of nodes processed: 3
-Total time: 0.3398396968841553 seconds
+Total time: 0.5379669666290283 seconds
 Objective1: 801.0, Objective2: 2060.5 
 
-Total solver time: 1.1062240600585938 seconds
-Total bNb time: 0.019696712493896484 seconds
+'NoneType' object has no attribute 'remove'
+799.4166990328638
+800.0674792046565
+800.9978816478924
+800.7899476006789
+800.9259522132738
+801.0004942243512
+Out of while loop - Root
+Total solver time: 2.6012401580810547 seconds
+Total bNb time: 0.028449535369873047 seconds
 Number of nodes processed: 13
-Total time: 1.1259362697601318 seconds
+Total time: 2.6297664642333984 seconds
 Objective1: 805.0, Objective2: 1941.5 
 
-Total solver time: 1.3655223846435547 seconds
-Total bNb time: 0.018680572509765625 seconds
+'NoneType' object has no attribute 'remove'
+805.2135533986383
+805.2314893567659
+805.2976354624524
+805.1933516083534
+805.2208178295024
+805.321038483699
+805.3917488902847
+805.3352803654002
+805.1308151278558
+805.3336117690037
+805.238019287422
+805.3669638070357
+805.3779899959239
+805.0145260699359
+805.2448699723511
+Out of while loop - Root
+Total solver time: 5.579939365386963 seconds
+Total bNb time: 0.02614736557006836 seconds
 Number of nodes processed: 13
-Total time: 1.3842189311981201 seconds
+Total time: 5.6061646938323975 seconds
 Objective1: 813.0, Objective2: 1925.5 
 
-Total solver time: 2.4420063495635986 seconds
-Total bNb time: 0.031275033950805664 seconds
-Number of nodes processed: 23
-Total time: 2.4733123779296875 seconds
+'NoneType' object has no attribute 'remove'
+810.3804578487667
+811.0264587680523
+811.3895765549605
+811.3692716094935
+811.0847119408248
+Out of while loop - Root
+Total solver time: 3.1727402210235596 seconds
+Total bNb time: 0.05132436752319336 seconds
+Number of nodes processed: 27
+Total time: 3.2241454124450684 seconds
 Objective1: 825.0, Objective2: 1917.5 
 
-Total solver time: 2.3564789295196533 seconds
-Total bNb time: 0.029279232025146484 seconds
-Number of nodes processed: 21
-Total time: 2.385775089263916 seconds
+'NoneType' object has no attribute 'remove'
+814.7858933394472
+Out of while loop - Root
+Total solver time: 1.764042615890503 seconds
+Total bNb time: 0.048609256744384766 seconds
+Number of nodes processed: 25
+Total time: 1.812739372253418 seconds
 Objective1: 828.0, Objective2: 1913.5 
 
-Total solver time: 3.1626083850860596 seconds
-Total bNb time: 0.04158425331115723 seconds
-Number of nodes processed: 29
-Total time: 3.2042105197906494 seconds
+'NoneType' object has no attribute 'remove'
+816.9634718122181
+Out of while loop - Root
+Total solver time: 2.263643980026245 seconds
+Total bNb time: 0.06431818008422852 seconds
+Number of nodes processed: 33
+Total time: 2.328047513961792 seconds
 Objective1: 834.0, Objective2: 1890.5 
 
-Total solver time: 3.5398199558258057 seconds
-Total bNb time: 0.04559445381164551 seconds
-Number of nodes processed: 35
-Total time: 3.585430383682251 seconds
+'NoneType' object has no attribute 'remove'
+831.6541917757667
+Out of while loop - Root
+Total solver time: 2.3644015789031982 seconds
+Total bNb time: 0.062186479568481445 seconds
+Number of nodes processed: 33
+Total time: 2.4266672134399414 seconds
 Objective1: 854.0, Objective2: 1880.5 
 
-Total solver time: 3.143057346343994 seconds
-Total bNb time: 0.0398712158203125 seconds
-Number of nodes processed: 29
-Total time: 3.1829452514648438 seconds
+'NoneType' object has no attribute 'remove'
+837.5674293131495
+Out of while loop - Root
+Total solver time: 2.8500170707702637 seconds
+Total bNb time: 0.07442808151245117 seconds
+Number of nodes processed: 35
+Total time: 2.9245264530181885 seconds
 Objective1: 863.0, Objective2: 1876.5 
 
-Total solver time: 4.886378288269043 seconds
-Total bNb time: 0.06300878524780273 seconds
-Number of nodes processed: 47
-Total time: 4.949403762817383 seconds
+'NoneType' object has no attribute 'remove'
+841.1202442475737
+Out of while loop - Root
+Total solver time: 2.58195424079895 seconds
+Total bNb time: 0.05743002891540527 seconds
+Number of nodes processed: 33
+Total time: 2.6394457817077637 seconds
 Objective1: 870.0, Objective2: 1869.5 
 
-Total solver time: 2.276869058609009 seconds
-Total bNb time: 0.030160188674926758 seconds
-Number of nodes processed: 23
-Total time: 2.3070461750030518 seconds
+'NoneType' object has no attribute 'remove'
+846.0585511168356
+Out of while loop - Root
+Total solver time: 1.9823811054229736 seconds
+Total bNb time: 0.04864096641540527 seconds
+Number of nodes processed: 27
+Total time: 2.0310957431793213 seconds
 Objective1: 871.0, Objective2: 1844.5 
 
-Total solver time: 2.5794808864593506 seconds
-Total bNb time: 0.031349897384643555 seconds
-Number of nodes processed: 25
-Total time: 2.610854387283325 seconds
+'NoneType' object has no attribute 'remove'
+866.3197342683732
+Out of while loop - Root
+Total solver time: 2.167802572250366 seconds
+Total bNb time: 0.05347895622253418 seconds
+Number of nodes processed: 31
+Total time: 2.221371650695801 seconds
 Objective1: 891.0, Objective2: 1841.5 
 
-Total solver time: 2.697470188140869 seconds
-Total bNb time: 0.03293132781982422 seconds
-Number of nodes processed: 27
-Total time: 2.7304189205169678 seconds
+'NoneType' object has no attribute 'remove'
+869.1065255612666
+869.4115157183647
+Out of while loop - Root
+Total solver time: 2.793893814086914 seconds
+Total bNb time: 0.05888485908508301 seconds
+Number of nodes processed: 35
+Total time: 2.852879047393799 seconds
 Objective1: 895.0, Objective2: 1839.5 
 
-Total solver time: 1.8009090423583984 seconds
-Total bNb time: 0.023145198822021484 seconds
-Number of nodes processed: 19
-Total time: 1.8240718841552734 seconds
+'NoneType' object has no attribute 'remove'
+871.0577143019597
+Out of while loop - Root
+Total solver time: 2.1013877391815186 seconds
+Total bNb time: 0.05360126495361328 seconds
+Number of nodes processed: 29
+Total time: 2.1550650596618652 seconds
 Objective1: 895.0, Objective2: 1833.5 
 
-Total solver time: 4.889026880264282 seconds
-Total bNb time: 0.06117606163024902 seconds
-Number of nodes processed: 47
-Total time: 4.950219631195068 seconds
+'NoneType' object has no attribute 'remove'
+876.4510582426308
+878.7641331639569
+Out of while loop - Root
+Total solver time: 2.732321262359619 seconds
+Total bNb time: 0.045113563537597656 seconds
+Number of nodes processed: 31
+Total time: 2.777521848678589 seconds
 Objective1: 921.0, Objective2: 1826.5 
 
-Total solver time: 3.8413329124450684 seconds
-Total bNb time: 0.04806661605834961 seconds
-Number of nodes processed: 37
-Total time: 3.889416217803955 seconds
+'NoneType' object has no attribute 'remove'
+885.356042754077
+Out of while loop - Root
+Total solver time: 3.4949750900268555 seconds
+Total bNb time: 0.08687806129455566 seconds
+Number of nodes processed: 53
+Total time: 3.581928014755249 seconds
 Objective1: 925.0, Objective2: 1818.5 
 
-Total solver time: 2.4958343505859375 seconds
-Total bNb time: 0.031453609466552734 seconds
-Number of nodes processed: 33
-Total time: 2.5273032188415527 seconds
+'NoneType' object has no attribute 'remove'
+899.3630719968008
+903.9820513566204
+899.4867921412134
+Out of while loop - Root
+Total solver time: 3.2686288356781006 seconds
+Total bNb time: 0.05568742752075195 seconds
+Number of nodes processed: 37
+Total time: 3.3244218826293945 seconds
 Objective1: 943.0, Objective2: 1799.5 
 
-Total solver time: 2.5715835094451904 seconds
-Total bNb time: 0.03006601333618164 seconds
-Number of nodes processed: 31
-Total time: 2.601679801940918 seconds
-Objective1: 997.0, Objective2: 1798.5 
-
-Total solver time: 2.1208252906799316 seconds
-Total bNb time: 0.02358841896057129 seconds
-Number of nodes processed: 25
-Total time: 2.144436836242676 seconds
+'NoneType' object has no attribute 'remove'
+940.6788375053499
+Out of while loop - Root
+Total solver time: 2.516369104385376 seconds
+Total bNb time: 0.05110645294189453 seconds
+Number of nodes processed: 37
+Total time: 2.567556381225586 seconds
 Objective1: 997.0, Objective2: 1792.5 
 
-Total solver time: 2.119367837905884 seconds
-Total bNb time: 0.027219057083129883 seconds
-Number of nodes processed: 31
-Total time: 2.146603584289551 seconds
+'NoneType' object has no attribute 'remove'
+962.592313175687
+Out of while loop - Root
+Total solver time: 2.6701507568359375 seconds
+Total bNb time: 0.05326271057128906 seconds
+Number of nodes processed: 39
+Total time: 2.723506450653076 seconds
 Objective1: 1023.0, Objective2: 1785.5 
 
-Total solver time: 1.5005125999450684 seconds
-Total bNb time: 0.01777505874633789 seconds
-Number of nodes processed: 23
-Total time: 1.518305778503418 seconds
+'NoneType' object has no attribute 'remove'
+996.191039594119
+997.4508227523977
+Out of while loop - Root
+Total solver time: 1.8559918403625488 seconds
+Total bNb time: 0.027515649795532227 seconds
+Number of nodes processed: 21
+Total time: 1.8836355209350586 seconds
 Objective1: 1027.0, Objective2: 1777.5 
 
-Total time: 0.0209658145904541 seconds
-Objective1: 999999999, Objective2: 999999999 
-
-[(801.0, 2060.5), (805.0, 1941.5), (813.0, 1925.5), (825.0, 1917.5), (828.0, 1913.5), (834.0, 1890.5), (854.0, 1880.5), (863.0, 1876.5), (870.0, 1869.5), (871.0, 1844.5), (891.0, 1841.5), (895.0, 1839.5), (895.0, 1833.5), (921.0, 1826.5), (925.0, 1818.5), (943.0, 1799.5), (997.0, 1798.5), (997.0, 1792.5), (1023.0, 1785.5), (1027.0, 1777.5)]
-
---- 51.9027783870697 seconds ---
-Mean time: 2.4715425968170166

@@ -1,3 +1,177 @@
 Input file 1 is instance/S8
 Input file 2 is instance/S8H
 
+Total solver time: 0.10301041603088379 seconds
+Total bNb time: 0.00872492790222168 seconds
+Number of nodes processed: 5
+Rootgap: 0.9999992050825215
+Rootgap to optimal:  0.007593660715605274
+Total time: 0.11175870895385742 seconds
+Objective1: 801.0, Objective2: 2060.5 
+
+Total solver time: 0.2289106845855713 seconds
+Total bNb time: 0.017473697662353516 seconds
+Number of nodes processed: 13
+Rootgap: 0.9999992050825907
+Rootgap to optimal:  0.012524958211026942
+Total time: 0.24640750885009766 seconds
+Objective1: 805.0, Objective2: 1941.5 
+
+Total solver time: 0.23829913139343262 seconds
+Total bNb time: 0.01593494415283203 seconds
+Number of nodes processed: 13
+Rootgap: 0.9999991955351986
+Rootgap to optimal:  0.010498400200337701
+Total time: 0.2542576789855957 seconds
+Objective1: 813.0, Objective2: 1925.5 
+
+Total solver time: 0.45336389541625977 seconds
+Total bNb time: 0.03149771690368652 seconds
+Number of nodes processed: 25
+Rootgap: 0.9999991901140227
+Rootgap to optimal:  0.018320028498571693
+Total time: 0.4848933219909668 seconds
+Objective1: 825.0, Objective2: 1917.5 
+
+Total solver time: 0.45477819442749023 seconds
+Total bNb time: 0.033139944076538086 seconds
+Number of nodes processed: 25
+Rootgap: 0.999999186092897
+Rootgap to optimal:  0.017020407937869773
+Total time: 0.4879446029663086 seconds
+Objective1: 828.0, Objective2: 1913.5 
+
+Total solver time: 0.6936335563659668 seconds
+Total bNb time: 0.04550957679748535 seconds
+Number of nodes processed: 33
+Rootgap: 0.9999991838915427
+Rootgap to optimal:  0.021452690109948644
+Total time: 0.7391777038574219 seconds
+Objective1: 834.0, Objective2: 1890.5 
+
+Total solver time: 0.7995352745056152 seconds
+Total bNb time: 0.052005767822265625 seconds
+Number of nodes processed: 39
+Rootgap: 0.9999991698475547
+Rootgap to optimal:  0.027924538143416937
+Total time: 0.8515670299530029 seconds
+Objective1: 854.0, Objective2: 1880.5 
+
+Total solver time: 0.7314963340759277 seconds
+Total bNb time: 0.04557085037231445 seconds
+Number of nodes processed: 37
+Rootgap: 0.9999991630602325
+Rootgap to optimal:  0.030197257671633355
+Total time: 0.777092456817627 seconds
+Objective1: 863.0, Objective2: 1876.5 
+
+Total solver time: 1.08768892288208 seconds
+Total bNb time: 0.06714487075805664 seconds
+Number of nodes processed: 49
+Rootgap: 0.9999991602375936
+Rootgap to optimal:  0.034755855720127384
+Total time: 1.15486478805542 seconds
+Objective1: 870.0, Objective2: 1869.5 
+
+Total solver time: 0.5911769866943359 seconds
+Total bNb time: 0.035213470458984375 seconds
+Number of nodes processed: 29
+Rootgap: 0.9999991551659911
+Rootgap to optimal:  0.030041322703953297
+Total time: 0.6264162063598633 seconds
+Objective1: 871.0, Objective2: 1844.5 
+
+Total solver time: 0.700547456741333 seconds
+Total bNb time: 0.04375004768371582 seconds
+Number of nodes processed: 35
+Rootgap: 0.9999991354143937
+Rootgap to optimal:  0.029645785116222612
+Total time: 0.7443234920501709 seconds
+Objective1: 891.0, Objective2: 1841.5 
+
+Total solver time: 0.8214900493621826 seconds
+Total bNb time: 0.054326772689819336 seconds
+Number of nodes processed: 41
+Rootgap: 0.9999991327348416
+Rootgap to optimal:  0.030988650930603857
+Total time: 0.8758487701416016 seconds
+Objective1: 895.0, Objective2: 1839.5 
+
+Total solver time: 0.5945773124694824 seconds
+Total bNb time: 0.04055905342102051 seconds
+Number of nodes processed: 27
+Rootgap: 0.9999991308518553
+Rootgap to optimal:  0.028884755515494683
+Total time: 0.6351697444915771 seconds
+Objective1: 895.0, Objective2: 1833.5 
+
+Total solver time: 1.001779317855835 seconds
+Total bNb time: 0.05726265907287598 seconds
+Number of nodes processed: 45
+Rootgap: 0.9999991246884636
+Rootgap to optimal:  0.04960745337228536
+Total time: 1.0590684413909912 seconds
+Objective1: 921.0, Objective2: 1826.5 
+
+Total solver time: 1.1006066799163818 seconds
+Total bNb time: 0.0634908676147461 seconds
+Number of nodes processed: 55
+Rootgap: 0.999999116260993
+Rootgap to optimal:  0.044606479940119466
+Total time: 1.1641480922698975 seconds
+Objective1: 925.0, Objective2: 1818.5 
+
+Total solver time: 0.6602461338043213 seconds
+Total bNb time: 0.03570151329040527 seconds
+Number of nodes processed: 35
+Rootgap: 0.9999991040303262
+Rootgap to optimal:  0.04987309335952148
+Total time: 0.6960053443908691 seconds
+Objective1: 943.0, Objective2: 1799.5 
+
+Total solver time: 0.5905988216400146 seconds
+Total bNb time: 0.029520511627197266 seconds
+Number of nodes processed: 31
+Rootgap: 0.9999990633106227
+Rootgap to optimal:  0.060492099920449495
+Total time: 0.6201567649841309 seconds
+Objective1: 997.0, Objective2: 1798.5 
+
+Total solver time: 0.5945208072662354 seconds
+Total bNb time: 0.027907371520996094 seconds
+Number of nodes processed: 27
+Rootgap: 0.9999990608962066
+Rootgap to optimal:  0.05807041887497708
+Total time: 0.6224746704101562 seconds
+Objective1: 997.0, Objective2: 1792.5 
+
+Total solver time: 0.5842809677124023 seconds
+Total bNb time: 0.02863001823425293 seconds
+Number of nodes processed: 27
+Rootgap: 0.9999990396465968
+Rootgap to optimal:  0.061238121003808516
+Total time: 0.6129541397094727 seconds
+Objective1: 1023.0, Objective2: 1785.5 
+
+Total solver time: 0.40760016441345215 seconds
+Total bNb time: 0.020485877990722656 seconds
+Number of nodes processed: 21
+Rootgap: 0.9999990092248653
+Rootgap to optimal:  0.03527250854653465
+Total time: 0.4281308650970459 seconds
+Objective1: 1027.0, Objective2: 1777.5 
+
+Total solver time: 0.026311635971069336 seconds
+Total bNb time: 5.817413330078125e-05 seconds
+Number of nodes processed: 1
+Rootgap: 1.0
+Rootgap to optimal:  1.0
+Total time: 0.026407718658447266 seconds
+Objective1: 999999999, Objective2: 999999999 
+
+[(801.0, 2060.5), (805.0, 1941.5), (813.0, 1925.5), (825.0, 1917.5), (828.0, 1913.5), (834.0, 1890.5), (854.0, 1880.5), (863.0, 1876.5), (870.0, 1869.5), (871.0, 1844.5), (891.0, 1841.5), (895.0, 1839.5), (895.0, 1833.5), (921.0, 1826.5), (925.0, 1818.5), (943.0, 1799.5), (997.0, 1798.5), (997.0, 1792.5), (1023.0, 1785.5), (1027.0, 1777.5)]
+
+--- 13.219528913497925 seconds ---
+Mean time: 0.6294794309706915
+STAH,Instance,#departments,#ND-Points,Total-Time
+STAT,S8_S8H,8,18,13.219528913497925

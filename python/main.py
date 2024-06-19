@@ -13,10 +13,12 @@ import matplotlib.pyplot as plt
 import math
 import mosek.fusion.pythonic
 import random
+import pandas as pd
 
 EPSILON = 1
 MAX_INT = 999999999
 EPSOPT = 1e-4
+EPSTIGHT = 1e-6
  
 class Logger:
  
@@ -71,6 +73,22 @@ class Instance(NamedTuple):
     n: int
     K: float
     K2: float
+    
+##  Creating a class Constraint, to store the triangle constraints. 
+#   I plan on having a dictionary of constraints, which I add to the model. Then I get the tight constraints and remove the others. 
+#   I have to create a list r set or dict of constraints, which I can add to the model.
+#   This collection of constraints needs some index, such that I can check for each constraint if it is tight or not.
+#   I should not be able to find a constraint, which is already added to the model again, as those which I remove are not violated, as are the tight constraints.
+#   So if I only separate for the violated constraints, I do not need the property of sets or dicts, that they are unique.
+#   I can just add the constraints to a list and remove them from the list, if they are tight.
+class Constraint():
+    def __init__(self, indices, row, lhs):
+        self.p1, self.p2, self.p3 = indices
+        self.row = row
+        self.lhs = lhs
+        
+        
+        
     
 # Parse the command line arguments
 def argument_parser(argv):
@@ -373,7 +391,7 @@ def solveNode(node: Node, instance, vl, lb):
         M.dispose()
         return Solution(True, node.index, node.level, lb, obj1, obj2, permutation, Y_int) 
 
-def solveNode2(node, instance, vl, lb):
+def solveNode2(node, instance, vl, lb, triangle_constraints):
     ## Initialize the model
     M = multi_obj_model(instance, Model(), vl, lb)
     Z = M.getVariable("Z")
@@ -383,45 +401,14 @@ def solveNode2(node, instance, vl, lb):
     if node.constraints:  
         M.constraint(Y.pick([[i,j] for i,j,k in node.constraints]), Domain.equalsTo([k for i,j,k in node.constraints]))
 
+    ## Add the triangle constraints to the model
+    # if triangle_constraints:
+    #     constraint_stack = Expr.vstack([Expr.mul([cons.row], Y.pick([[cons.p1,cons.p2], [cons.p1,cons.p3], [cons.p2,cons.p3]])) for cons in triangle_constraints])
+    #     M.constraint(constraint_stack, Domain.greaterThan(-1.0))
+
     ## Solve the model
     #start_time = time.time()
     M.solve()
-    # try:
-    #     print("Without triangle:", M.primalObjValue())
-    # except:
-    #     pass
-    
-    ## Commands to get a single constraint of a stack of constraints and the primal value of the constraint
-    #print(M.getConstraint("3-cycle").index([10]).remove())
-     
-    # print(constraint_help.index([0]).level())
-    
-    #print("---Relax %s seconds ---" % (time.time() - start_time))
-    
-    # Code for the separation of the triangle constraints TODO needs further improvement 
-    # if M.getProblemStatus() == ProblemStatus.PrimalAndDualFeasible:
-    #     ## Get the triangle constraints
-    #     T = Matrix.dense([[1,1,1],[1,-1,-1],[-1,1,-1],[-1,-1,1]])
-    #     triangle = separate_triangle(Y.level(), instance, 0)
-    #     #triangle.sort(key=lambda x: x[4])
-    #     #variables = Var.hstack([Y.pick([[i,j], [i,k], [j,k]]) for i,j,k,row,result in triangle[0:min(100, len(triangle))]])
-    #     variables = Var.hstack([Y.pick([[i,j], [i,k], [j,k]]) for i,j,k,row,result in triangle])
-    #     M.constraint("Triangle", Expr.mul(T, variables), Domain.greaterThan(-1.0))
-    #     #count = 0
-    #     # for i,j,k,row,result in triangle[0:min(400, len(triangle))]:
-    #     #     count += 1
-    #     #     #print(type([Y.index(i,j), Y.index(i,k), Y.index(j,k)]))
-    #     #     M.constraint(Expr.add(Expr.add(row[0]*Y.index(i,j), row[1]*Y.index(i,k)), row[2]*Y.index(j,k)), Domain.greaterThan(-1.0))
-    #     # #print("Number of constraints added:", count)
-    #     #start_time = time.time()
-    #     M.solve()
-    #     #print("---Triangle %s seconds ---" % (time.time() - start_time))
-    #     try:
-    #         const_values = np.array(M.getConstraint("Triangle").level())
-    #         #print(f"{np.count_nonzero(const_values <= -1 + EPSOPT)} tight of {len(const_values)} constraints")
-            
-    #     except:
-    #         pass
             
     ## Check if the relaxation is primal and dual feasible
     if M.getProblemStatus() != ProblemStatus.PrimalAndDualFeasible:
@@ -435,7 +422,7 @@ def solveNode2(node, instance, vl, lb):
         return Solution(True, node.index, node.level, relax_sol, MAX_INT, MAX_INT, [], Y_sol)
 
 ## Solve the root node with the separation of the triangle constraints
-def solveRootSep(node, instance, vl, lb, constraints, previous_solution):
+def solveRootSep(node, instance, vl, lb, triangle, global_lb, global_ub):
     ## Initialize the model
     M = multi_obj_model(instance, Model(), vl, lb)
     Z = M.getVariable("Z")
@@ -443,31 +430,189 @@ def solveRootSep(node, instance, vl, lb, constraints, previous_solution):
     
     ## Solve the model
     #start_time = time.time()
+    
+    previous_triangle = triangle.copy()
+    
+    try:
+        constraint_stack = Expr.vstack([Expr.mul([cons.row], Y.pick([[cons.p1,cons.p2], [cons.p1,cons.p3], [cons.p2,cons.p3]])) for cons in triangle])
+        M.constraint(constraint_stack, Domain.greaterThan(-1.0))
+    except LookupError as error:
+        print("LookupError: ", error)
+    except Exception as error:
+        print("Error_add_old_triangle: ", error)
+        
     M.solve()
-    #print(M.getSolverIntInfo("optNumcon")) # -> Always after the solve, gives the number of constraints in the model
-    #print("---Relax %s seconds ---" % (time.time() - start_time))
     
-    ## Speparation of the triangle constraints
-    # triangle = separate_triangle(Y.level(), instance, 0)
+    incumbent = Solution(False, node.index, node.level, 0, MAX_INT, MAX_INT, [], [])
     
-    ## solve again
-    
-    ## While num_of_tight < num_of_constraints
-    ## Check which constraints are tight and remove the others
-    ## Separate for violated constraints
-    ## Add the violated constraints to the model
-    ## Solve the model again
+    try:
+        lb = M.primalObjValue()
+        print("Root without cuts:", lb)
+        if lb > global_lb:
+            global_lb = lb
             
+        ## Calculate the heuristic solution of the root node and the objective values
+        #heur_Y = heuristic(root_sol.Y, instance)
+        heur_Y = heuristic(Y.level(), instance,vl) 
+        obj1 = calculateObjective(heur_Y, instance, 1)
+        obj2 = calculateObjective(heur_Y, instance, 2)
+        
+        if obj2 <= vl - EPSILON:            
+            # As root, set the incumbent to the heuristic solution and the bounds to the relaxed solution
+            #print("A feasible solution found:", obj1, obj2)
+            if obj1 <= global_ub:
+                global_ub = obj1
+
+            if global_ub - global_lb < EPSILON:
+                incumbent = Solution(True, 0, 0, global_lb, obj1, obj2, [], heur_Y)
+                return incumbent, triangle  
+    
+    except Exception as error:
+        print("Get_heuristic_solution_error: ", error)
+    
+    #triangle = []
+    number_triangles = 300
+    num_added = 1
+    test_number = number_triangles
+    
+    #while len(triangle) < number_triangles:
+    counter = 1
+    while num_added > 0:
+        ## Remove all old non tight constraints from constraint list
+        num_removed = 0
+        try:
+            to_remove = []
+            for i in range(len(triangle)):
+                #print(M.getConstraint(3).index(i).level())
+                if M.getConstraint(2).level()[i] > -1 + EPSTIGHT:
+                    to_remove.append(triangle[i])
+                    num_removed += 1
+            for cons in to_remove:
+                triangle.remove(cons)
+        except Exception as error:
+            print("Error_remove_old_triangle: ", error)  
+        
+        
+        ## Separate the triangle constraints
+        try:
+            #start_time = time.time()
+            added_triangles = separate_triangle(Y.level(), instance, number_triangles)
+            triangle += added_triangles[0:min(number_triangles, len(added_triangles))]
+            len_added = min(number_triangles, len(added_triangles))
+            #print("Number of added constraints:", len_added)
+            #print("Cuts added")
+            #print("--- %s seconds ---" % (time.time() - start_time))
+        except Exception as error:
+            print("Error_separate_triangle:", error)
+            M.dispose()
+            return Solution(False, node.index, node.level, 0, MAX_INT, MAX_INT, [], []), triangle
+        
+        try:
+            ## Remove all old triangle constraints from the model
+            # num_const = M.getSolverIntInfo("optNumcon")
+            # print("Num_const:", num_const)
+            # for i in range(3,num_const):
+            #     M.getConstraint(i).remove()
+            M.dispose()
+            M = multi_obj_model(instance, Model(), vl, lb)
+            Z = M.getVariable("Z")
+            Y = Z.slice([1,1] , [instance.dim+1, instance.dim+1])
+            
+            #M.getConstraint(3).remove()
+        except AttributeError as error:
+            pass
+        except Exception as error:
+            print("Error_remove_all_old_constraints: ", error)
+
+        test_number = len(triangle)
+        #print("Number of constraints added:", test_number)
+        
+        ## Add the triangle constraints to the model
+        try:
+            constraint_stack = Expr.vstack([Expr.mul([cons.row], Y.pick([[cons.p1,cons.p2], [cons.p1,cons.p3], [cons.p2,cons.p3]])) for cons in triangle])
+        except LookupError as error:
+            pass
+        #Y_reshaped = Y.level().reshape(instance.dim, instance.dim)
+        #M.constraint(Expr.mul([[1, 1, 1]], Y.pick([[4,9], [4,15], [9,15]])), Domain.greaterThan(-1.0))
+        try:
+            M.constraint("Triangle", constraint_stack, Domain.greaterThan(-1.0))
+            #for cons in triangle:
+            #    M.constraint(Expr.mul([cons.row], Y.pick([[cons.p1,cons.p2], [cons.p1,cons.p3], [cons.p2,cons.p3]])), Domain.greaterThan(-1.0))
+        except Exception as error:
+            print("Error_add_new_triangle: ", error)
+        
+        ## Solve the model
+        M.solve()
+        
+        ## Get heurisitc solution
+        try:
+            lb = M.primalObjValue()
+            print("Root without cuts:", lb, global_lb)
+            if lb > global_lb + 1:
+                global_lb = lb
+                previous_triangle = triangle
+            else:
+                triangle = previous_triangle
+                print("No improvement")
+                break
+            ## Calculate the heuristic solution of the root node and the objective values
+            #heur_Y = heuristic(root_sol.Y, instance)
+            heur_Y = heuristic(Y.level(), instance,vl) 
+            obj1 = calculateObjective(heur_Y, instance, 1)
+            obj2 = calculateObjective(heur_Y, instance, 2)
+            
+            if obj2 <= vl - EPSILON:            
+                # As root, set the incumbent to the heuristic solution and the bounds to the relaxed solution
+                if obj1 <= global_ub:
+                    global_ub = obj1
+                    incumbent = Solution(True, 0, 0, global_lb, obj1, obj2, [], heur_Y)
+
+                if global_ub - global_lb < EPSILON:
+                    return incumbent, triangle
+        except Exception as error:
+            print("Get_heuristic_solution_error: ", error)
+            ## Check if they are tight, if not remove them
+            # to_remove = []
+            # num_removed = 0
+            # for i in range(len(triangle[0:test_number])):
+            # #for i in range(2, M.getSolverIntInfo("optNumcon")-1):
+            #     #print(M.getConstraint(3).index(i).level())
+            #     if M.getConstraint(3).index(i).level() > -1 + EPSTIGHT:
+            #         to_remove.append(triangle[i])
+            # for cons in to_remove:
+            #     num_removed += 1
+            #     triangle.remove(cons)
+        
+        # try:
+        #     for i in range(3, M.getSolverIntInfo("optNumcon")-86):
+        #         print(M.getSolverIntInfo("optNumcon"))
+        #         if M.getConstraint(i).level() > -1 + EPSTIGHT:
+        #             to_remove.append(triangle[i-3])
+            
+        #     for cons in to_remove:
+        #         num_removed += 1
+        #         triangle.remove(cons)
+                
+            #print("Removed:", num_removed)
+            num_added = len_added - num_removed
+            
+            print("Added cuts: ", num_added)
+            
+        # except Exception as error:
+        #     print("Here:", error)
+        
+
     # Check if the relaxation is primal and dual feasible
     if M.getProblemStatus() != ProblemStatus.PrimalAndDualFeasible:
         M.dispose()
-        return Solution(False, node.index, node.level, 0, MAX_INT, MAX_INT, [], [])
+        return Solution(False, node.index, node.level, 0, MAX_INT, MAX_INT, [], []), triangle
     else:
         # Return the variable matrix Y
         Y_sol = Y.level().copy()
         relax_sol = M.primalObjValue()
+        print("Root with cuts:", relax_sol)
         M.dispose()
-        return Solution(True, node.index, node.level, relax_sol, MAX_INT, MAX_INT, [], Y_sol)
+        return Solution(True, node.index, node.level, relax_sol, MAX_INT, MAX_INT, [], Y_sol), triangle
 
 
 def heuristic(Y, instance, vl):
@@ -475,8 +620,7 @@ def heuristic(Y, instance, vl):
     Y_int_opt = []
     Y_int_obj = MAX_INT
     
-    for i in range(0, instance.dim):
-        
+    for i in range(0, instance.dim): 
         omega_values = []
         for k in range(1,instance.n+1):
             omega = (instance.n+1)/2
@@ -510,6 +654,7 @@ def heuristic(Y, instance, vl):
                 Y_int_obj = calculateObjective(Y_int, instance, 1)
                 Y_int_opt = Y_int
                 
+    
     return Y_int_opt
             
         
@@ -543,6 +688,10 @@ def heuristic(Y, instance, vl):
     
     #return Y_int
 
+## Cholewsky decomposition
+def heuristic2(Y, instance, vl):
+    pass
+        
         
 def checkIntegerFeasible(solution, vl):
     if solution.feasible and solution.obj2+EPSILON <= vl and solution.obj2 >= 0:
@@ -712,12 +861,13 @@ def calculateObjective(Y, instance, obj):
     else:
         return instance.K2 - np.inner(instance.cost_matrix2.flatten(), Y.flatten())
     
-def branch_and_bound2(instance, vl):
+def branch_and_bound2(instance, vl, triangle_constraints):
     ## Initialize the tree
     ## Initialize the incumbent solution
     bNb_time = time.time()
     incumbent = Solution(False, -1, -1, 0, MAX_INT, MAX_INT, [], [])
     solver_time = []
+    is_terminal = False
     
     ## Initialize the root node
     openNodes = [Node(index=0, level=0, lb=0, ub=MAX_INT, constraints=[], solved=False, Y=[])]
@@ -732,23 +882,35 @@ def branch_and_bound2(instance, vl):
     
     ## Solve the root node of the tree
     start_time = time.time()
-    root_sol = solveNode2(rootNode, instance, vl, global_lb)
+    root_sol = solveNode2(rootNode, instance, vl, global_lb, triangle_constraints)
+    #root_sol, triangle_constraints = solveRootSep(rootNode, instance, vl, global_lb, triangle_constraints, global_lb, global_ub)
     solver_time.append(time.time() - start_time)
+    #print("Number of triangle constraints: ", len(triangle_constraints))
     
     ## Solve root node
     if not root_sol.feasible:
-        return incumbent
+        is_terminal = True
+        #return incumbent
+        #return incumbent, triangle_constraints
     else:
+        global_lb = root_sol.lb
+        global_ub = root_sol.obj1
+        
+        if global_ub - global_lb < EPSILON:
+            is_terminal = True
+            #return root_sol
+            #return root_sol, triangle_constraints
+        
         ## Update the root node
         rootNode.Y = root_sol.Y
         rootNode.solved = True
         rootNode.lb = root_sol.lb
         global_lb = root_sol.lb   
         
-        # TODO In general, try to only have a openNodes list, nodes and solution, maybe a processed nodes list
+        # # TODO In general, try to only have a openNodes list, nodes and solution, maybe a processed nodes list
         
-        ## Calculate the heuristic solution of the root node and the objective values
-        #heur_Y = heuristic(root_sol.Y, instance)
+        # ## Calculate the heuristic solution of the root node and the objective values
+        # #heur_Y = heuristic(root_sol.Y, instance)
         heur_Y = heuristic(root_sol.Y, instance,vl) 
         obj1 = calculateObjective(heur_Y, instance, 1)
         obj2 = calculateObjective(heur_Y, instance, 2)
@@ -759,11 +921,16 @@ def branch_and_bound2(instance, vl):
             incumbent = Solution(True, 0, 0, global_lb, obj1, obj2, [], heur_Y)
 
             if global_ub - global_lb < EPSILON:
-                return incumbent
+                is_terminal = True
+                #return incumbent
+                #return incumbent, triangle_constraints
         
     ## Start with the branching process
     while openNodes:
+        if is_terminal:
+            break
         ## Get node to branch on
+        #print("In branching")
         branchNode = get_branching_node(openNodes)
 
         ## Get variable to branch on
@@ -781,7 +948,7 @@ def branch_and_bound2(instance, vl):
             for node in nodesToProcess:
                 number_of_nodes += 1
                 solver_start = time.time()
-                solution = solveNode2(node, instance, vl, global_lb)
+                solution = solveNode2(node, instance, vl, global_lb, triangle_constraints)
                 solver_time.append(time.time() - solver_start)
                 
                 node.solved = True
@@ -796,6 +963,7 @@ def branch_and_bound2(instance, vl):
                     obj2 = calculateObjective(heurSol, instance, 2)
                     if obj2 <= vl - EPSILON:
                         node.ub = obj1
+                        #print("A feasible solution found at node:", number_of_nodes, obj1)
                         if obj1 < incumbent.obj1:
                             incumbent = Solution(True, node.index, node.level, node.lb, obj1, obj2, [], heurSol)
                             global_obj2 = obj2
@@ -817,10 +985,18 @@ def branch_and_bound2(instance, vl):
             #print("Gap", global_ub - global_lb)
             
     print("Total solver time: %s seconds" % (sum(solver_time)))
-    print("Total bNb time: %s seconds" % (time.time() - bNb_time - sum(solver_time)))
+    bNb_timer = time.time() - bNb_time - sum(solver_time)
+    print("Total bNb time: %s seconds" % (bNb_timer))
     print("Number of nodes processed:", number_of_nodes)
+    root_gap = (root_sol.obj1 - root_sol.lb)/root_sol.obj1
+    root_gap_opt = (incumbent.obj1 - root_sol.lb)/incumbent.obj1
+    print("Rootgap:", root_gap)
+    print("Rootgap to optimal: ", root_gap_opt)
     
-    return incumbent
+    program_stats = [incumbent.obj1, incumbent.obj2, root_gap, root_gap_opt, number_of_nodes, sum(solver_time)]
+    
+    return incumbent, program_stats
+    #return incumbent, triangle_constraints
           
 def branching2(openNodes, branchNode, mostfrac):
     # Create two new nodes with the branching constraint
@@ -850,11 +1026,15 @@ def epsilon_constraint(instance):
     feasible = True
     lb = 0
     time_list = []
+    triangle_constraints = []
+    columns=["OBJ1", "OBJ2", "Rootgap", "Rootgap-OPT", "BNB-Nodes", "SDP-Time", "Total-Time"]
+    stats_ls = []
     
     while feasible == True:
         #print("VL", vl)
         start_time = time.time()
-        incumbent = branch_and_bound2(instance, vl)
+        #incumbent, triangle_constraints = branch_and_bound2(instance, vl, triangle_constraints)
+        incumbent, program_stats = branch_and_bound2(instance, vl, triangle_constraints)
         #incumbent = bNb(instance, vl, lb)
         feasible = incumbent.feasible
         obj1 = incumbent.obj1
@@ -862,11 +1042,17 @@ def epsilon_constraint(instance):
         vl = obj2
         #lb = obj1
         dominatedpoints.append((obj1, obj2))
+        
         timer = time.time() - start_time
+        
+        program_stats.append(timer)
+        stats_ls.append(dict(zip(columns, program_stats)))
         time_list.append(timer)
         print("Total time: %s seconds" % (timer))
         print(f"Objective1: {obj1}, Objective2: {obj2} \n")
-    return dominatedpoints, time_list
+        
+        
+    return dominatedpoints, time_list, stats_ls
     
 def permutation2Y(permutation, instance, switch):
     Y_help = []
@@ -919,36 +1105,68 @@ def separate_triangle(Y, instance, number):
     #                     if count == number:
     #                         return triangle_constraints  
     #print("In separation loop")  
-    while count < number:               
-        for pairOne in instance.pairs:
-            for pairTwo in instance.pairs[1:]:
-                for pairThree in instance.pairs[2:]:
-                    i,j = pairOne
-                    k,l = pairTwo
-                    m,n = pairThree
-                    if i < j and j < k:
-                        continue
-                    else:
-                        for rows in A:
-                            p1 = get_index(i,j,instance.n)
-                            p2 = get_index(k,l,instance.n)
-                            p3 = get_index(m,n,instance.n)
-                            result = np.inner(rows, [Y_reshape[p1, p2], Y_reshape[p1, p3], Y_reshape[p2, p3]])
-                            #print(result)
-                            if result < -1:
-                                count += 1
-                                triangle_constraints.append((p1,p2,p3,rows,result)) 
-    triangle_constraints.sort(key=lambda x: x[4])
+    # #while count < number:               
+    
+    for i in range(instance.dim):
+        for j in range(instance.dim):
+            for k in range(instance.dim):
+                if i < j and j < k:
+                    for rows in A:
+                        result = np.inner(rows, [Y_reshape[i, j], Y_reshape[i, k], Y_reshape[j, k]])
+                        if result < -1 + EPSOPT:
+                            count += 1
+                            triangle_constraints.append(Constraint([i,j,k],rows,result))
+                        #if count == number:
+                        #return triangle_constraints
+                        
+    
+    # for i,j in instance.pairs:
+    #     for k,l in instance.pairs[1:]:
+    #         for m,n in instance.pairs[2:]:
+    #             #if i < j and j < k:
+    #             #    continue
+    #             #else:
+    #             for rows in A:
+    #                 p1 = get_index(i,j,instance.n)
+    #                 p2 = get_index(k,l,instance.n)
+    #                 p3 = get_index(m,n,instance.n)
+    #                 result = np.inner(rows, [Y_reshape[p1, p2], Y_reshape[p1, p3], Y_reshape[p2, p3]])
+    #                 if result < -1:
+    #                     count += 1
+    #                     triangle_constraints.append(Constraint([p1,p2,p3],rows,result)) 
+    # #                    if count == number:
+    #     #                           return triangle_constraints
+
+    try:
+        #triangle_constraints.sort(key=lambda x: x[4])
+        triangle_constraints.sort(key=lambda x: x.lhs)
+    except Exception as error:
+        print(error)
     #print("Number of violated triangles:", count)
     #print("Out of separation loop")
     return triangle_constraints
         
+def print_stats(filename, values): ## This one we can do at the end of the program
+    stats =     ["STAH", "Instance", "#departments", "#ND-Points", "Total-Time"]
+    #values =    ["STAT", filename, str(instance.n), str(len(domiantedpoints)) ]
+    values = ["STAT", filename] + values
+    print(",".join(stats))
+    print(",".join(values))
+    
+def print_stats_detailed(stats_list, filename): 
+    df = pd.DataFrame(stats_list[:-1])
+    df.to_csv(filename+".csv", index=False)
+    filename_caption = filename.split("/")[-1].replace("_","\textunderscore")
+    df.to_latex(filename+".tex", index=False, float_format="%.2f", caption="Non-dominated points statistics for instance "+filename_caption, label="tab:"+filename)
+        
+    
 def main(argv):
     ## Read the arguments
     inputfile, inputfile2 = argument_parser(argv)
       
     ## Set the path to the output file
-    output_file = "plots/"+inputfile.split("/")[-1]+"_"+inputfile2.split("/")[-1]+".txt"
+    output_file_basename = inputfile.split("/")[-1]+"_"+inputfile2.split("/")[-1]
+    output_file = "plots/"+output_file_basename+".txt"
     
     ## Set the standard output to the output file and console
     sys.stdout = Logger(output_file)
@@ -963,12 +1181,26 @@ def main(argv):
     
     ## Run the epsilon constraint method
     start_time = time.time()
-    domiantedpoints, time_list = epsilon_constraint(instance)
+    
+    
+    
+    domiantedpoints, time_list, stats_ls = epsilon_constraint(instance)
     domiantedpoints = domiantedpoints[0:-1]
     print(domiantedpoints)
+    total_time = time.time() - start_time
     print("")
-    print("--- %s seconds ---" % (time.time() - start_time))
+    print("--- %s seconds ---" % (total_time))
     print("Mean time:", np.mean(time_list))
+    
+    to_remove = []
+    for i in range(0, len(domiantedpoints)-1):
+        if domiantedpoints[i][0] == domiantedpoints[i+1][0]:
+            to_remove.append(i)
+    for i in to_remove:
+        domiantedpoints.remove(domiantedpoints[i])
+            
+    print_stats(output_file_basename, [str(instance.n), str(len(domiantedpoints)), str(total_time)])    
+    print_stats_detailed(stats_ls, "plots/"+output_file_basename+"_detailed")
 
     plt.scatter(*zip(*domiantedpoints))
     plot_name = "plots/plot_"+inputfile.split("/")[-1]+"_"+inputfile2.split("/")[-1]+".pdf"

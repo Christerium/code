@@ -1,55 +1,28 @@
 Input file 1 is instance/LW5
 Input file 2 is instance/H5
 
-Total time: 0.03315234184265137 seconds
+Root without cuts: 150.33333649006147
+Total time: 0.022170305252075195 seconds
 Objective1: 151.0, Objective2: 184.0 
 
-Total solver time: 0.1560683250427246 seconds
-Total bNb time: 0.004386186599731445 seconds
-Number of nodes processed: 15
-Total time: 0.16046643257141113 seconds
-Objective1: 158.0, Objective2: 171.0 
+Root without cuts: 151.13699868589296
+Error:  'NoneType' object has no attribute 'remove'
+Root without cuts: 151.19047638691808
+Added cuts:  285
+Error:  rescode.err_index_is_too_small(1203): The index value -1 occurring in argument 'asub' is too small.
 
-Total solver time: 0.16482853889465332 seconds
-Total bNb time: 0.004397869110107422 seconds
-Number of nodes processed: 15
-Total time: 0.16924118995666504 seconds
-Objective1: 159.0, Objective2: 156.0 
-
-Total solver time: 0.13164949417114258 seconds
-Total bNb time: 0.0030944347381591797 seconds
-Number of nodes processed: 9
-Total time: 0.13475823402404785 seconds
-Objective1: 159.0, Objective2: 142.0 
-
-Total solver time: 0.08409810066223145 seconds
-Total bNb time: 0.0019040107727050781 seconds
-Number of nodes processed: 7
-Total time: 0.08601546287536621 seconds
-Objective1: 162.0, Objective2: 137.0 
-
-Total solver time: 0.1255655288696289 seconds
-Total bNb time: 0.002454519271850586 seconds
-Number of nodes processed: 11
-Total time: 0.1280355453491211 seconds
-Objective1: 175.0, Objective2: 134.0 
-
-Total solver time: 0.156752347946167 seconds
-Total bNb time: 0.003575563430786133 seconds
-Number of nodes processed: 13
-Total time: 0.16034793853759766 seconds
-Objective1: 177.0, Objective2: 122.0 
-
-Total solver time: 0.05205059051513672 seconds
-Total bNb time: 0.0009827613830566406 seconds
-Number of nodes processed: 5
-Total time: 0.05305337905883789 seconds
-Objective1: 181.0, Objective2: 112.0 
-
-Total time: 0.006572246551513672 seconds
-Objective1: 999999999, Objective2: 999999999 
-
-[(151.0, 184.0), (158.0, 171.0), (159.0, 156.0), (159.0, 142.0), (162.0, 137.0), (175.0, 134.0), (177.0, 122.0), (181.0, 112.0)]
-
---- 0.9318587779998779 seconds ---
-Mean time: 0.1035158634185791
+Root without cuts: 151.13699868589296
+Here: 'NoneType' object has no attribute 'index'
+Error:  'NoneType' object has no attribute 'remove'
+Root without cuts: 151.1904764294892
+Here: 'NoneType' object has no attribute 'index'
+Error:  'NoneType' object has no attribute 'remove'
+Root without cuts: 151.19047619582074
+Here: 'NoneType' object has no attribute 'index'
+Error:  'NoneType' object has no attribute 'remove'
+Root without cuts: 151.1904761908195
+Here: 'NoneType' object has no attribute 'index'
+Error:  'NoneType' object has no attribute 'remove'
+Root without cuts: 151.1904761913897
+Here: 'NoneType' object has no attribute 'index'
+Error:  'NoneType' object has no attribute 'remove'

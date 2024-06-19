@@ -1,0 +1,3 @@
+Input file 1 is instance/H12
+Input file 2 is instance/SRFLP12
+

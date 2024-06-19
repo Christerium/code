@@ -1,0 +1,568 @@
+Input file 1 is instance/S11
+Input file 2 is instance/SRFLP11
+
+LookupError:  index 0 is out of bounds for axis 0 with size 0
+Root without cuts: 6097.721196890741
+Root without cuts: 6212.640358713862 6097.721196890741
+Root without cuts: 6342.585204672911 6212.640358713862
+Root without cuts: 6427.188095063152 6342.585204672911
+Root without cuts: 6522.001790563896 6427.188095063152
+Root without cuts: 6592.503433021666 6522.001790563896
+Root without cuts: 6664.820130254958 6592.503433021666
+Root without cuts: 6681.427506766145 6664.820130254958
+Root without cuts: 6714.861759654565 6681.427506766145
+Root without cuts: 6740.335039083134 6714.861759654565
+Root without cuts: 6776.94474847418 6740.335039083134
+Root without cuts: 6793.9896508665415 6776.94474847418
+Root without cuts: 6813.288536250792 6793.9896508665415
+Root without cuts: 6834.527374327443 6813.288536250792
+Root without cuts: 6847.943673580166 6834.527374327443
+Root without cuts: 6862.093712145349 6847.943673580166
+Root without cuts: 6868.2211324927475 6862.093712145349
+Root without cuts: 6873.013021460606 6868.2211324927475
+Root without cuts: 6889.6624194179485 6873.013021460606
+Root without cuts: 6896.774439036813 6889.6624194179485
+Root without cuts: 6912.464019147561 6896.774439036813
+Root without cuts: 6921.375983214285 6912.464019147561
+Root without cuts: 6925.899983057187 6921.375983214285
+Root without cuts: 6928.57839506699 6925.899983057187
+Root without cuts: 6929.11540236259 6928.57839506699
+Root without cuts: 6930.195170427272 6929.11540236259
+Root without cuts: 6932.0887762339335 6930.195170427272
+Root without cuts: 6933.511409172997 6932.0887762339335
+Number of triangle constraints:  152
+Total time: 6.985217809677124 seconds
+Objective1: 6933.5, Objective2: 3483.5 
+
+Root without cuts: 6933.56154728681
+Root without cuts: 6933.589319159643 6933.56154728681
+Root without cuts: 6933.602822784524 6933.589319159643
+Root without cuts: 6933.656007378395 6933.602822784524
+Root without cuts: 6933.663927284387 6933.656007378395
+No improvement
+Root with cuts: 6933.663927284387
+Number of triangle constraints:  184
+Total solver time: 3.196633815765381 seconds
+Total bNb time: 0.11819171905517578 seconds
+Number of nodes processed: 27
+Total time: 3.3148417472839355 seconds
+Objective1: 6943.5, Objective2: 3440.5 
+
+Root without cuts: 6940.973641737525
+Root without cuts: 6941.882978807542 6940.973641737525
+Root without cuts: 6942.178510834251 6941.882978807542
+Root without cuts: 6942.523086787185 6942.178510834251
+Root without cuts: 6943.692541700408 6942.523086787185
+Root without cuts: 6943.719827765452 6943.692541700408
+Root without cuts: 6943.748681248278 6943.719827765452
+Root without cuts: 6943.762494057252 6943.748681248278
+Root without cuts: 6943.780063305073 6943.762494057252
+Root without cuts: 6943.802758865396 6943.780063305073
+Root without cuts: 6943.832185135416 6943.802758865396
+Root without cuts: 6943.871869224332 6943.832185135416
+Root without cuts: 6943.872715280725 6943.871869224332
+No improvement
+Root with cuts: 6943.872715280725
+Number of triangle constraints:  221
+Total solver time: 6.3808300495147705 seconds
+Total bNb time: 0.14344263076782227 seconds
+Number of nodes processed: 33
+Total time: 6.524287700653076 seconds
+Objective1: 6965.5, Objective2: 3420.5 
+
+Root without cuts: 6951.352318949864
+Root without cuts: 6951.575277545463 6951.352318949864
+Root without cuts: 6952.694568278606 6951.575277545463
+Root without cuts: 6952.863998772294 6952.694568278606
+Root without cuts: 6953.222669587724 6952.863998772294
+Root without cuts: 6953.332778071907 6953.222669587724
+Root without cuts: 6953.962538352037 6953.332778071907
+Root without cuts: 6954.240595483448 6953.962538352037
+Root without cuts: 6954.411593821822 6954.240595483448
+Root without cuts: 6954.47478313933 6954.411593821822
+Root without cuts: 6954.8570433186205 6954.47478313933
+Root without cuts: 6955.252505747669 6954.8570433186205
+Root without cuts: 6955.867119036494 6955.252505747669
+Root without cuts: 6956.077732339245 6955.867119036494
+Root without cuts: 6956.655512394264 6956.077732339245
+Root without cuts: 6956.671099885008 6956.655512394264
+Root without cuts: 6956.894653633631 6956.671099885008
+Root without cuts: 6957.220112488735 6956.894653633631
+Root without cuts: 6957.81133442472 6957.220112488735
+Root without cuts: 6957.980516948185 6957.81133442472
+Root without cuts: 6958.319874260129 6957.980516948185
+Root without cuts: 6958.347810010786 6958.319874260129
+Root without cuts: 6958.4339292489 6958.347810010786
+Root without cuts: 6958.500041126347 6958.4339292489
+Root without cuts: 6958.500029469526 6958.500041126347
+No improvement
+Root with cuts: 6958.500029469526
+Number of triangle constraints:  233
+Total solver time: 10.50286316871643 seconds
+Total bNb time: 0.15981483459472656 seconds
+Number of nodes processed: 35
+Total time: 10.66269302368164 seconds
+Objective1: 6983.5, Objective2: 3384.5 
+
+Root without cuts: 6984.22254483734
+Root without cuts: 6984.237461663417 6984.22254483734
+Root without cuts: 6984.302376588402 6984.237461663417
+Root without cuts: 6984.330828107973 6984.302376588402
+Root without cuts: 6984.335855727554 6984.330828107973
+No improvement
+Root with cuts: 6984.335855727554
+Number of triangle constraints:  261
+Total solver time: 4.655080556869507 seconds
+Total bNb time: 0.13283586502075195 seconds
+Number of nodes processed: 31
+Total time: 4.787932395935059 seconds
+Objective1: 7005.5, Objective2: 3364.5 
+
+Root without cuts: 7001.064090315756
+Root without cuts: 7001.303162215741 7001.064090315756
+Root without cuts: 7001.506218908765 7001.303162215741
+Root without cuts: 7001.834349297956 7001.506218908765
+Root without cuts: 7001.954878502917 7001.834349297956
+Root without cuts: 7002.362969459574 7001.954878502917
+Root without cuts: 7002.531380554656 7002.362969459574
+Root without cuts: 7002.642297666722 7002.531380554656
+Root without cuts: 7002.647779973936 7002.642297666722
+No improvement
+Root with cuts: 7002.647779973936
+Number of triangle constraints:  263
+Total solver time: 6.351006031036377 seconds
+Total bNb time: 0.16181254386901855 seconds
+Number of nodes processed: 35
+Total time: 6.512834548950195 seconds
+Objective1: 7037.5, Objective2: 3362.5 
+
+Root without cuts: 7004.471872025048
+Root without cuts: 7004.8328777780225 7004.471872025048
+Root without cuts: 7005.070032519079 7004.8328777780225
+Root without cuts: 7005.074302891535 7005.070032519079
+No improvement
+Root with cuts: 7005.074302891535
+Number of triangle constraints:  271
+Total solver time: 9.37514853477478 seconds
+Total bNb time: 0.31488704681396484 seconds
+Number of nodes processed: 69
+Total time: 9.690051078796387 seconds
+Objective1: 7102.5, Objective2: 3281.5 
+
+Root without cuts: 7081.074815288483
+Root without cuts: 7081.313972072029 7081.074815288483
+Root without cuts: 7081.315043042998 7081.313972072029
+No improvement
+Root with cuts: 7081.315043042998
+Number of triangle constraints:  280
+Total solver time: 4.311332702636719 seconds
+Total bNb time: 0.14441800117492676 seconds
+Number of nodes processed: 31
+Total time: 4.45576548576355 seconds
+Objective1: 7124.5, Objective2: 3261.5 
+
+Root without cuts: 7100.125594937696
+Root without cuts: 7100.125554246617 7100.125594937696
+No improvement
+Root with cuts: 7100.125554246617
+Number of triangle constraints:  280
+Total solver time: 4.431684255599976 seconds
+Total bNb time: 0.15097904205322266 seconds
+Number of nodes processed: 33
+Total time: 4.582690954208374 seconds
+Objective1: 7142.5, Objective2: 3225.5 
+
+Root without cuts: 7133.984645741606
+Root without cuts: 7133.984597677316 7133.984645741606
+No improvement
+Root with cuts: 7133.984597677316
+Number of triangle constraints:  280
+Total solver time: 3.6412625312805176 seconds
+Total bNb time: 0.1233968734741211 seconds
+Number of nodes processed: 27
+Total time: 3.7646937370300293 seconds
+Objective1: 7164.5, Objective2: 3205.5 
+
+Root without cuts: 7152.795212487228
+Root without cuts: 7152.795159650191 7152.795212487228
+No improvement
+Root with cuts: 7152.795159650191
+Number of triangle constraints:  280
+Total solver time: 5.397550582885742 seconds
+Total bNb time: 0.17707133293151855 seconds
+Number of nodes processed: 39
+Total time: 5.574649095535278 seconds
+Objective1: 7196.5, Objective2: 3203.5 
+
+Root without cuts: 7154.676268001584
+Root without cuts: 7154.6762162125115 7154.676268001584
+No improvement
+Root with cuts: 7154.6762162125115
+Number of triangle constraints:  280
+Total solver time: 16.218440771102905 seconds
+Total bNb time: 0.5607256889343262 seconds
+Number of nodes processed: 125
+Total time: 16.779193878173828 seconds
+Objective1: 7269.5, Objective2: 3176.5 
+
+Root without cuts: 7180.070496665958
+Root without cuts: 7180.070489967321 7180.070496665958
+No improvement
+Root with cuts: 7180.070489967321
+Number of triangle constraints:  280
+Total solver time: 7.545470714569092 seconds
+Total bNb time: 0.27036046981811523 seconds
+Number of nodes processed: 59
+Total time: 7.815858840942383 seconds
+Objective1: 7271.5, Objective2: 3160.5 
+
+Root without cuts: 7195.118969362643
+Root without cuts: 7195.11899013662 7195.118969362643
+No improvement
+Root with cuts: 7195.11899013662
+Number of triangle constraints:  280
+Total solver time: 7.331375598907471 seconds
+Total bNb time: 0.2640259265899658 seconds
+Number of nodes processed: 57
+Total time: 7.595430850982666 seconds
+Objective1: 7286.5, Objective2: 3139.5 
+
+Root without cuts: 7214.87004573396
+Root without cuts: 7214.870086470709 7214.87004573396
+No improvement
+Root with cuts: 7214.870086470709
+Number of triangle constraints:  280
+Total solver time: 7.971150159835815 seconds
+Total bNb time: 0.29097914695739746 seconds
+Number of nodes processed: 63
+Total time: 8.262155771255493 seconds
+Objective1: 7311.5, Objective2: 3088.5 
+
+Root without cuts: 7262.837024243397
+Root without cuts: 7262.837029992453 7262.837024243397
+No improvement
+Root with cuts: 7262.837029992453
+Number of triangle constraints:  280
+Total solver time: 6.830621719360352 seconds
+Total bNb time: 0.2237532138824463 seconds
+Number of nodes processed: 49
+Total time: 7.054403781890869 seconds
+Objective1: 7345.5, Objective2: 3037.5 
+
+Root without cuts: 7310.804026409944
+Root without cuts: 7310.803968188774 7310.804026409944
+No improvement
+Root with cuts: 7310.803968188774
+Number of triangle constraints:  280
+Total solver time: 4.963781356811523 seconds
+Total bNb time: 0.1584491729736328 seconds
+Number of nodes processed: 35
+Total time: 5.122342109680176 seconds
+Objective1: 7376.5, Objective2: 2981.5 
+
+Root without cuts: 7363.473574232534
+Root without cuts: 7363.473579689227 7363.473574232534
+No improvement
+Root with cuts: 7363.473579689227
+Number of triangle constraints:  280
+Total solver time: 3.6229517459869385 seconds
+Total bNb time: 0.1162111759185791 seconds
+Number of nodes processed: 25
+Total time: 3.7391905784606934 seconds
+Objective1: 7410.5, Objective2: 2930.5 
+
+Root without cuts: 7412.00498918413
+Root without cuts: 7412.121365420723 7412.00498918413
+Root without cuts: 7412.180794917493 7412.121365420723
+Root without cuts: 7412.229310725332 7412.180794917493
+Root without cuts: 7412.272653034696 7412.229310725332
+Root without cuts: 7412.499345440315 7412.272653034696
+Root without cuts: 7412.605456978568 7412.499345440315
+Root without cuts: 7412.640537979503 7412.605456978568
+Root without cuts: 7412.713817371349 7412.640537979503
+Root without cuts: 7412.734120733723 7412.713817371349
+Root without cuts: 7412.759337421532 7412.734120733723
+Root without cuts: 7412.775404262852 7412.759337421532
+Root without cuts: 7412.782380026561 7412.775404262852
+No improvement
+Root with cuts: 7412.782380026561
+Number of triangle constraints:  351
+Total solver time: 8.057600259780884 seconds
+Total bNb time: 0.12053179740905762 seconds
+Number of nodes processed: 27
+Total time: 8.178147077560425 seconds
+Objective1: 7492.5, Objective2: 2898.5 
+
+Root without cuts: 7485.846722203466
+Root without cuts: 7485.928608382789 7485.846722203466
+Root without cuts: 7485.928606094117 7485.928608382789
+No improvement
+Root with cuts: 7485.928606094117
+Number of triangle constraints:  287
+Total solver time: 6.305908203125 seconds
+Total bNb time: 0.19520878791809082 seconds
+Number of nodes processed: 43
+Total time: 6.501132488250732 seconds
+Objective1: 7570.5, Objective2: 2860.5 
+
+Root without cuts: 7572.925799501774
+Root without cuts: 7573.03053431548 7572.925799501774
+Root without cuts: 7573.16857104964 7573.03053431548
+Root without cuts: 7573.2448820557665 7573.16857104964
+Root without cuts: 7573.257475568688 7573.2448820557665
+Root without cuts: 7573.2952093279255 7573.257475568688
+Root without cuts: 7573.30031523631 7573.2952093279255
+No improvement
+Root with cuts: 7573.30031523631
+Number of triangle constraints:  318
+Total solver time: 7.812139511108398 seconds
+Total bNb time: 0.18301868438720703 seconds
+Number of nodes processed: 39
+Total time: 7.9951770305633545 seconds
+Objective1: 7680.5, Objective2: 2834.5 
+
+Root without cuts: 7646.189147675201
+Root without cuts: 7646.220857853443 7646.189147675201
+Root without cuts: 7646.4344816107605 7646.220857853443
+Root without cuts: 7646.43700760903 7646.4344816107605
+No improvement
+Root with cuts: 7646.43700760903
+Number of triangle constraints:  323
+Total solver time: 7.727461099624634 seconds
+Total bNb time: 0.19523334503173828 seconds
+Number of nodes processed: 43
+Total time: 7.922711133956909 seconds
+Objective1: 7762.5, Objective2: 2802.5 
+
+Root without cuts: 7736.43692022047
+Root without cuts: 7736.437522202 7736.43692022047
+No improvement
+Root with cuts: 7736.437522202
+Number of triangle constraints:  323
+Total solver time: 6.441744089126587 seconds
+Total bNb time: 0.18560338020324707 seconds
+Number of nodes processed: 41
+Total time: 6.627373933792114 seconds
+Objective1: 7840.5, Objective2: 2764.5 
+
+Root without cuts: 7843.49115140795
+Root without cuts: 7843.564837167801 7843.49115140795
+Root without cuts: 7843.764876154964 7843.564837167801
+Root without cuts: 7844.032486159775 7843.764876154964
+Root without cuts: 7844.1640514278415 7844.032486159775
+Root without cuts: 7844.355627336354 7844.1640514278415
+Root without cuts: 7844.466063244477 7844.355627336354
+Root without cuts: 7844.520060807153 7844.466063244477
+Root without cuts: 7844.694229450784 7844.520060807153
+Root without cuts: 7844.8078475607235 7844.694229450784
+Root without cuts: 7844.845186345699 7844.8078475607235
+Root without cuts: 7844.86553117971 7844.845186345699
+Root without cuts: 7844.866342239952 7844.86553117971
+No improvement
+Root with cuts: 7844.866342239952
+Number of triangle constraints:  391
+Total solver time: 18.630106449127197 seconds
+Total bNb time: 0.31658363342285156 seconds
+Number of nodes processed: 83
+Total time: 18.946918725967407 seconds
+Objective1: 8246.5, Objective2: 2744.5 
+
+Root without cuts: 7932.193085361907
+Root without cuts: 7932.1930748298155 7932.193085361907
+No improvement
+Root with cuts: 7932.1930748298155
+Number of triangle constraints:  391
+Total solver time: 15.467734813690186 seconds
+Total bNb time: 0.33721399307250977 seconds
+Number of nodes processed: 83
+Total time: 15.805129528045654 seconds
+Objective1: 8323.5, Objective2: 2706.5 
+
+Root without cuts: 8098.113868891871
+Root without cuts: 8098.1138784846 8098.113868891871
+No improvement
+Root with cuts: 8098.1138784846
+Number of triangle constraints:  391
+Total solver time: 8.055340051651001 seconds
+Total bNb time: 0.19075345993041992 seconds
+Number of nodes processed: 45
+Total time: 8.246124744415283 seconds
+Objective1: 8366.5, Objective2: 2686.5 
+
+Root without cuts: 8185.440595336767
+Root without cuts: 8185.440599382808 8185.440595336767
+No improvement
+Root with cuts: 8185.440599382808
+Number of triangle constraints:  391
+Total solver time: 5.686009168624878 seconds
+Total bNb time: 0.11198544502258301 seconds
+Number of nodes processed: 33
+Total time: 5.798024892807007 seconds
+Objective1: 8368.5, Objective2: 2673.5 
+
+Root without cuts: 8242.203009280198
+Root without cuts: 8242.20301370617 8242.203009280198
+No improvement
+Root with cuts: 8242.20301370617
+Number of triangle constraints:  391
+Total solver time: 16.35812211036682 seconds
+Total bNb time: 0.36454081535339355 seconds
+Number of nodes processed: 93
+Total time: 16.72269320487976 seconds
+Objective1: 8562.5, Objective2: 2656.5 
+
+Root without cuts: 8316.430696244053
+Root without cuts: 8316.430693906355 8316.430696244053
+No improvement
+Root with cuts: 8316.430693906355
+Number of triangle constraints:  391
+Total solver time: 18.93738555908203 seconds
+Total bNb time: 0.4096713066101074 seconds
+Number of nodes processed: 109
+Total time: 19.347092866897583 seconds
+Objective1: 8622.5, Objective2: 2647.5 
+
+Root without cuts: 8355.727723737338
+Root without cuts: 8355.72773275591 8355.727723737338
+No improvement
+Root with cuts: 8355.72773275591
+Number of triangle constraints:  391
+Total solver time: 10.197435855865479 seconds
+Total bNb time: 0.22313857078552246 seconds
+Number of nodes processed: 57
+Total time: 10.420604467391968 seconds
+Objective1: 8623.5, Objective2: 2646.5 
+
+Root without cuts: 8360.094105509279
+Root without cuts: 8360.094084426233 8360.094105509279
+No improvement
+Root with cuts: 8360.094084426233
+Number of triangle constraints:  391
+Total solver time: 17.538888454437256 seconds
+Total bNb time: 0.36006903648376465 seconds
+Number of nodes processed: 101
+Total time: 17.898996353149414 seconds
+Objective1: 8643.5, Objective2: 2629.5 
+
+Root without cuts: 8434.321788921749
+Root without cuts: 8434.321784260832 8434.321788921749
+No improvement
+Root with cuts: 8434.321784260832
+Number of triangle constraints:  391
+Total solver time: 10.205140829086304 seconds
+Total bNb time: 0.2120356559753418 seconds
+Number of nodes processed: 59
+Total time: 10.417206287384033 seconds
+Objective1: 8648.5, Objective2: 2620.5 
+
+Root without cuts: 8473.618818787683
+Root without cuts: 8473.618830050915 8473.618818787683
+No improvement
+Root with cuts: 8473.618830050915
+Number of triangle constraints:  391
+Total solver time: 9.210314989089966 seconds
+Total bNb time: 0.18079185485839844 seconds
+Number of nodes processed: 53
+Total time: 9.391136169433594 seconds
+Objective1: 8668.5, Objective2: 2613.5 
+
+Root without cuts: 8504.183183758161
+Root without cuts: 8504.183197942988 8504.183183758161
+No improvement
+Root with cuts: 8504.183197942988
+Number of triangle constraints:  391
+Total solver time: 7.864599227905273 seconds
+Total bNb time: 0.15527772903442383 seconds
+Number of nodes processed: 45
+Total time: 8.01990556716919 seconds
+Objective1: 8701.5, Objective2: 2580.5 
+
+Root without cuts: 8648.272280097015
+Root without cuts: 8648.272278210086 8648.272280097015
+No improvement
+Root with cuts: 8648.272278210086
+Number of triangle constraints:  391
+Total solver time: 5.305830955505371 seconds
+Total bNb time: 0.09845566749572754 seconds
+Number of nodes processed: 29
+Total time: 5.404314994812012 seconds
+Objective1: 8722.5, Objective2: 2562.5 
+
+Root without cuts: 8728.93382661673
+Root without cuts: 8729.749779488771 8728.93382661673
+Root without cuts: 8729.876039417228 8729.749779488771
+Root without cuts: 8729.929250155215 8729.876039417228
+Root without cuts: 8729.933873121081 8729.929250155215
+No improvement
+Root with cuts: 8729.933873121081
+Number of triangle constraints:  414
+Total solver time: 7.022672176361084 seconds
+Total bNb time: 0.10396313667297363 seconds
+Number of nodes processed: 33
+Total time: 7.126651048660278 seconds
+Objective1: 8902.5, Objective2: 2538.5 
+
+Root without cuts: 8910.974090654887
+Root without cuts: 8911.235370978946 8910.974090654887
+Root without cuts: 8911.849492357289 8911.235370978946
+Root without cuts: 8912.235779270835 8911.849492357289
+Root without cuts: 8912.254743908026 8912.235779270835
+Root without cuts: 8912.29422188261 8912.254743908026
+Root without cuts: 8912.394760510057 8912.29422188261
+Root without cuts: 8912.394747128677 8912.394760510057
+No improvement
+Root with cuts: 8912.394747128677
+Number of triangle constraints:  369
+Total solver time: 7.984215497970581 seconds
+Total bNb time: 0.10723686218261719 seconds
+Number of nodes processed: 35
+Total time: 8.091612100601196 seconds
+Objective1: 9098.5, Objective2: 2524.5 
+
+Root without cuts: 9050.921073397463
+Root without cuts: 9050.921072808107 9050.921073397463
+No improvement
+Root with cuts: 9050.921072808107
+Number of triangle constraints:  369
+Total solver time: 5.568840742111206 seconds
+Total bNb time: 0.10263347625732422 seconds
+Number of nodes processed: 35
+Total time: 5.6716530323028564 seconds
+Objective1: 9249.5, Objective2: 2522.5 
+
+Root without cuts: 9070.71054927363
+Root without cuts: 9070.710541615266 9070.71054927363
+No improvement
+Root with cuts: 9070.710541615266
+Number of triangle constraints:  369
+Total solver time: 6.424152135848999 seconds
+Total bNb time: 0.11713385581970215 seconds
+Number of nodes processed: 41
+Total time: 6.541316509246826 seconds
+Objective1: 9278.5, Objective2: 2500.5 
+
+Root without cuts: 9297.336930743859
+Root without cuts: 9299.02970503211 9297.336930743859
+Root without cuts: 9300.10200422514 9299.02970503211
+Root without cuts: 9300.151799871312 9300.10200422514
+Root without cuts: 9300.161185399855 9300.151799871312
+No improvement
+Root with cuts: 9300.161185399855
+Number of triangle constraints:  364
+Total solver time: 6.483982563018799 seconds
+Total bNb time: 0.08880805969238281 seconds
+Number of nodes processed: 35
+Total time: 6.5728068351745605 seconds
+Objective1: 9625.5, Objective2: 2484.5 
+
+Get_heuristic_solution_error:  Solution status is Undefined but Optimal is expected. Reason: Accessing interior-point solution whose problem status is PrimalInfeasible.
+Error_remove_old_triangle:  Solution status is Undefined but Optimal is expected. Reason: Accessing interior-point solution whose problem status is PrimalInfeasible.
+Error_separate_triangle: Solution status is Undefined but Optimal is expected. Reason: Accessing interior-point solution whose problem status is PrimalInfeasible.
+Number of triangle constraints:  364
+Total time: 0.1533184051513672 seconds
+Objective1: 999999999, Objective2: 999999999 
+
+[(6933.5, 3483.5), (6943.5, 3440.5), (6965.5, 3420.5), (6983.5, 3384.5), (7005.5, 3364.5), (7037.5, 3362.5), (7102.5, 3281.5), (7124.5, 3261.5), (7142.5, 3225.5), (7164.5, 3205.5), (7196.5, 3203.5), (7269.5, 3176.5), (7271.5, 3160.5), (7286.5, 3139.5), (7311.5, 3088.5), (7345.5, 3037.5), (7376.5, 2981.5), (7410.5, 2930.5), (7492.5, 2898.5), (7570.5, 2860.5), (7680.5, 2834.5), (7762.5, 2802.5), (7840.5, 2764.5), (8246.5, 2744.5), (8323.5, 2706.5), (8366.5, 2686.5), (8368.5, 2673.5), (8562.5, 2656.5), (8622.5, 2647.5), (8623.5, 2646.5), (8643.5, 2629.5), (8648.5, 2620.5), (8668.5, 2613.5), (8701.5, 2580.5), (8722.5, 2562.5), (8902.5, 2538.5), (9098.5, 2524.5), (9249.5, 2522.5), (9278.5, 2500.5), (9625.5, 2484.5)]
+
+--- 341.02516651153564 seconds ---
+Mean time: 8.317665385036934
