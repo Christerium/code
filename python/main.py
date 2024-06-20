@@ -1148,14 +1148,16 @@ def separate_triangle(Y, instance, number):
         
 def print_stats(filename, values): ## This one we can do at the end of the program
     stats =     ["STAH", "Instance", "#departments", "#ND-Points", "Total-Time"]
-    #values =    ["STAT", filename, str(instance.n), str(len(domiantedpoints)) ]
+    ## values is a list of the values of the statistics
     values = ["STAT", filename] + values
     print(",".join(stats))
     print(",".join(values))
     
 def print_stats_detailed(stats_list, filename): 
+    ## stats_list is a list of dicitonaries, where the keys are the column names
     df = pd.DataFrame(stats_list[:-1])
     df.to_csv(filename+".csv", index=False)
+    ## This is just for writing the latex table, you might need to change the filenames accordingly 
     filename_caption = filename.split("/")[-1].replace("_","\textunderscore")
     df.to_latex(filename+".tex", index=False, float_format="%.2f", caption="Non-dominated points statistics for instance "+filename_caption, label="tab:"+filename)
         

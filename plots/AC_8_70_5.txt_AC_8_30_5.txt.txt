@@ -1,0 +1,97 @@
+Input file 1 is instance/AC_8_70_5.txt
+Input file 2 is instance/AC_8_30_5.txt
+
+Total solver time: 0.09149980545043945 seconds
+Total bNb time: 0.003537416458129883 seconds
+Number of nodes processed: 1
+Rootgap: 0.9999998326775166
+Rootgap to optimal:  0.004032837583292938
+Total time: 0.09508132934570312 seconds
+Objective1: 168.0, Objective2: 873.0 
+
+Total solver time: 0.3994767665863037 seconds
+Total bNb time: 0.025859832763671875 seconds
+Number of nodes processed: 15
+Rootgap: 0.9999998326775447
+Rootgap to optimal:  0.02719502790625839
+Total time: 0.4253690242767334 seconds
+Objective1: 172.0, Objective2: 805.0 
+
+Total solver time: 0.33521199226379395 seconds
+Total bNb time: 0.022927522659301758 seconds
+Number of nodes processed: 13
+Rootgap: 0.999999830434552
+Rootgap to optimal:  0.036559955592232546
+Total time: 0.3581836223602295 seconds
+Objective1: 176.0, Objective2: 777.0 
+
+Total solver time: 0.8821618556976318 seconds
+Total bNb time: 0.055295705795288086 seconds
+Number of nodes processed: 29
+Rootgap: 0.9999998272699661
+Rootgap to optimal:  0.06632414199741807
+Total time: 0.9375159740447998 seconds
+Objective1: 185.0, Objective2: 751.0 
+
+Total solver time: 0.6907436847686768 seconds
+Total bNb time: 0.044474124908447266 seconds
+Number of nodes processed: 25
+Rootgap: 0.9999998205174053
+Rootgap to optimal:  0.05535476576204073
+Total time: 0.7352497577667236 seconds
+Objective1: 190.0, Objective2: 726.0 
+
+Total solver time: 0.48314809799194336 seconds
+Total bNb time: 0.029012441635131836 seconds
+Number of nodes processed: 17
+Rootgap: 0.9999998118493462
+Rootgap to optimal:  0.059246731856262044
+Total time: 0.5121982097625732 seconds
+Objective1: 200.0, Objective2: 711.0 
+
+Total solver time: 0.40041494369506836 seconds
+Total bNb time: 0.022637605667114258 seconds
+Number of nodes processed: 13
+Rootgap: 0.9999998058665228
+Rootgap to optimal:  0.053007429530559765
+Total time: 0.42308998107910156 seconds
+Objective1: 205.0, Objective2: 686.0 
+
+Total solver time: 0.3158242702484131 seconds
+Total bNb time: 0.015260457992553711 seconds
+Number of nodes processed: 13
+Rootgap: 0.9999997926744881
+Rootgap to optimal:  0.09858473202217931
+Total time: 0.3311164379119873 seconds
+Objective1: 230.0, Objective2: 681.0 
+
+Total solver time: 0.39896106719970703 seconds
+Total bNb time: 0.016828536987304688 seconds
+Number of nodes processed: 15
+Rootgap: 0.9999997787745613
+Rootgap to optimal:  0.33365831801381207
+Total time: 0.41582536697387695 seconds
+Objective1: 332.0, Objective2: 677.0 
+
+Total solver time: 0.4525003433227539 seconds
+Total bNb time: 0.018522977828979492 seconds
+Number of nodes processed: 17
+Rootgap: 0.9999997634284339
+Rootgap to optimal:  0.33733454930576634
+Total time: 0.47106122970581055 seconds
+Objective1: 357.0, Objective2: 672.0 
+
+Total solver time: 0.11090350151062012 seconds
+Total bNb time: 0.0043659210205078125 seconds
+Number of nodes processed: 5
+Rootgap: 0.9999997327628165
+Rootgap to optimal:  0.9999997327628165
+Total time: 0.11529946327209473 seconds
+Objective1: 999999999, Objective2: 999999999 
+
+[(168.0, 873.0), (172.0, 805.0), (176.0, 777.0), (185.0, 751.0), (190.0, 726.0), (200.0, 711.0), (205.0, 686.0), (230.0, 681.0), (332.0, 677.0), (357.0, 672.0)]
+
+--- 4.82025408744812 seconds ---
+Mean time: 0.4381809451363303
+STAH,Instance,#departments,#ND-Points,Total-Time
+STAT,AC_8_70_5.txt_AC_8_30_5.txt,8,10,4.82025408744812
