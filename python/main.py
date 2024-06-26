@@ -1218,10 +1218,12 @@ def print_stats(filename, values): ## This one we can do at the end of the progr
 def print_stats_detailed(stats_list, filename): 
     ## stats_list is a list of dicitonaries, where the keys are the column names
     df = pd.DataFrame(stats_list[:-1])
-    df.to_csv(filename+".csv", index=False)
+    with open(filename+".txt", 'w') as file:
+        df.to_csv(file, index=False)
     ## This is just for writing the latex table, you might need to change the filenames accordingly 
     filename_caption = filename.split("/")[-1].replace("_","\textunderscore")
-    df.to_latex(filename+".tex", index=False, float_format="%.2f", caption="Non-dominated points statistics for instance "+filename_caption, label="tab:"+filename)
+    with open(filename+".tex", 'w') as file:
+        df.to_latex(file, index=False, float_format="%.2f", caption="Non-dominated points statistics for instance "+filename_caption, label="tab:"+filename)
     
 def main(argv):
     ## Read the arguments
@@ -1268,6 +1270,7 @@ def main(argv):
     plt.scatter(*zip(*domiantedpoints))
     plot_name = "plots/plot_"+inputfile.split("/")[-1]+"_"+inputfile2.split("/")[-1]+".pdf"
     plt.savefig(plot_name)
-
+    plt.close()
+    
 if __name__ == "__main__":
     main(sys.argv[1:])
