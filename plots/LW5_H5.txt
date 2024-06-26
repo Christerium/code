@@ -1,28 +1,90 @@
 Input file 1 is instance/LW5
 Input file 2 is instance/H5
 
-Root without cuts: 150.33333649006147
-Total time: 0.022170305252075195 seconds
+Terminal node reached
+Total solver time: 0.03374481201171875 seconds
+Total bNb time: 0.0004000663757324219 seconds
+Number of nodes processed: 1
+Rootgap: 0.9999998496666633
+Rootgap to optimal:  0.004414990132043247
+Total time: 0.03418374061584473 seconds
 Objective1: 151.0, Objective2: 184.0 
 
-Root without cuts: 151.13699868589296
-Error:  'NoneType' object has no attribute 'remove'
-Root without cuts: 151.19047638691808
-Added cuts:  285
-Error:  rescode.err_index_is_too_small(1203): The index value -1 occurring in argument 'asub' is too small.
+Optimal solution found
+Total solver time: 0.21032166481018066 seconds
+Total bNb time: 0.008362054824829102 seconds
+Number of nodes processed: 15
+Rootgap: 0.9999998488630012
+Rootgap to optimal:  0.043436717177892645
+Total time: 0.2187337875366211 seconds
+Objective1: 158.0, Objective2: 171.0 
 
-Root without cuts: 151.13699868589296
-Here: 'NoneType' object has no attribute 'index'
-Error:  'NoneType' object has no attribute 'remove'
-Root without cuts: 151.1904764294892
-Here: 'NoneType' object has no attribute 'index'
-Error:  'NoneType' object has no attribute 'remove'
-Root without cuts: 151.19047619582074
-Here: 'NoneType' object has no attribute 'index'
-Error:  'NoneType' object has no attribute 'remove'
-Root without cuts: 151.1904761908195
-Here: 'NoneType' object has no attribute 'index'
-Error:  'NoneType' object has no attribute 'remove'
-Root without cuts: 151.1904761913897
-Here: 'NoneType' object has no attribute 'index'
-Error:  'NoneType' object has no attribute 'remove'
+Optimal solution found
+Total solver time: 0.2064495086669922 seconds
+Total bNb time: 0.010290384292602539 seconds
+Number of nodes processed: 15
+Rootgap: 0.9999998466608099
+Rootgap to optimal:  0.03560257849960099
+Total time: 0.21676945686340332 seconds
+Objective1: 159.0, Objective2: 156.0 
+
+Optimal solution found
+Total solver time: 0.14379620552062988 seconds
+Total bNb time: 0.007646799087524414 seconds
+Number of nodes processed: 11
+Rootgap: 0.9999998437451653
+Rootgap to optimal:  0.017265191471165838
+Total time: 0.1515185832977295 seconds
+Objective1: 159.0, Objective2: 142.0 
+
+Optimal solution found
+Total solver time: 0.09089303016662598 seconds
+Total bNb time: 0.0034110546112060547 seconds
+Number of nodes processed: 7
+Rootgap: 0.9999998407592667
+Rootgap to optimal:  0.017032511652841562
+Total time: 0.09435200691223145 seconds
+Objective1: 162.0, Objective2: 137.0 
+
+Optimal solution found
+Total solver time: 0.12831997871398926 seconds
+Total bNb time: 0.003717184066772461 seconds
+Number of nodes processed: 11
+Rootgap: 0.9999998383542865
+Rootgap to optimal:  0.07631020982957108
+Total time: 0.13207101821899414 seconds
+Objective1: 175.0, Objective2: 134.0 
+
+Optimal solution found
+Total solver time: 0.14866137504577637 seconds
+Total bNb time: 0.004441261291503906 seconds
+Number of nodes processed: 15
+Rootgap: 0.9999998363249818
+Rootgap to optimal:  0.07528238393824606
+Total time: 0.15313100814819336 seconds
+Objective1: 177.0, Objective2: 122.0 
+
+Optimal solution found
+Total solver time: 0.06438469886779785 seconds
+Total bNb time: 0.002488374710083008 seconds
+Number of nodes processed: 7
+Rootgap: 0.9999998275711289
+Rootgap to optimal:  0.0473543046334319
+Total time: 0.06690382957458496 seconds
+Objective1: 181.0, Objective2: 112.0 
+
+Terminal node reached
+Total solver time: 0.006780862808227539 seconds
+Total bNb time: 6.175041198730469e-05 seconds
+Number of nodes processed: 1
+Rootgap: 1.0
+Rootgap to optimal:  1.0
+Total time: 0.0069026947021484375 seconds
+Objective1: 999999999, Objective2: 999999999 
+
+[(151.0, 184.0), (158.0, 171.0), (159.0, 156.0), (159.0, 142.0), (162.0, 137.0), (175.0, 134.0), (177.0, 122.0), (181.0, 112.0)]
+
+--- 1.0748584270477295 seconds ---
+Mean time: 0.11939623620775011
+STAH,Instance,#departments,#ND-Points,Total-Time
+STAT,LW5_H5,5,7,1.0748584270477295

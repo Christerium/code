@@ -22,7 +22,7 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "args" : ["-i", "S8", "-j", "S8H"]
+            "args" : ["-i", "AC_8_70_5", "-j", "AC_8_30_5"]
         }
     ]
 }

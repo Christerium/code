@@ -62,17 +62,35 @@ class Solution(NamedTuple):
     Y: list
     
 # NamedTuple for the instance as it is immutable
-class Instance(NamedTuple):
-    pairs: list
-    lengths: list
-    costs1: list
-    costs2: list
-    cost_matrix1: np.matrix
-    cost_matrix2: np.matrix
-    dim: int
-    n: int
-    K: float
-    K2: float
+# class Instance(NamedTuple):
+#     pairs: list
+#     lengths: list
+#     costs1: list
+#     costs2: list
+#     cost_matrix1: np.matrix
+#     cost_matrix2: np.matrix
+#     dim: int
+#     n: int
+#     K: float
+#     K2: float
+#     obj_int = False
+#     obj_int2 = False
+    
+class Instance():
+    def __init__(self, pairs, lengths, costs1, costs2, cost_matrix1, cost_matrix2, dim, n, K, K2, obj_int, obj_int2):
+        self.pairs = pairs
+        self.lengths = lengths
+        self.costs1 = costs1
+        self.costs2 = costs2
+        self.cost_matrix1 = cost_matrix1
+        self.cost_matrix2 = cost_matrix2
+        self.dim = dim
+        self.n = n
+        self.K = K
+        self.K2 = K2
+        self.obj_int = obj_int
+        self.obj_int2 = obj_int2
+        
     
 ##  Creating a class Constraint, to store the triangle constraints. 
 #   I plan on having a dictionary of constraints, which I add to the model. Then I get the tight constraints and remove the others. 
@@ -143,6 +161,19 @@ def read_instance(instance_file1, instance_file2):
     cost_matrix = define_costmatrix(pairs, costs, lengths)
     K = np.sum(costs)*np.sum(lengths)/2
     
+    sum_int = 0
+    obj_int = False
+    for i in range(len(pairs)):
+        k,l = pairs[i]
+        sum_int += costs[i]/2 * (lengths[k-1]+lengths[l-1])
+    if sum_int % 1 == 0:
+        obj_int = True
+    else:
+        obj_int = False
+        
+            
+            
+    
     # Code for the second objective function / not working with existing instances
     """
     if os.path.exists("cost_vector_"+str(len(costs))+".txt"):
@@ -170,7 +201,17 @@ def read_instance(instance_file1, instance_file2):
     cost_matrix2 = define_costmatrix(pairs, costs2, lengths)
     K2 = np.sum(costs2)*np.sum(lengths)/2
     
-    return Instance(pairs, lengths, costs, costs2, cost_matrix, cost_matrix2, len(pairs), len(lengths), K, K2)
+    sum_int2 = 0
+    obj_int2 = False
+    for i in range(len(pairs)):
+        k,l = pairs[i]
+        sum_int2 += costs2[i]/2 * (lengths[k-1]+lengths[l-1])
+    if sum_int2 % 1 == 0:
+        obj_int2 = True
+    else:
+        obj_int2 = False
+    
+    return Instance(pairs, lengths, costs, costs2, cost_matrix, cost_matrix2, len(pairs), len(lengths), K, K2, obj_int, obj_int2)
 
 # Get the index of the element in the matrix
 def get_index(i, j, n):
@@ -750,13 +791,26 @@ def updateNode(node, solution, vl):
             pass
             # node.ub = MAX_INT
                 
-def update_bounds(openNodes, global_lb, global_ub):
+def update_bounds(openNodes, global_lb, global_ub, instance):
     # Sort the openNodes list to get the node with the lowest lower bound
     sortedNodes = sorted(openNodes)
     
+    lb = sortedNodes[0].lb - EPSOPT
+    if instance.obj_int:
+        betterLB = math.ceil(lb)
+    elif lb - math.floor(lb) < 0.5:
+        betterLB = math.floor(sortedNodes[0].lb) + 0.5
+    elif lb - math.floor(lb) == 0.5:
+        betterLB = lb
+    else:
+        betterLB = math.ceil(lb) + 0.5
+        
+    
     # Calculate the new lower bound
-    betterLB = math.ceil(sortedNodes[0].lb * 2.0) / 2.0
-    global_lb = betterLB
+    betterLB = math.ceil((sortedNodes[0].lb - EPSOPT) * 2.0) / 2.0
+    #betterLB = sortedNodes[0].lb -EPSOPT
+    if betterLB > global_lb:
+        global_lb = betterLB
     
     # Calculate the new upper bound
     for node in openNodes:
@@ -837,7 +891,7 @@ def bNb(instance, vl, lb):
         
         # Update the global bounds
         if openNodes:
-            global_lb, global_ub = update_bounds(openNodes, global_lb, global_ub)
+            global_lb, global_ub = update_bounds(openNodes, global_lb, global_ub, instance)
             for node in openNodes:
                 if node.lb > global_ub:
                     openNodes.remove(node)
@@ -868,6 +922,8 @@ def branch_and_bound2(instance, vl, triangle_constraints):
     incumbent = Solution(False, -1, -1, 0, MAX_INT, MAX_INT, [], [])
     solver_time = []
     is_terminal = False
+    
+    #print("Instance: ", instance.obj_int, instance.obj_int2)
     
     ## Initialize the root node
     openNodes = [Node(index=0, level=0, lb=0, ub=MAX_INT, constraints=[], solved=False, Y=[])]
@@ -907,6 +963,7 @@ def branch_and_bound2(instance, vl, triangle_constraints):
         rootNode.lb = root_sol.lb
         global_lb = root_sol.lb   
         
+      
         # # TODO In general, try to only have a openNodes list, nodes and solution, maybe a processed nodes list
         
         # ## Calculate the heuristic solution of the root node and the objective values
@@ -928,6 +985,7 @@ def branch_and_bound2(instance, vl, triangle_constraints):
     ## Start with the branching process
     while openNodes:
         if is_terminal:
+            print("Terminal node reached")
             break
         ## Get node to branch on
         #print("In branching")
@@ -951,6 +1009,9 @@ def branch_and_bound2(instance, vl, triangle_constraints):
                 solution = solveNode2(node, instance, vl, global_lb, triangle_constraints)
                 solver_time.append(time.time() - solver_start)
                 
+                #check_lb = calculateObjective(solution.Y, instance, 1)
+                #print("Check LB: ", solution.lb, check_lb)
+                
                 node.solved = True
                 node.Y = solution.Y
                 node.lb = solution.lb
@@ -973,13 +1034,14 @@ def branch_and_bound2(instance, vl, triangle_constraints):
             
             ## Update the global bounds and remove nodes that are infeasible by bounds
             if openNodes:
-                global_lb, global_ub = update_bounds(openNodes, global_lb, global_ub)
+                global_lb, global_ub = update_bounds(openNodes, global_lb, global_ub, instance)
                 for node in openNodes:
                     if node.lb > global_ub:
                         openNodes.remove(node)
             
             ## Check if the incumbent is optimal
             if global_ub - global_lb < EPSILON:
+                print("Optimal solution found")
                 break
             
             #print("Gap", global_ub - global_lb)
@@ -1160,7 +1222,6 @@ def print_stats_detailed(stats_list, filename):
     ## This is just for writing the latex table, you might need to change the filenames accordingly 
     filename_caption = filename.split("/")[-1].replace("_","\textunderscore")
     df.to_latex(filename+".tex", index=False, float_format="%.2f", caption="Non-dominated points statistics for instance "+filename_caption, label="tab:"+filename)
-        
     
 def main(argv):
     ## Read the arguments

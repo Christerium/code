@@ -1,0 +1,117 @@
+Input file 1 is instance/AC_8_30_5
+Input file 2 is instance/AC_8_70_5
+
+Optimal solution found
+Total solver time: 0.2824885845184326 seconds
+Total bNb time: 0.01856517791748047 seconds
+Number of nodes processed: 11
+Rootgap: 0.9999995188096824
+Rootgap to optimal:  0.01997898746461789
+Total time: 0.3010749816894531 seconds
+Objective1: 491.0, Objective2: 203.5 
+
+Optimal solution found
+Total solver time: 0.31694984436035156 seconds
+Total bNb time: 0.02182602882385254 seconds
+Number of nodes processed: 13
+Rootgap: 0.9999995158713997
+Rootgap to optimal:  0.02196242436203335
+Total time: 0.33881354331970215 seconds
+Objective1: 495.0, Objective2: 193.5 
+
+Optimal solution found
+Total solver time: 0.411937952041626 seconds
+Total bNb time: 0.026665925979614258 seconds
+Number of nodes processed: 17
+Rootgap: 0.9999995135024703
+Rootgap to optimal:  0.02700494156128457
+Total time: 0.43863487243652344 seconds
+Objective1: 500.0, Objective2: 185.5 
+
+Optimal solution found
+Total solver time: 0.37793421745300293 seconds
+Total bNb time: 0.025750398635864258 seconds
+Number of nodes processed: 15
+Rootgap: 0.9999995111314678
+Rootgap to optimal:  0.02809437043203996
+Total time: 0.40372347831726074 seconds
+Objective1: 503.0, Objective2: 157.5 
+
+Optimal solution found
+Total solver time: 0.28287363052368164 seconds
+Total bNb time: 0.020075082778930664 seconds
+Number of nodes processed: 11
+Rootgap: 0.999999497838529
+Rootgap to optimal:  0.011493168372878717
+Total time: 0.30298423767089844 seconds
+Objective1: 508.0, Objective2: 149.5 
+
+Optimal solution found
+Total solver time: 0.5668489933013916 seconds
+Total bNb time: 0.034707069396972656 seconds
+Number of nodes processed: 21
+Rootgap: 0.9999994929819797
+Rootgap to optimal:  0.03791647094081026
+Total time: 0.6015992164611816 seconds
+Objective1: 527.0, Objective2: 122.5 
+
+Optimal solution found
+Total solver time: 0.43436288833618164 seconds
+Total bNb time: 0.028733491897583008 seconds
+Number of nodes processed: 17
+Rootgap: 0.9999994750961595
+Rootgap to optimal:  0.013338646709230847
+Total time: 0.46312379837036133 seconds
+Objective1: 532.0, Objective2: 114.5 
+
+Optimal solution found
+Total solver time: 1.071221113204956 seconds
+Total bNb time: 0.062072038650512695 seconds
+Number of nodes processed: 39
+Rootgap: 0.9999994684894852
+Rootgap to optimal:  0.03885982960214303
+Total time: 1.1333394050598145 seconds
+Objective1: 553.0, Objective2: 102.5 
+
+Optimal solution found
+Total solver time: 0.4007742404937744 seconds
+Total bNb time: 0.02486729621887207 seconds
+Number of nodes processed: 15
+Rootgap: 0.9999994553935546
+Rootgap to optimal:  0.024002787080482
+Total time: 0.4256737232208252 seconds
+Objective1: 558.0, Objective2: 94.5 
+
+Optimal solution found
+Total solver time: 0.8778436183929443 seconds
+Total bNb time: 0.05579710006713867 seconds
+Number of nodes processed: 29
+Rootgap: 0.9999994428282986
+Rootgap to optimal:  0.04101256310809183
+Total time: 0.9337058067321777 seconds
+Objective1: 581.0, Objective2: 85.5 
+
+Optimal solution found
+Total solver time: 0.45960164070129395 seconds
+Total bNb time: 0.019369125366210938 seconds
+Number of nodes processed: 15
+Rootgap: 0.9999994090505565
+Rootgap to optimal:  0.061985011290163414
+Total time: 0.4790055751800537 seconds
+Objective1: 630.0, Objective2: 82.5 
+
+Terminal node reached
+Total solver time: 0.021523714065551758 seconds
+Total bNb time: 5.698204040527344e-05 seconds
+Number of nodes processed: 1
+Rootgap: 1.0
+Rootgap to optimal:  1.0
+Total time: 0.02161574363708496 seconds
+Objective1: 999999999, Objective2: 999999999 
+
+[(491.0, 203.5), (495.0, 193.5), (500.0, 185.5), (503.0, 157.5), (508.0, 149.5), (527.0, 122.5), (532.0, 114.5), (553.0, 102.5), (558.0, 94.5), (581.0, 85.5), (630.0, 82.5)]
+
+--- 5.8435704708099365 seconds ---
+Mean time: 0.48694119850794476
+STAH,Instance,#departments,#ND-Points,Total-Time
+STAT,AC_8_30_5_AC_8_70_5,8,11,5.8435704708099365
