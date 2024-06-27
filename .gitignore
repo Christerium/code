@@ -1,6 +1,6 @@
 output/
 .venv
 .vscode
-
 instance/
 plots/
+old/
