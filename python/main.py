@@ -14,6 +14,8 @@ import math
 import mosek.fusion.pythonic
 import random
 import pandas as pd
+import signal                           # For timeout
+from contextlib import contextmanager   # For timeout
 
 EPSILON = 1
 MAX_INT = 999999999
@@ -49,6 +51,8 @@ class Node():
 
     def __lt__(self, other):
         return self.lb < other.lb
+
+class TimeoutException(Exception): pass
 
 # TODO change to class ignore NamedTuple
 class Solution(NamedTuple):
@@ -105,19 +109,18 @@ class Constraint():
         self.row = row
         self.lhs = lhs
         
-        
-        
-    
 # Parse the command line arguments
 def argument_parser(argv):
     inputfile1 = ''
     inputfile2 = ''
+    timelimit = 3600
 
     try:
         parser = argparse.ArgumentParser()
         #group = parser.add_mutually_exclusive_group()
         parser.add_argument("-i", "--ifile", help="input file1")
         parser.add_argument("-j", "--jfile", help="input file2")
+        parser.add_argument("-t", "--time", help="time limit", type=int)
         #group.add_argument("-g", "--generate", help="generate instance", type=int)
         
         args = parser.parse_args()
@@ -126,14 +129,27 @@ def argument_parser(argv):
             inputfile = "instance/"+args.ifile
         if args.jfile:
             inputfile2 = "instance/"+args.jfile
+        if args.time:
+            timelimit = args.time
         #if args.generate:
             #generate_instance(int(args.generate))
             #inputfile = "instance/instance.txt"
     except getopt.GetoptError:
-        print('main.py -i <inputfile> -j <inputfile> -o <outputfile>')
+        print('main.py -i <inputfile> -j <inputfile> -t <timelimit>')
         sys.exit(2)
 
-    return inputfile, inputfile2
+    return inputfile, inputfile2, timelimit
+
+@contextmanager
+def time_limit(seconds):
+    def signal_handler(signum, frame):
+        raise Exception("Timed out!")
+    signal.signal(signal.SIGALRM, signal_handler)
+    signal.alarm(seconds)
+    try:
+        yield
+    finally:
+        signal.alarm(0)
 
 # Generate a instance file with n elements
 def generate_instance(n):
@@ -454,13 +470,13 @@ def solveNode2(node, instance, vl, lb, triangle_constraints):
     ## Check if the relaxation is primal and dual feasible
     if M.getProblemStatus() != ProblemStatus.PrimalAndDualFeasible:
         M.dispose()
-        return Solution(False, node.index, node.level, 0, MAX_INT, MAX_INT, [], [])
+        return Solution(False, node.index, node.level, 0, node.ub, MAX_INT, [], [])
     else:
         # Return the solution
         Y_sol = Y.level().copy()
         relax_sol = M.primalObjValue()
         M.dispose()
-        return Solution(True, node.index, node.level, relax_sol, MAX_INT, MAX_INT, [], Y_sol)
+        return Solution(True, node.index, node.level, relax_sol, node.ub, MAX_INT, [], Y_sol)
 
 ## Solve the root node with the separation of the triangle constraints
 def solveRootSep(node, instance, vl, lb, triangle, global_lb, global_ub):
@@ -697,42 +713,55 @@ def heuristic(Y, instance, vl):
                 
     
     return Y_int_opt
-            
-        
-        
-        
-    ## OLD
-    # # Create the permutation
-    # R_values = np.zeros((instance.n,instance.n-1))    
-    # for i in range(len(instance.pairs)):
-    #     x=instance.pairs[i][1]-2
-    #     y=instance.pairs[i][0]-1
-    #     R_values[y,x] = Y[i]
-    #     R_values[x+1,y] = -Y[i]
-    
-    # # Sort the permutation
-    # p_help = R_values.sum(axis = 1)
-    # p_values = list(zip(p_help, range(1, instance.n+1)))
-    # p_values.sort(reverse=True)
-    # permutation = [j for i,j in p_values]
 
-    # Create the Y matrix with only 1 and -1 from the permutation
-    # Y_help = []
-    # for i,j in instance.pairs:
-    #     if permutation.index(i) < permutation.index(j):
-    #         Y_help.append(-1)
-    #     else:
-    #         Y_help.append(1)
-            
-    # Y_int = np.outer(np.array(Y_help),np.array(Y_help).T)
+def heuristic2(instance, vl):
+    placed = []
+    unplaced = list(range(1, instance.n+1))
     
     
-    #return Y_int
+    initial_facility = unplaced.pop(random.randint(1, instance.n)-1)
+    placed.append(initial_facility)
+    
+    while unplaced:    
+        #print(unplaced)   
+        for facility in unplaced:
+            best_cost = float("inf")
+            best_facility = None
+            best_position = None
+            for position in range(len(placed)+1):
+                temp_solution = placed[:position] + [facility] + placed[position:]
+                obj1, obj2 = greedyObjective(temp_solution, instance.costs1, instance.costs2, instance.lengths)
+                #cost = calculateObjective(permutation2Y(new_placed, instance, 1), instance, 1)
+                if obj2 <= vl and obj2 < best_cost:
+                    best_cost = obj2
+                    best_facility = facility
+                    best_position = position
+            if best_facility is not None:
+                placed.insert(best_position, best_facility)
+                unplaced.remove(best_facility)
+            else:
+                return placed, MAX_INT, MAX_INT
+    h_obj1, h_obj2 = greedyObjective(placed, instance.costs1, instance.costs2, instance.lengths)
+    return placed, h_obj1, h_obj2
 
-## Cholewsky decomposition
-def heuristic2(Y, instance, vl):
-    pass
-        
+def greedyObjective(placed, cost_vector, cost_vector2, length_vector):
+    obj1 = 0
+    obj2 = 0
+    for i in placed:
+        for j in placed:
+            if i < j:
+                i_index = placed.index(i)
+                j_index = placed.index(j)
+                D = (length_vector[i_index] + length_vector[j_index])/2
+                lower = min(i_index, j_index)
+                upper = max(i_index, j_index)
+                for k in range(min(i_index, j_index)+1, max(i_index, j_index)):
+                    D += length_vector[placed[k]-1]
+                index = get_index(i,j,len(length_vector))
+                obj1 += cost_vector[index]*D
+                obj2 += cost_vector2[index]*D  
+                
+    return obj1, obj2
         
 def checkIntegerFeasible(solution, vl):
     if solution.feasible and solution.obj2+EPSILON <= vl and solution.obj2 >= 0:
@@ -919,19 +948,31 @@ def branch_and_bound2(instance, vl, triangle_constraints):
     ## Initialize the tree
     ## Initialize the incumbent solution
     bNb_time = time.time()
+    
+    # # Initialize the incumbent solution
+    # print("In Heuristic")
+    # h_permut, h_obj1, h_obj2 = heuristic2(instance, vl)
+    # print("End Heuristic")
+    # if len(h_permut) == instance.n and h_obj2 <= vl:
+    #     print("Heuristic solution: ", h_obj1, h_obj2, h_permut)
+    #     incumbent = Solution(True, 0, 0, 0, h_obj1, h_obj2, h_permut, [])
+    # else:
+    #     incumbent = Solution(False, -1, -1, 0, MAX_INT, MAX_INT, [], [])
+    
     incumbent = Solution(False, -1, -1, 0, MAX_INT, MAX_INT, [], [])
+    
     solver_time = []
     is_terminal = False
     
     #print("Instance: ", instance.obj_int, instance.obj_int2)
     
     ## Initialize the root node
-    openNodes = [Node(index=0, level=0, lb=0, ub=MAX_INT, constraints=[], solved=False, Y=[])]
+    openNodes = [Node(index=0, level=0, lb=0, ub=incumbent.obj1, constraints=[], solved=False, Y=[])]
     rootNode = openNodes[0]
     
     ## Set the global tree bounds
     global_lb = 0
-    global_ub = MAX_INT
+    global_ub = incumbent.obj1
     global_obj2 = MAX_INT
     
     number_of_nodes = 1
@@ -1081,7 +1122,7 @@ def most_fractional(Y):
             distance = abs(Y[i])
     return variable
 
-def epsilon_constraint(instance):
+def epsilon_constraint(instance, timelimit):
     # Create a model
     vl = MAX_INT
     dominatedpoints = []
@@ -1091,30 +1132,50 @@ def epsilon_constraint(instance):
     triangle_constraints = []
     columns=["OBJ1", "OBJ2", "Rootgap", "Rootgap-OPT", "BNB-Nodes", "SDP-Time", "Total-Time"]
     stats_ls = []
+    passed_time = 0
+    time_out = False
+    
     
     while feasible == True:
         #print("VL", vl)
-        start_time = time.time()
-        #incumbent, triangle_constraints = branch_and_bound2(instance, vl, triangle_constraints)
-        incumbent, program_stats = branch_and_bound2(instance, vl, triangle_constraints)
-        #incumbent = bNb(instance, vl, lb)
-        feasible = incumbent.feasible
-        obj1 = incumbent.obj1
-        obj2 = incumbent.obj2
-        vl = obj2
-        #lb = obj1
-        dominatedpoints.append((obj1, obj2))
+        try:
+            time_remain = int(timelimit - passed_time)
+            if time_remain > 0:
+                with time_limit(time_remain):
+                    start_time = time.time()
+                    #incumbent, triangle_constraints = branch_and_bound2(instance, vl, triangle_constraints)
+                    incumbent, program_stats = branch_and_bound2(instance, vl, triangle_constraints)
+                    #incumbent = bNb(instance, vl, lb)
+                    feasible = incumbent.feasible
+                    obj1 = incumbent.obj1
+                    obj2 = incumbent.obj2
+                    vl = obj2
+                    #lb = obj1
+                    dominatedpoints.append((obj1, obj2))
+                    
+                    timer = time.time() - start_time
+                    
+                    program_stats.append(timer)
+                    stats_ls.append(dict(zip(columns, program_stats)))
+                    time_list.append(timer)
+                    passed_time += timer
+                    
+                    print("Total time: %s seconds" % (timer))
+                    print(f"Objective1: {obj1}, Objective2: {obj2} \n")
+            else:
+                time_out = True
+                break
+        except TimeoutException as error:
+            print("Time limit reached")
+            time_out = True
+            break
+        except Exception as error:
+            print("Error: ", error)
+            time_out = True
+            break
+            
         
-        timer = time.time() - start_time
-        
-        program_stats.append(timer)
-        stats_ls.append(dict(zip(columns, program_stats)))
-        time_list.append(timer)
-        print("Total time: %s seconds" % (timer))
-        print(f"Objective1: {obj1}, Objective2: {obj2} \n")
-        
-        
-    return dominatedpoints, time_list, stats_ls
+    return dominatedpoints, time_list, stats_ls, time_out
     
 def permutation2Y(permutation, instance, switch):
     Y_help = []
@@ -1227,7 +1288,7 @@ def print_stats_detailed(stats_list, filename):
     
 def main(argv):
     ## Read the arguments
-    inputfile, inputfile2 = argument_parser(argv)
+    inputfile, inputfile2, timelimit = argument_parser(argv)
       
     ## Set the path to the output file
     output_file_basename = inputfile.split("/")[-1]+"_"+inputfile2.split("/")[-1]
@@ -1244,15 +1305,21 @@ def main(argv):
     ## Read the instance
     instance = read_instance(inputfile, inputfile2)
     
-    ## Run the epsilon constraint method
+    # Run the epsilon constraint method
     start_time = time.time()
+        
+
+    domiantedpoints, time_list, stats_ls, time_out = epsilon_constraint(instance, timelimit)
     
-    
-    
-    domiantedpoints, time_list, stats_ls = epsilon_constraint(instance)
+    print(domiantedpoints)
+        
     domiantedpoints = domiantedpoints[0:-1]
     print(domiantedpoints)
-    total_time = time.time() - start_time
+    if time_out:
+        total_time = timelimit + 1
+    else:
+        total_time = time.time() - start_time
+        
     print("")
     print("--- %s seconds ---" % (total_time))
     print("Mean time:", np.mean(time_list))
