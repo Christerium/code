@@ -126,7 +126,7 @@ def argument_parser(argv):
         args = parser.parse_args()
 
         if args.ifile:
-            inputfile = "instance/"+args.ifile
+            inputfile1 = "instance/"+args.ifile
         if args.jfile:
             inputfile2 = "instance/"+args.jfile
         if args.time:
@@ -138,7 +138,7 @@ def argument_parser(argv):
         print('main.py -i <inputfile> -j <inputfile> -t <timelimit>')
         sys.exit(2)
 
-    return inputfile, inputfile2, timelimit
+    return inputfile1, inputfile2, timelimit
 
 @contextmanager
 def time_limit(seconds):
@@ -1309,12 +1309,11 @@ def main(argv):
     start_time = time.time()
         
 
-    domiantedpoints, time_list, stats_ls, time_out = epsilon_constraint(instance, timelimit)
+    nd_points, time_list, stats_ls, time_out = epsilon_constraint(instance, timelimit)
     
-    print(domiantedpoints)
-        
-    domiantedpoints = domiantedpoints[0:-1]
-    print(domiantedpoints)
+    if nd_points:
+        nd_points = nd_points[0:-1]
+        print(nd_points)
     if time_out:
         total_time = timelimit + 1
     else:
@@ -1322,22 +1321,31 @@ def main(argv):
         
     print("")
     print("--- %s seconds ---" % (total_time))
-    print("Mean time:", np.mean(time_list))
+    if time_list:
+        print("Mean time:", np.mean(time_list))
+    else: 
+        print("No time recorded")
     
     to_remove = []
-    for i in range(0, len(domiantedpoints)-1):
-        if domiantedpoints[i][0] == domiantedpoints[i+1][0]:
-            to_remove.append(i)
+    for i in range(0, len(nd_points)-1):
+        if nd_points[i][0] == nd_points[i+1][0]:
+            to_remove.append(nd_points[i])
     for i in to_remove:
-        domiantedpoints.remove(domiantedpoints[i])
+        print(i)
+        nd_points.remove(i)
             
-    print_stats(output_file_basename, [str(instance.n), str(len(domiantedpoints)), str(total_time)])    
+    print_stats(output_file_basename, [str(instance.n), str(len(nd_points)), str(total_time)])    
     print_stats_detailed(stats_ls, "plots/"+output_file_basename+"_detailed")
 
-    plt.scatter(*zip(*domiantedpoints))
-    plot_name = "plots/plot_"+inputfile.split("/")[-1]+"_"+inputfile2.split("/")[-1]+".pdf"
-    plt.savefig(plot_name)
-    plt.close()
+    if nd_points:
+        
+        plt.scatter(*zip(*nd_points))
+        plot_name = "plots/plot_"+inputfile.split("/")[-1]+"_"+inputfile2.split("/")[-1]+".pdf"
+        plt.savefig(plot_name)
+        plt.close()
+        print(plot_name)
+    else:
+        print("No non-dominated points found")
     
 if __name__ == "__main__":
     main(sys.argv[1:])
