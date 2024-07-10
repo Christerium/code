@@ -1335,7 +1335,7 @@ def main(argv):
         nd_points.remove(i)
             
     print_stats(output_file_basename, [str(instance.n), str(len(nd_points)), str(total_time)])    
-    print_stats_detailed(stats_ls, "plots/"+output_file_basename+"_detailed")
+    print_stats_detailed(stats_ls, "stats/"+output_file_basename+"_detailed")
 
     if nd_points:
         
