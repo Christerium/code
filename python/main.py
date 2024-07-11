@@ -1328,6 +1328,7 @@ def main(argv):
     
     to_remove = []
     for i in range(0, len(nd_points)-1):
+        print(nd_points[i][0], nd_points[i+1][0])
         if nd_points[i][0] == nd_points[i+1][0]:
             to_remove.append(nd_points[i])
     for i in to_remove:
