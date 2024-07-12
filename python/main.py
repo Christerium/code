@@ -175,8 +175,8 @@ def read_instance(instance_file1, instance_file2):
                     costs.append(int(line[j]))
     
     cost_matrix = define_costmatrix(pairs, costs, lengths)
-    K = np.sum(costs)*np.sum(lengths)/2
-    
+    K = np.sum(costs*np.sum(lengths))/2
+ 
     sum_int = 0
     obj_int = False
     for i in range(len(pairs)):
@@ -375,7 +375,7 @@ def multi_obj_model(instance, M, vl, lb):
     M.objective(ObjectiveSense.Minimize, obj1)
 
     # Second objective constraint / Epsilon constraint
-    M.constraint(obj2, Domain.lessThan(vl-EPSILON))
+    M.constraint(obj2, Domain.lessThan(vl-0.1))
     
     # Diagonal equals to 1 constraints
     M.constraint("diag",Z.diag(), Domain.equalsTo(np.ones(dim+1))) # dim+1 constraints -> n over 2 + 1 constraints
@@ -389,9 +389,9 @@ def multi_obj_model(instance, M, vl, lb):
             jk = get_index(j,k,n)
             ik = get_index(i,k,n)
             express.append(Expr.dot(A, Y.pick([[ij,jk], [ij,ik], [ik,jk]])))
-    M.constraint("3-cycle", Expr.vstack(express), Domain.equalsTo(-1))
+    M.constraint("3-cycle", Expr.vstack(express), Domain.equalsTo(-1.0))
     
-    #M.constraint("Symmetry", Y[0,0], Domain.equalsTo(1.0))
+    M.constraint("Symmetry", Y[0,0], Domain.equalsTo(1.0))
 
     
     ## Betweeness constraints
@@ -457,6 +457,7 @@ def solveNode2(node, instance, vl, lb, triangle_constraints):
     ## Add the branching constraints to the model
     if node.constraints:  
         M.constraint(Y.pick([[i,j] for i,j,k in node.constraints]), Domain.equalsTo([k for i,j,k in node.constraints]))
+    #    M.constraint(Y.pick([[j,i] for i,j,k in node.constraints]), Domain.equalsTo([k for i,j,k in node.constraints]))
 
     ## Add the triangle constraints to the model
     # if triangle_constraints:
@@ -474,7 +475,11 @@ def solveNode2(node, instance, vl, lb, triangle_constraints):
     else:
         # Return the solution
         Y_sol = Y.level().copy()
+        Y_sol = np.round(Y_sol, 7)
+        #print("Rounded obj: ", calculateObjective(Y_sol, instance, 1))
+        #print("Obj: ", M.primalObjValue())
         relax_sol = M.primalObjValue()
+        #relax_sol = calculateObjective(Y_sol, instance, 1)
         M.dispose()
         return Solution(True, node.index, node.level, relax_sol, node.ub, MAX_INT, [], Y_sol)
 
@@ -785,9 +790,9 @@ def branching(openNodes, remainingVar):
         # Add the branching constraints
         i,j = remainingVar[currentNode.level]
         constraint1 = currentNode.constraints.copy()
-        constraint1.append((i,j,-1))
+        constraint1.append((i,j,-1 + EPSTIGHT))
         constraint2 = currentNode.constraints.copy()
-        constraint2.append((i,j,1))
+        constraint2.append((i,j,1 - EPSTIGHT))
         level = currentNode.level
         
         # Build the nodes
@@ -824,20 +829,20 @@ def update_bounds(openNodes, global_lb, global_ub, instance):
     # Sort the openNodes list to get the node with the lowest lower bound
     sortedNodes = sorted(openNodes)
     
-    lb = sortedNodes[0].lb - EPSOPT
-    if instance.obj_int:
-        betterLB = math.ceil(lb)
-    elif lb - math.floor(lb) < 0.5:
-        betterLB = math.floor(sortedNodes[0].lb) + 0.5
-    elif lb - math.floor(lb) == 0.5:
-        betterLB = lb
-    else:
-        betterLB = math.ceil(lb) + 0.5
+    #lb = sortedNodes[0].lb - EPSOPT
+    # if instance.obj_int:
+    #     betterLB = math.ceil(lb)
+    # elif lb - math.floor(lb) < 0.5:
+    #     betterLB = math.floor(sortedNodes[0].lb) + 0.5
+    # elif lb - math.floor(lb) == 0.5:
+    #     betterLB = lb
+    # else:
+    #     betterLB = math.ceil(lb) + 0.5
         
     
     # Calculate the new lower bound
-    betterLB = math.ceil((sortedNodes[0].lb - EPSOPT) * 2.0) / 2.0
-    #betterLB = sortedNodes[0].lb -EPSOPT
+    #betterLB = math.ceil((sortedNodes[0].lb - EPSOPT) * 2.0) / 2.0
+    betterLB = sortedNodes[0].lb -EPSOPT
     if betterLB > global_lb:
         global_lb = betterLB
     
@@ -1057,27 +1062,30 @@ def branch_and_bound2(instance, vl, triangle_constraints):
                 node.Y = solution.Y
                 node.lb = solution.lb
                 if not solution.feasible:
+                    #print("Node removed, infeasible")
                     openNodes.remove(node)
                 else:
                     #heurSol = heuristic(solution.Y, instance)
                     heurSol = heuristic(solution.Y, instance, vl)
                     obj1 = calculateObjective(heurSol, instance, 1)
                     obj2 = calculateObjective(heurSol, instance, 2)
-                    if obj2 <= vl - EPSILON:
+                    if obj2 <= vl - EPSILON + EPSTIGHT:
                         node.ub = obj1
                         #print("A feasible solution found at node:", number_of_nodes, obj1)
-                        if obj1 < incumbent.obj1:
+                        if obj1 <= incumbent.obj1:
                             incumbent = Solution(True, node.index, node.level, node.lb, obj1, obj2, [], heurSol)
                             global_obj2 = obj2
             
             ## Remove the branched node from the openNodes list
             openNodes.remove(branchNode)
+            #print("Remove branched node")
             
             ## Update the global bounds and remove nodes that are infeasible by bounds
             if openNodes:
                 global_lb, global_ub = update_bounds(openNodes, global_lb, global_ub, instance)
                 for node in openNodes:
-                    if node.lb > global_ub:
+                    if node.lb > global_ub+0.1:
+                        #print("Node removed", node.lb, global_ub+0.1)
                         openNodes.remove(node)
             
             ## Check if the incumbent is optimal
@@ -1124,7 +1132,8 @@ def most_fractional(Y):
 
 def epsilon_constraint(instance, timelimit):
     # Create a model
-    vl = MAX_INT
+    #vl = MAX_INT
+    vl = 3500
     dominatedpoints = []
     feasible = True
     lb = 0
@@ -1149,6 +1158,10 @@ def epsilon_constraint(instance, timelimit):
                     feasible = incumbent.feasible
                     obj1 = incumbent.obj1
                     obj2 = incumbent.obj2
+                    
+                    #print("OBjective1: ", calculateObjective(incumbent.Y, instance, 1))
+                    #print("Objective2: ", calculateObjective(incumbent.Y, instance, 2))
+                    #print(incumbent.Y[0])
                     vl = obj2
                     #lb = obj1
                     dominatedpoints.append((obj1, obj2))
@@ -1286,6 +1299,48 @@ def print_stats_detailed(stats_list, filename):
     with open(filename+".tex", 'w') as file:
         df.to_latex(file, index=False, float_format="%.2f", caption="Non-dominated points statistics for instance "+filename_caption, label="tab:"+filename)
     
+def betweeness(instance):
+    K1 = 0
+    K2 = 0
+    for i,j in instance.pairs:
+        help1 = 0
+        help2 = 0
+        for k in range(j+1, instance.n):
+            help1 += instance.costs1[get_index(i,j,instance.n)]*instance.lengths[k]
+            help2 += instance.costs2[get_index(i,j,instance.n)]*instance.lengths[k]
+        K1 += instance.costs1[get_index(i,j,instance.n)]/2 * (instance.lengths[i-1] + instance.lengths[j-1]) + help1
+        K2 += instance.costs2[get_index(i,j,instance.n)]/2 * (instance.lengths[i-1] + instance.lengths[j-1]) + help2
+    with Model("lp") as M:
+        
+        x=M.variable('x', [instance.n,instance.n,instance.n], Domain.integral(Domain.inRange(0.0, 1.0)))
+        
+        for i,j in instance.pairs:
+            for k in range(j+1, instance.n):
+                M.constraint(x[i-1,j-1,k]+x[i-1,k,j-1]+x[j-1,k,i-1], Domain.equalsTo(1.0))
+                for d in range(instance.n):
+                    M.constraint(x[i-1,j-1,d]+x[j-1,k,d]+x[i-1,k,d], Domain.greaterThan(0.0))
+                    M.constraint(x[i-1,j-1,d]-x[j-1,k,d]+x[i-1,k,d], Domain.greaterThan(0.0))
+                    M.constraint(x[i-1,j-1,d]+x[j-1,k,d]-x[i-1,k,d], Domain.greaterThan(0.0))
+            
+        obj1 = K1
+        obj2 = K2
+        for i,j in instance.pairs:
+            for k in range(0, j):
+                obj1 += (instance.costs1[get_index(i,j,instance.n)]*instance.lengths[k]+instance.costs1[get_index(i,k,instance.n)]*instance.lengths[j-1])*x[i-1,j-1,k]
+                obj2 += (instance.costs2[get_index(i,j,instance.n)]*instance.lengths[k]+instance.costs2[get_index(i,k,instance.n)]*instance.lengths[j-1])*x[i-1,j-1,k]
+        
+        #M.constraint(obj2, Domain.lessThan(4000))
+                    
+        M.objective(ObjectiveSense.Minimize, obj1)
+        
+        M.solve()
+        
+        print(M.primalObjValue())
+        #print(obj2.eval())
+        
+        
+        
+    
 def main(argv):
     ## Read the arguments
     inputfile, inputfile2, timelimit = argument_parser(argv)
@@ -1304,6 +1359,8 @@ def main(argv):
     
     ## Read the instance
     instance = read_instance(inputfile, inputfile2)
+    
+
     
     # Run the epsilon constraint method
     start_time = time.time()
@@ -1326,14 +1383,15 @@ def main(argv):
     else: 
         print("No time recorded")
     
+    print(nd_points)
     to_remove = []
     for i in range(0, len(nd_points)-1):
-        print(nd_points[i][0], nd_points[i+1][0])
         if nd_points[i][0] == nd_points[i+1][0]:
             to_remove.append(nd_points[i])
     for i in to_remove:
-        print(i)
         nd_points.remove(i)
+        
+    #print(nd_points)
             
     print_stats(output_file_basename, [str(instance.n), str(len(nd_points)), str(total_time)])    
     print_stats_detailed(stats_ls, "stats/"+output_file_basename+"_detailed")

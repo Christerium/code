@@ -1,0 +1,198 @@
+Requirement already satisfied: contourpy==1.2.1 in ./.venv/lib/python3.9/site-packages (from -r constraints.txt (line 3)) (1.2.1)
+Requirement already satisfied: cycler==0.12.1 in ./.venv/lib/python3.9/site-packages (from -r constraints.txt (line 4)) (0.12.1)
+Requirement already satisfied: fonttools==4.53.0 in ./.venv/lib/python3.9/site-packages (from -r constraints.txt (line 5)) (4.53.0)
+Requirement already satisfied: gurobipy==11.0.2 in ./.venv/lib/python3.9/site-packages (from -r constraints.txt (line 6)) (11.0.2)
+Requirement already satisfied: kiwisolver==1.4.5 in ./.venv/lib/python3.9/site-packages (from -r constraints.txt (line 7)) (1.4.5)
+Requirement already satisfied: matplotlib==3.9.1 in ./.venv/lib/python3.9/site-packages (from -r constraints.txt (line 8)) (3.9.1)
+Requirement already satisfied: numpy==1.26.4 in ./.venv/lib/python3.9/site-packages (from -r constraints.txt (line 9)) (1.26.4)
+Requirement already satisfied: packaging==24.1 in ./.venv/lib/python3.9/site-packages (from -r constraints.txt (line 10)) (24.1)
+Requirement already satisfied: pandas==2.2.2 in ./.venv/lib/python3.9/site-packages (from -r constraints.txt (line 11)) (2.2.2)
+Requirement already satisfied: pillow==10.4.0 in ./.venv/lib/python3.9/site-packages (from -r constraints.txt (line 12)) (10.4.0)
+Requirement already satisfied: pyparsing==3.1.2 in ./.venv/lib/python3.9/site-packages (from -r constraints.txt (line 13)) (3.1.2)
+Requirement already satisfied: python-dateutil==2.9.0.post0 in ./.venv/lib/python3.9/site-packages (from -r constraints.txt (line 14)) (2.9.0.post0)
+Requirement already satisfied: pytz==2024.1 in ./.venv/lib/python3.9/site-packages (from -r constraints.txt (line 15)) (2024.1)
+Requirement already satisfied: scipy==1.13.0 in ./.venv/lib/python3.9/site-packages (from -r constraints.txt (line 16)) (1.13.0)
+Requirement already satisfied: six==1.16.0 in ./.venv/lib/python3.9/site-packages (from -r constraints.txt (line 17)) (1.16.0)
+Requirement already satisfied: tzdata==2024.1 in ./.venv/lib/python3.9/site-packages (from -r constraints.txt (line 18)) (2024.1)
+Requirement already satisfied: importlib-resources>=3.2.0 in ./.venv/lib/python3.9/site-packages (from matplotlib==3.9.1->-r constraints.txt (line 8)) (6.4.0)
+Requirement already satisfied: zipp>=3.1.0 in ./.venv/lib/python3.9/site-packages (from importlib-resources>=3.2.0->matplotlib==3.9.1->-r constraints.txt (line 8)) (3.19.2)
+WARNING: Error parsing dependencies of pip: [Errno 2] No such file or directory: '/home/k2g00/k2g4470/.venv/lib/python3.9/site-packages/pip-24.0.dist-info/METADATA'
+srun python3 ./AmaralModelMain.py -i AC_4_50_5 -j AC_4_50_5_1 -t 3600
+Input file 1 is:  instance/AC_4_50_5
+Input file 2 is:  instance/AC_4_50_5_1
+
+
+Set parameter TokenServer to value "relise"
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Set parameter NodeLimit to value 0
+Set parameter TimeLimit to value 3.5991367294788361e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 18 rows, 64 columns and 58 nonzeros
+Model fingerprint: 0x957482b3
+Variable types: 0 continuous, 64 integer (64 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [4e+00, 1e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+00]
+Found heuristic solution: objective 88.0000000
+Presolve removed 18 rows and 64 columns
+Presolve time: 0.00s
+Presolve: All rows and columns removed
+
+Explored 0 nodes (0 simplex iterations) in 0.00 seconds (0.00 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 2: 80 88 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 8.000000000000e+01, best bound 8.000000000000e+01, gap 0.0000%
+Root Upper 80.0
+Root Lower 80.0
+Reset all parameters
+Set parameter TimeLimit to value 3.5982714610099792e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 18 rows, 64 columns and 58 nonzeros
+Model fingerprint: 0x957482b3
+Variable types: 0 continuous, 64 integer (64 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [4e+00, 1e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+00]
+
+
+Presolve removed 18 rows and 64 columns
+Presolve time: 0.00s
+Presolve: All rows and columns removed
+
+Explored 0 nodes (0 simplex iterations) in 0.00 seconds (0.00 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 2: 80 88 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 8.000000000000e+01, best bound 8.000000000000e+01, gap 0.0000%
+flow1:  80.0
+flow2:  68.0
+Root Upper Bound: 80.0
+Root lower Bound: 80.0
+ND-Point: 1
+
+-----------------------------------------
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Set parameter NodeLimit to value 0
+Set parameter TimeLimit to value 3.5990905001163483e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 18 rows, 64 columns and 58 nonzeros
+Model fingerprint: 0x3a64e4fe
+Variable types: 0 continuous, 64 integer (64 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [4e+00, 1e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 5e+00]
+Found heuristic solution: objective 88.0000000
+Presolve removed 18 rows and 64 columns
+Presolve time: 0.00s
+Presolve: All rows and columns removed
+
+Explored 0 nodes (0 simplex iterations) in 0.00 seconds (0.00 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 1: 88 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 8.800000000000e+01, best bound 8.800000000000e+01, gap 0.0000%
+Root Upper 88.0
+Root Lower 88.0
+Reset all parameters
+Set parameter TimeLimit to value 3.5990464444160461e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 18 rows, 64 columns and 58 nonzeros
+Model fingerprint: 0x3a64e4fe
+Variable types: 0 continuous, 64 integer (64 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [4e+00, 1e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 5e+00]
+
+Loaded MIP start from previous solve with objective 88
+
+Presolve removed 18 rows and 64 columns
+Presolve time: 0.00s
+Presolve: All rows and columns removed
+
+Explored 0 nodes (0 simplex iterations) in 0.00 seconds (0.00 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 2: 88 88 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 8.800000000000e+01, best bound 8.800000000000e+01, gap 0.0000%
+flow1:  88.0
+flow2:  60.0
+Root Upper Bound: 88.0
+Root lower Bound: 88.0
+ND-Point: 2
+
+-----------------------------------------
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Set parameter NodeLimit to value 0
+Set parameter TimeLimit to value 3.5990457093715668e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 18 rows, 64 columns and 58 nonzeros
+Model fingerprint: 0x72b9645c
+Variable types: 0 continuous, 64 integer (64 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [4e+00, 1e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+01]
+Presolve removed 0 rows and 52 columns
+Presolve time: 0.00s
+
+Explored 0 nodes (0 simplex iterations) in 0.00 seconds (0.00 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 0
+
+Model is infeasible
+Best objective -, best bound -, gap -
+No solution found
+
+
+Total running time: 0.9555397033691406
+STAH, Instance, #departments, #ND-Points, t-MIP
+STAH, AC_4_50_5_AC_4_50_5_1, 4, 2, 0.9555397033691406
+   OBJ1  OBJ2  Rootgap_MIP%  Rootgap_OPT_MIP%  BNB_Nodes_MIP  Total_Time_MIP[s]
+0  80.0  68.0           0.0               0.0            0.0           0.866856
+1  88.0  60.0           0.0               0.0            0.0           0.045381
+./output/AC_4_50_5_AC_4_50_5_1.pdf
+Plotting is done

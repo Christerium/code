@@ -1,0 +1,3245 @@
+Requirement already satisfied: contourpy==1.2.1 in ./.venv/lib/python3.9/site-packages (from -r constraints.txt (line 3)) (1.2.1)
+Requirement already satisfied: cycler==0.12.1 in ./.venv/lib/python3.9/site-packages (from -r constraints.txt (line 4)) (0.12.1)
+Requirement already satisfied: fonttools==4.53.0 in ./.venv/lib/python3.9/site-packages (from -r constraints.txt (line 5)) (4.53.0)
+Requirement already satisfied: gurobipy==11.0.2 in ./.venv/lib/python3.9/site-packages (from -r constraints.txt (line 6)) (11.0.2)
+Requirement already satisfied: kiwisolver==1.4.5 in ./.venv/lib/python3.9/site-packages (from -r constraints.txt (line 7)) (1.4.5)
+Requirement already satisfied: matplotlib==3.9.1 in ./.venv/lib/python3.9/site-packages (from -r constraints.txt (line 8)) (3.9.1)
+Requirement already satisfied: numpy==1.26.4 in ./.venv/lib/python3.9/site-packages (from -r constraints.txt (line 9)) (1.26.4)
+Requirement already satisfied: packaging==24.1 in ./.venv/lib/python3.9/site-packages (from -r constraints.txt (line 10)) (24.1)
+Requirement already satisfied: pandas==2.2.2 in ./.venv/lib/python3.9/site-packages (from -r constraints.txt (line 11)) (2.2.2)
+Requirement already satisfied: pillow==10.4.0 in ./.venv/lib/python3.9/site-packages (from -r constraints.txt (line 12)) (10.4.0)
+Requirement already satisfied: pyparsing==3.1.2 in ./.venv/lib/python3.9/site-packages (from -r constraints.txt (line 13)) (3.1.2)
+Requirement already satisfied: python-dateutil==2.9.0.post0 in ./.venv/lib/python3.9/site-packages (from -r constraints.txt (line 14)) (2.9.0.post0)
+Requirement already satisfied: pytz==2024.1 in ./.venv/lib/python3.9/site-packages (from -r constraints.txt (line 15)) (2024.1)
+Requirement already satisfied: scipy==1.13.0 in ./.venv/lib/python3.9/site-packages (from -r constraints.txt (line 16)) (1.13.0)
+Requirement already satisfied: six==1.16.0 in ./.venv/lib/python3.9/site-packages (from -r constraints.txt (line 17)) (1.16.0)
+Requirement already satisfied: tzdata==2024.1 in ./.venv/lib/python3.9/site-packages (from -r constraints.txt (line 18)) (2024.1)
+Requirement already satisfied: importlib-resources>=3.2.0 in ./.venv/lib/python3.9/site-packages (from matplotlib==3.9.1->-r constraints.txt (line 8)) (6.4.0)
+Requirement already satisfied: zipp>=3.1.0 in ./.venv/lib/python3.9/site-packages (from importlib-resources>=3.2.0->matplotlib==3.9.1->-r constraints.txt (line 8)) (3.19.2)
+WARNING: Error parsing dependencies of pip: [Errno 2] No such file or directory: '/home/k2g00/k2g4470/.venv/lib/python3.9/site-packages/pip-24.0.dist-info/METADATA'
+srun python3 ./AmaralModelMain.py -i AC_16_70_5 -j AC_16_70_5_1 -t 3600
+Input file 1 is:  instance/AC_16_70_5
+Input file 2 is:  instance/AC_16_70_5_1
+
+
+Set parameter TokenServer to value "relise"
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Set parameter NodeLimit to value 0
+Set parameter TimeLimit to value 3.5553259871006012e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0xa0f5e618
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+00]
+Presolve removed 0 rows and 2416 columns
+Presolve time: 0.16s
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+Variable types: 0 continuous, 1680 integer (1680 binary)
+Found heuristic solution: objective 4888.5000000
+Found heuristic solution: objective 4714.5000000
+Found heuristic solution: objective 4670.5000000
+Root relaxation presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+    5216    3.5741426e+03   6.168596e+04   0.000000e+00      5s
+    8546    3.7049016e+03   7.028538e+03   0.000000e+00     10s
+   11659    3.7775000e+03   0.000000e+00   0.000000e+00     15s
+
+Root relaxation: objective 3.777500e+03, 11659 iterations, 14.26 seconds (9.39 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0          -    0      4670.50000 3777.50000  19.1%     -   14s
+
+Explored 1 nodes (11659 simplex iterations) in 14.52 seconds (9.54 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 3: 4670.5 4714.5 4888.5 
+
+Node limit reached
+Best objective 4.670500000000e+03, best bound 3.777500000000e+03, gap 19.1200%
+Root Upper 4670.5
+Root Lower 3777.5000000000236
+Reset all parameters
+Set parameter TimeLimit to value 3.4961180419921875e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0xa0f5e618
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+00]
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+Continuing optimization...
+
+*    0     0               0    3777.5000000 3777.50000  0.00%     -   28s
+
+Explored 1 nodes (23318 simplex iterations) in 14.44 seconds (9.39 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 4: 3777.5 4670.5 4714.5 4888.5 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.777500000000e+03, best bound 3.777500000000e+03, gap 0.0000%
+flow1:  3777.5
+flow2:  4153.0
+Root Upper Bound: 4670.5
+Root lower Bound: 3777.5000000000236
+ND-Point: 1
+
+-----------------------------------------
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Set parameter NodeLimit to value 0
+Set parameter TimeLimit to value 3.4816087689399719e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0xcfadb221
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolve removed 0 rows and 2416 columns
+Presolve time: 0.14s
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+Variable types: 0 continuous, 1680 integer (1680 binary)
+Root relaxation presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+    4864    3.5800525e+03   1.564035e+04   0.000000e+00      5s
+    7804    3.6876679e+03   1.168194e+04   0.000000e+00     10s
+   10464    3.7526696e+03   4.979154e+04   0.000000e+00     15s
+   12050    3.7775000e+03   0.000000e+00   0.000000e+00     18s
+
+Root relaxation: objective 3.777500e+03, 12050 iterations, 17.52 seconds (10.02 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0          -    0               - 3777.50000      -     -   17s
+
+Explored 1 nodes (12071 simplex iterations) in 17.89 seconds (10.25 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 0
+
+Node limit reached
+Best objective -, best bound 3.777500000000e+03, gap -
+Root Upper inf
+Root Lower 3777.4999999999873
+Reset all parameters
+Set parameter TimeLimit to value 3.4189733424186707e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0xcfadb221
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+Continuing optimization...
+
+*    0     0               0    3777.5000000 3777.50000  0.00%     -   36s
+
+Explored 1 nodes (24142 simplex iterations) in 18.76 seconds (10.12 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 1: 3777.5 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.777500000000e+03, best bound 3.777500000000e+03, gap 0.0000%
+flow1:  3777.5
+flow2:  4058.0
+Root Upper Bound: inf
+Root lower Bound: 3777.4999999999873
+ND-Point: 2
+
+-----------------------------------------
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Set parameter NodeLimit to value 0
+Set parameter TimeLimit to value 3.3959661729335785e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x8edaa5e2
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolve removed 0 rows and 2416 columns
+Presolve time: 0.20s
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+Variable types: 0 continuous, 1680 integer (1680 binary)
+Root relaxation presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+    4178    3.5113601e+03   5.937626e+04   0.000000e+00      5s
+    6828    3.6450702e+03   3.367952e+04   0.000000e+00     10s
+    9508    3.7222107e+03   1.012597e+04   0.000000e+00     15s
+   12088    3.7714830e+03   1.433283e+04   0.000000e+00     20s
+   12596    3.7775233e+03   0.000000e+00   0.000000e+00     21s
+
+Root relaxation: objective 3.777523e+03, 12596 iterations, 20.79 seconds (10.50 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 3777.52326    0  102          - 3777.52326      -     -   21s
+
+Explored 1 nodes (12603 simplex iterations) in 21.26 seconds (10.71 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 0
+
+Node limit reached
+Best objective -, best bound 3.778500000000e+03, gap -
+Root Upper inf
+Root Lower 3777.523255813971
+Reset all parameters
+Set parameter TimeLimit to value 3.3257684764862061e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x8edaa5e2
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+Continuing optimization...
+
+     0     0 3777.52326    0  102          - 3777.52326      -     -   44s
+H    0     0                    3789.5000000 3777.52326  0.32%     -   44s
+H    0     0                    3778.5000000 3777.52326  0.03%     -   44s
+     0     0 3777.52326    0  102 3778.50000 3777.52326  0.03%     -   44s
+
+Explored 1 nodes (25206 simplex iterations) in 22.95 seconds (10.61 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 2: 3778.5 3789.5 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.778500000000e+03, best bound 3.778500000000e+03, gap 0.0000%
+flow1:  3778.5
+flow2:  4053.0
+Root Upper Bound: inf
+Root lower Bound: 3777.523255813971
+ND-Point: 3
+
+-----------------------------------------
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Set parameter NodeLimit to value 0
+Set parameter TimeLimit to value 3.2999651329517365e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0xd6f45c70
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolve removed 0 rows and 2416 columns
+Presolve time: 0.21s
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+Variable types: 0 continuous, 1680 integer (1680 binary)
+Root relaxation presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+    4329    3.5606581e+03   8.484609e+05   0.000000e+00      5s
+    6839    3.6624064e+03   4.196544e+05   0.000000e+00     10s
+    9339    3.7351565e+03   3.094492e+04   0.000000e+00     15s
+   11539    3.7776395e+03   0.000000e+00   0.000000e+00     20s
+
+Root relaxation: objective 3.777640e+03, 11539 iterations, 19.14 seconds (9.82 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 3777.63953    0  102          - 3777.63953      -     -   19s
+
+Explored 1 nodes (11549 simplex iterations) in 19.65 seconds (10.05 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 0
+
+Node limit reached
+Best objective -, best bound 3.778500000000e+03, gap -
+Root Upper inf
+Root Lower 3777.639534883753
+Reset all parameters
+Set parameter TimeLimit to value 3.2285564658641815e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0xd6f45c70
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+Continuing optimization...
+
+     0     0 3777.63953    0  102          - 3777.63953      -     -   40s
+H    0     0                    3802.5000000 3777.63953  0.65%     -   40s
+H    0     0                    3778.5000000 3777.63953  0.02%     -   40s
+     0     0 3777.63953    0  102 3778.50000 3777.63953  0.02%     -   40s
+
+Explored 1 nodes (23098 simplex iterations) in 20.93 seconds (9.97 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 2: 3778.5 3802.5 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.778500000000e+03, best bound 3.778500000000e+03, gap 0.0000%
+flow1:  3778.5
+flow2:  4015.0
+Root Upper Bound: inf
+Root lower Bound: 3777.639534883753
+ND-Point: 4
+
+-----------------------------------------
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Set parameter NodeLimit to value 0
+Set parameter TimeLimit to value 3.2061461088657379e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0xa20dea4c
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolve removed 0 rows and 2416 columns
+Presolve time: 0.21s
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+Variable types: 0 continuous, 1680 integer (1680 binary)
+Root relaxation presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+    4203    3.5332945e+03   1.148629e+04   0.000000e+00      5s
+    6753    3.6629413e+03   3.729214e+04   0.000000e+00     10s
+    9073    3.7398526e+03   2.805263e+05   0.000000e+00     15s
+   11813    3.7786474e+03   5.739848e+01   0.000000e+00     20s
+   11852    3.7786500e+03   0.000000e+00   0.000000e+00     20s
+
+Root relaxation: objective 3.778650e+03, 11852 iterations, 19.68 seconds (10.15 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 3778.65000    0   78          - 3778.65000      -     -   20s
+
+Explored 1 nodes (11862 simplex iterations) in 20.16 seconds (10.36 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 0
+
+Node limit reached
+Best objective -, best bound 3.779500000000e+03, gap -
+Root Upper inf
+Root Lower 3778.649999999987
+Reset all parameters
+Set parameter TimeLimit to value 3.1327685391902924e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0xa20dea4c
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+Continuing optimization...
+
+     0     0 3778.65000    0   78          - 3778.65000      -     -   35s
+H    0     0                    3790.5000000 3778.65000  0.31%     -   35s
+H    0     0                    3781.5000000 3778.65000  0.08%     -   35s
+     0     0 3778.65000    0   78 3781.50000 3778.65000  0.08%     -   35s
+
+Explored 1 nodes (23732 simplex iterations) in 16.38 seconds (11.03 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 2: 3781.5 3790.5 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.781500000000e+03, best bound 3.781500000000e+03, gap 0.0000%
+flow1:  3781.5
+flow2:  3995.0
+Root Upper Bound: inf
+Root lower Bound: 3778.649999999987
+ND-Point: 5
+
+-----------------------------------------
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Set parameter NodeLimit to value 0
+Set parameter TimeLimit to value 3.1244685811996460e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0xa2acd240
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolve removed 0 rows and 2416 columns
+Presolve time: 0.16s
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+Variable types: 0 continuous, 1680 integer (1680 binary)
+Root relaxation presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+    5040    3.5937959e+03   1.095986e+05   0.000000e+00      5s
+    8300    3.7201195e+03   2.908533e+04   0.000000e+00     10s
+   11980    3.7816561e+03   6.304171e+01   0.000000e+00     15s
+   12377    3.7816798e+03   0.000000e+00   0.000000e+00     15s
+
+Root relaxation: objective 3.781680e+03, 12377 iterations, 15.18 seconds (10.62 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 3781.67982    0  320          - 3781.67982      -     -   15s
+
+Explored 1 nodes (12384 simplex iterations) in 15.56 seconds (10.82 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 0
+
+Node limit reached
+Best objective -, best bound 3.782500000000e+03, gap -
+Root Upper inf
+Root Lower 3781.6798245613872
+Reset all parameters
+Set parameter TimeLimit to value 3.0638238577842712e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0xa2acd240
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+Continuing optimization...
+
+     0     0 3781.67982    0  320          - 3781.67982      -     -   30s
+H    0     0                    3793.5000000 3781.67982  0.31%     -   30s
+     0     0 3781.67982    0  320 3793.50000 3781.67982  0.31%     -   32s
+H    0     0                    3787.5000000 3781.67982  0.15%     -   34s
+     0     0 3781.67982    0   83 3787.50000 3781.67982  0.15%     -   34s
+     0     0 3781.73077    0    4 3787.50000 3781.73077  0.15%     -   34s
+     0     0 3783.28378    0   33 3787.50000 3783.28378  0.11%     -   34s
+     0     0 3783.28378    0    1 3787.50000 3783.28378  0.11%     -   34s
+     0     0     cutoff    0      3787.50000 3787.50000  0.00%     -   34s
+
+Explored 1 nodes (25058 simplex iterations) in 19.33 seconds (13.58 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 2: 3787.5 3793.5 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.787500000000e+03, best bound 3.787500000000e+03, gap 0.0000%
+flow1:  3787.5
+flow2:  3993.0
+Root Upper Bound: inf
+Root lower Bound: 3781.6798245613872
+ND-Point: 6
+
+-----------------------------------------
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Set parameter NodeLimit to value 0
+Set parameter TimeLimit to value 3.0424637753963470e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x9b946e1e
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolve removed 0 rows and 2416 columns
+Presolve time: 0.20s
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+Variable types: 0 continuous, 1680 integer (1680 binary)
+Root relaxation presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+    4398    3.5660660e+03   1.179759e+04   0.000000e+00      5s
+    6978    3.6906666e+03   1.776876e+04   0.000000e+00     10s
+    9548    3.7643841e+03   3.181424e+04   0.000000e+00     15s
+   12078    3.7820395e+03   0.000000e+00   0.000000e+00     19s
+
+Root relaxation: objective 3.782039e+03, 12078 iterations, 18.77 seconds (9.99 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 3782.03947    0  320          - 3782.03947      -     -   19s
+
+Explored 1 nodes (12086 simplex iterations) in 19.28 seconds (10.22 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 0
+
+Node limit reached
+Best objective -, best bound 3.782500000000e+03, gap -
+Root Upper inf
+Root Lower 3782.0394736842
+Reset all parameters
+Set parameter TimeLimit to value 2.9760898292064667e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x9b946e1e
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+Continuing optimization...
+
+     0     0 3782.03947    0  320          - 3782.03947      -     -   38s
+H    0     0                    3795.5000000 3782.03947  0.35%     -   38s
+     0     0 3782.03947    0  320 3795.50000 3782.03947  0.35%     -   40s
+H    0     0                    3790.5000000 3782.03947  0.22%     -   42s
+     0     2 3782.05980    0  320 3790.50000 3782.05980  0.22%     -   42s
+     1     3 3782.19231    1   28 3790.50000 3782.07142  0.22%   373   43s
+     2     4 3784.12500    2   28 3790.50000 3782.07142  0.22%  2398   48s
+     5     5 3784.28571    4   28 3790.50000 3782.07142  0.22%  1089   50s
+H   14     0                    3788.5000000 3784.17058  0.11%   610   55s
+
+Explored 15 nodes (33898 simplex iterations) in 36.68 seconds (21.03 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 3: 3788.5 3790.5 3795.5 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.788500000000e+03, best bound 3.788500000000e+03, gap 0.0000%
+flow1:  3788.5
+flow2:  3991.0
+Root Upper Bound: inf
+Root lower Bound: 3782.0394736842
+ND-Point: 7
+
+-----------------------------------------
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Set parameter NodeLimit to value 0
+Set parameter TimeLimit to value 2.9360715215206146e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x6870ed04
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolve removed 0 rows and 2416 columns
+Presolve time: 0.19s
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+Variable types: 0 continuous, 1680 integer (1680 binary)
+Root relaxation presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+    4552    3.5907201e+03   1.124734e+04   0.000000e+00      5s
+    7072    3.6954101e+03   1.733406e+04   0.000000e+00     10s
+    9622    3.7670847e+03   1.648463e+04   0.000000e+00     15s
+   11543    3.7823991e+03   0.000000e+00   0.000000e+00     18s
+
+Root relaxation: objective 3.782399e+03, 11543 iterations, 17.77 seconds (9.44 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 3782.39912    0  320          - 3782.39912      -     -   18s
+
+Explored 1 nodes (11554 simplex iterations) in 18.27 seconds (9.67 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 0
+
+Node limit reached
+Best objective -, best bound 3.782500000000e+03, gap -
+Root Upper inf
+Root Lower 3782.399122807239
+Reset all parameters
+Set parameter TimeLimit to value 2.8673895764350891e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x6870ed04
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+Continuing optimization...
+
+     0     0 3782.39912    0  320          - 3782.39912      -     -   36s
+H    0     0                    3793.5000000 3782.39912  0.29%     -   36s
+H    0     0                    3790.5000000 3782.39912  0.21%     -   36s
+     0     0 3782.39912    0  320 3790.50000 3782.39912  0.21%     -   38s
+     0     2 3782.42023    0  320 3790.50000 3782.42023  0.21%     -   41s
+     1     3 3782.65385    1   28 3790.50000 3782.42023  0.21%   464   41s
+     2     4 3785.25635    2  300 3790.50000 3782.42023  0.21%  3200   49s
+     3     3     cutoff    2      3790.50000 3782.42023  0.21%  2427   50s
+H    5     3                    3789.5000000 3782.42023  0.19%  1507   51s
+    13     3     cutoff    3      3789.50000 3783.15198  0.17%   824   56s
+
+Explored 17 nodes (35029 simplex iterations) in 40.09 seconds (21.73 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 3: 3789.5 3790.5 3793.5 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.789500000000e+03, best bound 3.789500000000e+03, gap 0.0000%
+flow1:  3789.5
+flow2:  3986.0
+Root Upper Bound: inf
+Root lower Bound: 3782.399122807239
+ND-Point: 8
+
+-----------------------------------------
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Set parameter NodeLimit to value 0
+Set parameter TimeLimit to value 2.8240667212009430e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x71590441
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolve removed 0 rows and 2416 columns
+Presolve time: 0.21s
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+Variable types: 0 continuous, 1680 integer (1680 binary)
+Root relaxation presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+    3922    3.5133784e+03   4.991218e+04   0.000000e+00      5s
+    6362    3.6237035e+03   3.781438e+04   0.000000e+00     10s
+    8592    3.7157802e+03   3.757508e+03   0.000000e+00     15s
+   10902    3.7740375e+03   2.063248e+04   0.000000e+00     20s
+   12431    3.7832982e+03   0.000000e+00   0.000000e+00     23s
+
+Root relaxation: objective 3.783298e+03, 12431 iterations, 22.36 seconds (10.63 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 3783.29825    0  320          - 3783.29825      -     -   22s
+
+Explored 1 nodes (12440 simplex iterations) in 22.92 seconds (10.86 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 0
+
+Node limit reached
+Best objective -, best bound 3.783500000000e+03, gap -
+Root Upper inf
+Root Lower 3783.2982456140994
+Reset all parameters
+Set parameter TimeLimit to value 2.7475388603210449e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x71590441
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+Continuing optimization...
+
+     0     0 3783.29825    0  320          - 3783.29825      -     -   43s
+     0     0 3783.29825    0  320          - 3783.29825      -     -   44s
+H    0     0                    3795.5000000 3783.29825  0.32%     -   47s
+H    0     0                    3790.5000000 3783.29825  0.19%     -   47s
+     0     2 3783.32320    0  320 3790.50000 3783.32320  0.19%     -   48s
+     1     3 3783.80769    1   28 3790.50000 3783.32792  0.19%   264   48s
+     2     4 3788.07895    2   28 3790.50000 3783.32792  0.19%  1349   51s
+
+Explored 7 nodes (29118 simplex iterations) in 30.99 seconds (17.04 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 2: 3790.5 3795.5 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.790500000000e+03, best bound 3.790500000000e+03, gap 0.0000%
+flow1:  3790.5
+flow2:  3963.0
+Root Upper Bound: inf
+Root lower Bound: 3783.2982456140994
+ND-Point: 9
+
+-----------------------------------------
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Set parameter NodeLimit to value 0
+Set parameter TimeLimit to value 2.7210783834457397e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0xe8b41d96
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolve removed 0 rows and 2416 columns
+Presolve time: 0.18s
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+Variable types: 0 continuous, 1680 integer (1680 binary)
+Root relaxation presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+    4407    3.5669750e+03   2.998216e+04   0.000000e+00      5s
+    7177    3.6827150e+03   3.787894e+03   0.000000e+00     10s
+    9837    3.7639756e+03   4.380439e+03   0.000000e+00     15s
+   11889    3.7874342e+03   0.000000e+00   0.000000e+00     18s
+
+Root relaxation: objective 3.787434e+03, 11889 iterations, 18.11 seconds (9.95 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 3787.43421    0  320          - 3787.43421      -     -   18s
+
+Explored 1 nodes (11901 simplex iterations) in 18.61 seconds (10.19 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 0
+
+Node limit reached
+Best objective -, best bound 3.787500000000e+03, gap -
+Root Upper inf
+Root Lower 3787.4342105263213
+Reset all parameters
+Set parameter TimeLimit to value 2.6534110050201416e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0xe8b41d96
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+Continuing optimization...
+
+     0     0 3787.43421    0  320          - 3787.43421      -     -   36s
+H    0     0                    3806.5000000 3787.43421  0.50%     -   37s
+     0     0 3787.43421    0  320 3806.50000 3787.43421  0.50%     -   37s
+H    0     0                    3793.5000000 3787.43421  0.16%     -   38s
+     0     2 3787.43447    0  320 3793.50000 3787.43447  0.16%     -   39s
+     1     3 3789.11538    1   28 3793.50000 3787.43683  0.16%   447   40s
+
+Explored 13 nodes (27240 simplex iterations) in 25.39 seconds (14.74 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 2: 3793.5 3806.5 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.793500000000e+03, best bound 3.793500000000e+03, gap 0.0000%
+flow1:  3793.5
+flow2:  3943.0
+Root Upper Bound: inf
+Root lower Bound: 3787.4342105263213
+ND-Point: 10
+
+-----------------------------------------
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Set parameter NodeLimit to value 0
+Set parameter TimeLimit to value 2.6308908510208130e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x6acd2c39
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolve removed 0 rows and 2416 columns
+Presolve time: 0.19s
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+Variable types: 0 continuous, 1680 integer (1680 binary)
+Root relaxation presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+    4318    3.5409758e+03   4.272561e+04   0.000000e+00      5s
+    6858    3.6590855e+03   7.668229e+04   0.000000e+00     10s
+    9418    3.7370365e+03   7.032838e+04   0.000000e+00     15s
+   11918    3.7887663e+03   1.047029e+03   0.000000e+00     20s
+   12439    3.7910307e+03   0.000000e+00   0.000000e+00     21s
+
+Root relaxation: objective 3.791031e+03, 12439 iterations, 20.50 seconds (10.92 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 3791.03070    0  320          - 3791.03070      -     -   20s
+
+Explored 1 nodes (12454 simplex iterations) in 21.00 seconds (11.15 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 0
+
+Node limit reached
+Best objective -, best bound 3.791500000000e+03, gap -
+Root Upper inf
+Root Lower 3791.0307017543855
+Reset all parameters
+Set parameter TimeLimit to value 2.5637432587146759e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x6acd2c39
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+Continuing optimization...
+
+     0     0 3791.03070    0  320          - 3791.03070      -     -   42s
+     0     0 3791.03070    0  320          - 3791.03070      -     -   43s
+H    0     0                    4956.5000000 3791.03070  23.5%     -   50s
+H    0     0                    3799.5000000 3791.03070  0.22%     -   50s
+     0     2 3791.05597    0  320 3799.50000 3791.05597  0.22%     -   50s
+     1     3 3794.37500    1   28 3799.50000 3791.05597  0.22%  5087   57s
+    11     1     cutoff    3      3799.50000 3794.48444  0.13%   700   60s
+
+Explored 13 nodes (32956 simplex iterations) in 40.08 seconds (21.91 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 2: 3799.5 4956.5 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.799500000000e+03, best bound 3.799500000000e+03, gap 0.0000%
+flow1:  3799.5
+flow2:  3941.0
+Root Upper Bound: inf
+Root lower Bound: 3791.0307017543855
+ND-Point: 11
+
+-----------------------------------------
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Set parameter NodeLimit to value 0
+Set parameter TimeLimit to value 2.5197459781169891e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0xa19645ac
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolve removed 0 rows and 2416 columns
+Presolve time: 0.16s
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+Variable types: 0 continuous, 1680 integer (1680 binary)
+Root relaxation presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+    4868    3.5792357e+03   3.366993e+04   0.000000e+00      5s
+    7918    3.6987100e+03   1.929107e+04   0.000000e+00     10s
+   10898    3.7765717e+03   9.373698e+03   0.000000e+00     15s
+   12579    3.7913904e+03   0.000000e+00   0.000000e+00     17s
+
+Root relaxation: objective 3.791390e+03, 12579 iterations, 17.01 seconds (10.92 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 3791.39035    0  320          - 3791.39035      -     -   17s
+
+Explored 1 nodes (12589 simplex iterations) in 17.44 seconds (11.15 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 0
+
+Node limit reached
+Best objective -, best bound 3.791500000000e+03, gap -
+Root Upper inf
+Root Lower 3791.3903508771764
+Reset all parameters
+Set parameter TimeLimit to value 2.4522697679996490e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0xa19645ac
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+Continuing optimization...
+
+     0     0 3791.39035    0  320          - 3791.39035      -     -   36s
+     0     0 3791.39035    0  320          - 3791.39035      -     -   36s
+H    0     0                    3828.5000000 3791.39035  0.97%     -   45s
+H    0     0                    3806.5000000 3791.39035  0.40%     -   45s
+     0     2 3791.40543    0  320 3806.50000 3791.40543  0.40%     -   45s
+     1     3 3795.47368    1   28 3806.50000 3791.40543  0.40%  5327   52s
+     3     5 3796.28571    3   28 3806.50000 3791.40543  0.40%  2639   55s
+     6     6 3796.79436    4  474 3806.50000 3791.40543  0.40%  2122   61s
+    15     5     cutoff    1      3806.50000 3795.47704  0.29%  1108   65s
+H   16     3                    3801.5000000 3795.47704  0.16%  1039   68s
+H   17     4                    3800.5000000 3796.28761  0.11%  1088   68s
+
+Explored 22 nodes (44584 simplex iterations) in 52.05 seconds (32.53 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 4: 3800.5 3801.5 3806.5 3828.5 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.800500000000e+03, best bound 3.800500000000e+03, gap 0.0000%
+flow1:  3800.5
+flow2:  3939.0
+Root Upper Bound: inf
+Root lower Bound: 3791.3903508771764
+ND-Point: 12
+
+-----------------------------------------
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Set parameter NodeLimit to value 0
+Set parameter TimeLimit to value 2.4024141118526459e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x19e5974e
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolve removed 0 rows and 2416 columns
+Presolve time: 0.16s
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+Variable types: 0 continuous, 1680 integer (1680 binary)
+Root relaxation presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+    4776    3.5677311e+03   1.551258e+05   0.000000e+00      5s
+    7586    3.6813963e+03   1.084555e+04   0.000000e+00     10s
+   10376    3.7529509e+03   1.395083e+04   0.000000e+00     15s
+   12372    3.7917500e+03   0.000000e+00   0.000000e+00     19s
+
+Root relaxation: objective 3.791750e+03, 12372 iterations, 18.21 seconds (10.75 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 3791.75000    0  320          - 3791.75000      -     -   18s
+
+Explored 1 nodes (12382 simplex iterations) in 18.65 seconds (11.00 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 0
+
+Node limit reached
+Best objective -, best bound 3.792500000000e+03, gap -
+Root Upper inf
+Root Lower 3791.7499999997926
+Reset all parameters
+Set parameter TimeLimit to value 2.3359593355655670e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x19e5974e
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+Continuing optimization...
+
+     0     0 3791.75000    0  320          - 3791.75000      -     -   37s
+     0     0 3791.75000    0  320          - 3791.75000      -     -   38s
+H    0     0                    3807.5000000 3791.75000  0.41%     -   40s
+     0     2 3791.75077    0  320 3807.50000 3791.75077  0.41%     -   41s
+     1     3 3793.24249    1  300 3807.50000 3791.75815  0.41%   227   41s
+     2     4 3796.78947    2   28 3807.50000 3791.75815  0.41%  2305   47s
+     3     5 3797.87500    3   28 3807.50000 3791.75815  0.41%  2189   50s
+     6     8 3799.47015    5   78 3807.50000 3791.75815  0.41%  1961   57s
+     9     9     cutoff    7      3807.50000 3791.75815  0.41%  1514   60s
+    15     5     cutoff    2      3807.50000 3796.79124  0.28%  1172   65s
+    17     7 3801.02941    4   54 3807.50000 3798.14292  0.25%  1246   70s
+*   23     7               9    3806.5000000 3798.14292  0.22%   990   72s
+*   25     5               7    3803.5000000 3798.14292  0.14%   911   72s
+H   28     0                    3801.5000000 3800.70168  0.02%   863   74s
+
+Explored 29 nodes (49089 simplex iterations) in 55.95 seconds (33.84 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 4: 3801.5 3803.5 3806.5 3807.5 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.801500000000e+03, best bound 3.801500000000e+03, gap 0.0000%
+flow1:  3801.5
+flow2:  3934.0
+Root Upper Bound: inf
+Root lower Bound: 3791.7499999997926
+ND-Point: 13
+
+-----------------------------------------
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Set parameter NodeLimit to value 0
+Set parameter TimeLimit to value 2.2743700304031372e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x2de7d082
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolve removed 0 rows and 2416 columns
+Presolve time: 0.21s
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+Variable types: 0 continuous, 1680 integer (1680 binary)
+Root relaxation presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+    4144    3.5377226e+03   1.367880e+05   0.000000e+00      5s
+    6444    3.6384690e+03   2.287984e+04   0.000000e+00     10s
+    8634    3.7164257e+03   3.411735e+04   0.000000e+00     15s
+   11294    3.7778695e+03   1.000358e+04   0.000000e+00     20s
+   12748    3.7926491e+03   0.000000e+00   0.000000e+00     23s
+
+Root relaxation: objective 3.792649e+03, 12748 iterations, 22.14 seconds (10.87 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 3792.64912    0  320          - 3792.64912      -     -   22s
+
+Explored 1 nodes (12762 simplex iterations) in 22.69 seconds (11.11 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 0
+
+Node limit reached
+Best objective -, best bound 3.793500000000e+03, gap -
+Root Upper inf
+Root Lower 3792.6491228070126
+Reset all parameters
+Set parameter TimeLimit to value 2.1982642245292664e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x2de7d082
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+Continuing optimization...
+
+     0     0 3792.64912    0  320          - 3792.64912      -     -   40s
+     0     0 3792.64912    0  320          - 3792.64912      -     -   41s
+H    0     0                    3905.5000000 3792.64912  2.89%     -   44s
+H    0     0                    3819.5000000 3792.64912  0.70%     -   44s
+     0     2 3792.65401    0  320 3819.50000 3792.65401  0.70%     -   45s
+     1     3 3800.07895    1   28 3819.50000 3792.65541  0.70%  6385   52s
+H    2     2                    3807.5000000 3792.65541  0.39%  3192   55s
+H    6     2                    3806.5000000 3792.65541  0.36%  2205   60s
+     9     1     cutoff    1      3806.50000 3800.07952  0.17%  2237   67s
+    11     3 3802.42857    3   28 3806.50000 3802.09727  0.12%  2074   71s
+*   18     2               5    3804.5000000 3802.09727  0.06%  1351   73s
+
+Explored 21 nodes (50090 simplex iterations) in 51.18 seconds (35.54 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 5: 3804.5 3806.5 3807.5 ... 3905.5
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.804500000000e+03, best bound 3.804500000000e+03, gap 0.0000%
+flow1:  3804.5
+flow2:  3933.0
+Root Upper Bound: inf
+Root lower Bound: 3792.6491228070126
+ND-Point: 14
+
+-----------------------------------------
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Set parameter NodeLimit to value 0
+Set parameter TimeLimit to value 2.1529450647830963e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x40f2e22a
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolve removed 0 rows and 2416 columns
+Presolve time: 0.15s
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+Variable types: 0 continuous, 1680 integer (1680 binary)
+Root relaxation presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+    4831    3.5932735e+03   3.764020e+04   0.000000e+00      5s
+    8071    3.7139577e+03   8.548203e+04   0.000000e+00     10s
+   11401    3.7904331e+03   1.041865e+04   0.000000e+00     15s
+   11850    3.7928289e+03   0.000000e+00   0.000000e+00     16s
+
+Root relaxation: objective 3.792829e+03, 11850 iterations, 15.27 seconds (10.30 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 3792.82895    0  320          - 3792.82895      -     -   15s
+
+Explored 1 nodes (11858 simplex iterations) in 15.66 seconds (10.53 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 0
+
+Node limit reached
+Best objective -, best bound 3.793500000000e+03, gap -
+Root Upper inf
+Root Lower 3792.82894736842
+Reset all parameters
+Set parameter TimeLimit to value 2.0897631995677948e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x40f2e22a
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+Continuing optimization...
+
+     0     0 3792.82895    0  320          - 3792.82895      -     -   29s
+     0     0 3792.82895    0  320          - 3792.82895      -     -   30s
+H    0     0                    3850.5000000 3792.82895  1.50%     -   34s
+H    0     0                    3807.5000000 3792.82895  0.39%     -   34s
+     0     2 3792.84692    0  320 3807.50000 3792.84692  0.38%     -   34s
+     1     3 3800.73684    1   28 3807.50000 3792.84692  0.38%  3814   38s
+     3     3     cutoff    3      3807.50000 3792.84692  0.38%  2153   40s
+H    4     2                    3806.5000000 3792.84692  0.36%  1615   41s
+     9     3 3803.35714    3   28 3806.50000 3802.67546  0.10%  1187   45s
+
+Explored 15 nodes (35417 simplex iterations) in 30.99 seconds (23.82 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 3: 3806.5 3807.5 3850.5 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.806500000000e+03, best bound 3.806500000000e+03, gap 0.0000%
+flow1:  3806.5
+flow2:  3929.0
+Root Upper Bound: inf
+Root lower Bound: 3792.82894736842
+ND-Point: 15
+
+-----------------------------------------
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Set parameter NodeLimit to value 0
+Set parameter TimeLimit to value 2.0600804486274719e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x42125f33
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolve removed 0 rows and 2416 columns
+Presolve time: 0.19s
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+Variable types: 0 continuous, 1680 integer (1680 binary)
+Root relaxation presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+    4557    3.5612421e+03   2.131460e+05   0.000000e+00      5s
+    7417    3.6740810e+03   6.274342e+04   0.000000e+00     10s
+   10017    3.7542348e+03   2.160193e+04   0.000000e+00     15s
+   12359    3.7935482e+03   0.000000e+00   0.000000e+00     19s
+
+Root relaxation: objective 3.793548e+03, 12359 iterations, 18.70 seconds (10.45 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 3793.54825    0  320          - 3793.54825      -     -   19s
+
+Explored 1 nodes (12366 simplex iterations) in 19.20 seconds (10.69 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 0
+
+Node limit reached
+Best objective -, best bound 3.794500000000e+03, gap -
+Root Upper inf
+Root Lower 3793.5482456140035
+Reset all parameters
+Set parameter TimeLimit to value 1.9946978878974915e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x42125f33
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+Continuing optimization...
+
+     0     0 3793.54825    0  320          - 3793.54825      -     -   39s
+     0     0 3793.54825    0  320          - 3793.54825      -     -   40s
+H    0     0                    3905.5000000 3793.54825  2.87%     -   45s
+H    0     0                    3807.5000000 3793.54825  0.37%     -   46s
+     0     2 3793.55293    0  320 3807.50000 3793.55293  0.37%     -   46s
+     1     3 3802.36029    1  570 3807.50000 3793.55342  0.37%  5219   52s
+     7     1     cutoff    1      3807.50000 3802.36130  0.13%  1032   55s
+
+Explored 9 nodes (32022 simplex iterations) in 36.63 seconds (20.68 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 2: 3807.5 3905.5 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.807500000000e+03, best bound 3.807500000000e+03, gap 0.0000%
+flow1:  3807.5
+flow2:  3927.0
+Root Upper Bound: inf
+Root lower Bound: 3793.5482456140035
+ND-Point: 16
+
+-----------------------------------------
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Set parameter NodeLimit to value 0
+Set parameter TimeLimit to value 1.9557585995197296e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x80051192
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolve removed 0 rows and 2416 columns
+Presolve time: 0.21s
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+Variable types: 0 continuous, 1680 integer (1680 binary)
+Root relaxation presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+    3836    3.5459992e+03   2.494181e+04   0.000000e+00      5s
+    6116    3.6564113e+03   9.749385e+04   0.000000e+00     10s
+    8396    3.7374582e+03   5.174506e+04   0.000000e+00     15s
+   10686    3.7863149e+03   6.465034e+03   0.000000e+00     20s
+   11511    3.7939079e+03   0.000000e+00   0.000000e+00     22s
+
+Root relaxation: objective 3.793908e+03, 11511 iterations, 21.25 seconds (10.12 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 3793.90789    0  320          - 3793.90789      -     -   21s
+
+Explored 1 nodes (11521 simplex iterations) in 21.76 seconds (10.34 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 0
+
+Node limit reached
+Best objective -, best bound 3.794500000000e+03, gap -
+Root Upper inf
+Root Lower 3793.9078947368434
+Reset all parameters
+Set parameter TimeLimit to value 1.8855338194370270e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x80051192
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+Continuing optimization...
+
+     0     0 3793.90789    0  320          - 3793.90789      -     -   43s
+     0     0 3793.90789    0  320          - 3793.90789      -     -   44s
+H    0     0                    3828.5000000 3793.90789  0.90%     -   54s
+H    0     0                    3819.5000000 3793.90789  0.67%     -   54s
+     0     2 3793.91001    0  320 3819.50000 3793.91001  0.67%     -   55s
+     1     3 3804.68421    1   28 3819.50000 3793.91001  0.67%  6340   64s
+     2     4 3805.66960    2  464 3819.50000 3793.91001  0.67%  3566   65s
+H    5     5                    3818.5000000 3793.91001  0.64%  1871   71s
+H    6     6                    3814.5000000 3793.91001  0.54%  1768   72s
+*    7     7               5    3813.5000000 3793.91001  0.51%  2236   77s
+    14     6     cutoff    1      3813.50000 3805.66985  0.21%  1379   82s
+    15     7 3808.42857    3   28 3813.50000 3805.68715  0.20%  1456   85s
+    29     9 3810.08209    5   78 3813.50000 3808.64136  0.13%   879   90s
+    41     1     cutoff    4      3813.50000 3811.59231  0.05%   722   95s
+
+Explored 43 nodes (52694 simplex iterations) in 73.64 seconds (41.46 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 5: 3813.5 3814.5 3818.5 ... 3828.5
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.813500000000e+03, best bound 3.813500000000e+03, gap 0.0000%
+flow1:  3813.5
+flow2:  3925.0
+Root Upper Bound: inf
+Root lower Bound: 3793.9078947368434
+ND-Point: 17
+
+-----------------------------------------
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Set parameter NodeLimit to value 0
+Set parameter TimeLimit to value 1.8093787608146667e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x31942d42
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolve removed 0 rows and 2416 columns
+Presolve time: 0.21s
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+Variable types: 0 continuous, 1680 integer (1680 binary)
+Root relaxation presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+    4011    3.4970764e+03   1.191079e+04   0.000000e+00      5s
+    6331    3.6133207e+03   3.980952e+04   0.000000e+00     10s
+    8531    3.7034200e+03   9.004247e+03   0.000000e+00     15s
+   10801    3.7666621e+03   1.077156e+04   0.000000e+00     20s
+   12731    3.7942675e+03   0.000000e+00   0.000000e+00     24s
+
+Root relaxation: objective 3.794268e+03, 12731 iterations, 23.47 seconds (11.17 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 3794.26754    0  320          - 3794.26754      -     -   24s
+
+Explored 1 nodes (12743 simplex iterations) in 24.02 seconds (11.40 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 0
+
+Node limit reached
+Best objective -, best bound 3.794500000000e+03, gap -
+Root Upper inf
+Root Lower 3794.26754385965
+Reset all parameters
+Set parameter TimeLimit to value 1.7344196841716766e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x31942d42
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+Continuing optimization...
+
+     0     0 3794.26754    0  320          - 3794.26754      -     -   47s
+     0     0 3794.26754    0  320          - 3794.26754      -     -   48s
+H    0     0                    3818.5000000 3794.26754  0.63%     -   54s
+     0     2 3794.27433    0  320 3818.50000 3794.27433  0.63%     -   55s
+     1     3 3806.00000    1   28 3818.50000 3794.27433  0.63%  5684   63s
+H    3     3                    3814.5000000 3794.27433  0.53%  1965   67s
+     5     5     cutoff    4      3814.50000 3794.27433  0.53%  2461   72s
+    11     3     cutoff    1      3814.50000 3806.01111  0.22%  1460   77s
+    12     4 3810.28611    2   28 3814.50000 3810.28611  0.11%  1619   81s
+    15     7 3812.00000    5  102 3814.50000 3810.28661  0.11%  1511   85s
+
+Explored 29 nodes (51644 simplex iterations) in 65.89 seconds (37.16 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 2: 3814.5 3818.5 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.814500000000e+03, best bound 3.814500000000e+03, gap 0.0000%
+flow1:  3814.5
+flow2:  3920.0
+Root Upper Bound: inf
+Root lower Bound: 3794.26754385965
+ND-Point: 18
+
+-----------------------------------------
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Set parameter NodeLimit to value 0
+Set parameter TimeLimit to value 1.6677155690193176e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x03317be8
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolve removed 0 rows and 2416 columns
+Presolve time: 0.21s
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+Variable types: 0 continuous, 1680 integer (1680 binary)
+Root relaxation presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+    3899    3.5425237e+03   9.250024e+04   0.000000e+00      5s
+    6209    3.6657277e+03   4.879560e+04   0.000000e+00     10s
+    8379    3.7434639e+03   1.120755e+04   0.000000e+00     15s
+   10779    3.7941101e+03   2.700369e+03   0.000000e+00     20s
+   10978    3.7951667e+03   0.000000e+00   0.000000e+00     20s
+
+Root relaxation: objective 3.795167e+03, 10978 iterations, 19.98 seconds (9.49 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 3795.16667    0  320          - 3795.16667      -     -   20s
+
+Explored 1 nodes (10983 simplex iterations) in 20.49 seconds (9.71 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 0
+
+Node limit reached
+Best objective -, best bound 3.795500000000e+03, gap -
+Root Upper inf
+Root Lower 3795.1666666666624
+Reset all parameters
+Set parameter TimeLimit to value 1.5955171267986298e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x03317be8
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+Continuing optimization...
+
+     0     0 3795.16667    0  320          - 3795.16667      -     -   40s
+     0     0 3795.16667    0  320          - 3795.16667      -     -   41s
+H    0     0                    3818.5000000 3795.16667  0.61%     -   45s
+     0     2 3795.16707    0  320 3818.50000 3795.16707  0.61%     -   46s
+     1     3 3809.28947    1   28 3818.50000 3795.17054  0.61%  4908   53s
+     3     5 3814.92857    2   28 3818.50000 3795.17054  0.61%  2797   57s
+     5     7 3815.26923    4   28 3818.50000 3795.17054  0.61%  1998   60s
+    11     5 3815.55634    3  628 3818.50000 3813.89606  0.12%  1601   69s
+    12     6 3815.63149    4  410 3818.50000 3813.89606  0.12%  1511   70s
+    25     5     cutoff    4      3818.50000 3815.57143  0.08%   890   75s
+*   29     0               6    3817.5000000 3817.50000  0.00%   771   75s
+
+Explored 30 nodes (44321 simplex iterations) in 54.90 seconds (31.55 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 2: 3817.5 3818.5 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.817500000000e+03, best bound 3.817500000000e+03, gap 0.0000%
+flow1:  3817.5
+flow2:  3919.0
+Root Upper Bound: inf
+Root lower Bound: 3795.1666666666624
+ND-Point: 19
+
+-----------------------------------------
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Set parameter NodeLimit to value 0
+Set parameter TimeLimit to value 1.5402887108325958e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x0c4edb33
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolve removed 0 rows and 2416 columns
+Presolve time: 0.21s
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+Variable types: 0 continuous, 1680 integer (1680 binary)
+Root relaxation presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+    3810    3.5303295e+03   9.188811e+04   0.000000e+00      5s
+    5980    3.6424710e+03   3.103041e+05   0.000000e+00     10s
+    8150    3.7150304e+03   4.560055e+03   0.000000e+00     15s
+   10330    3.7756372e+03   2.146548e+05   0.000000e+00     20s
+   11887    3.7953550e+03   0.000000e+00   0.000000e+00     23s
+
+Root relaxation: objective 3.795355e+03, 11887 iterations, 22.62 seconds (10.56 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 3795.35499    0  320          - 3795.35499      -     -   23s
+
+Explored 1 nodes (11894 simplex iterations) in 23.19 seconds (10.80 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 0
+
+Node limit reached
+Best objective -, best bound 3.795500000000e+03, gap -
+Root Upper inf
+Root Lower 3795.354990583838
+Reset all parameters
+Set parameter TimeLimit to value 1.4650937230587006e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x0c4edb33
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+Continuing optimization...
+
+     0     0 3795.35499    0  320          - 3795.35499      -     -   46s
+H    0     0                    3876.5000000 3795.35499  2.09%     -   46s
+H    0     0                    3828.5000000 3795.35499  0.87%     -   46s
+     0     0 3795.35499    0  320 3828.50000 3795.35499  0.87%     -   47s
+H    0     0                    3818.5000000 3795.35499  0.61%     -   49s
+     0     2 3795.36421    0  320 3818.50000 3795.36421  0.61%     -   50s
+     1     3 3809.94737    1   28 3818.50000 3795.39680  0.61%  6219   60s
+     8     2     cutoff    1      3818.50000 3809.94777  0.22%  1357   67s
+    10     4 3815.85714    3   28 3818.50000 3810.87976  0.20%  1360   72s
+    18     2 3813.40344    3  582 3818.50000 3813.40344  0.13%   901   77s
+    19     3 3816.76298    4  410 3818.50000 3813.41384  0.13%   998   80s
+
+Explored 27 nodes (43336 simplex iterations) in 58.21 seconds (29.98 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 3: 3818.5 3828.5 3876.5 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.818500000000e+03, best bound 3.818500000000e+03, gap 0.0000%
+flow1:  3818.5
+flow2:  3905.0
+Root Upper Bound: inf
+Root lower Bound: 3795.354990583838
+ND-Point: 20
+
+-----------------------------------------
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Set parameter NodeLimit to value 0
+Set parameter TimeLimit to value 1.4089703519344330e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0xda8843d9
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolve removed 0 rows and 2416 columns
+Presolve time: 0.19s
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+Variable types: 0 continuous, 1680 integer (1680 binary)
+Root relaxation presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+    4303    3.5505314e+03   3.061162e+04   0.000000e+00      5s
+    6913    3.6719356e+03   3.090339e+04   0.000000e+00     10s
+    9483    3.7609195e+03   5.853919e+04   0.000000e+00     15s
+   11748    3.7979915e+03   0.000000e+00   0.000000e+00     19s
+
+Root relaxation: objective 3.797992e+03, 11748 iterations, 18.92 seconds (10.44 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 3797.99153    0  320          - 3797.99153      -     -   19s
+
+Explored 1 nodes (11756 simplex iterations) in 19.39 seconds (10.66 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 0
+
+Node limit reached
+Best objective -, best bound 3.798500000000e+03, gap -
+Root Upper inf
+Root Lower 3797.991525423732
+Reset all parameters
+Set parameter TimeLimit to value 1.3396972937583923e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0xda8843d9
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+Continuing optimization...
+
+     0     0 3797.99153    0  320          - 3797.99153      -     -   38s
+H    0     0                    3876.5000000 3797.99153  2.03%     -   38s
+H    0     0                    3828.5000000 3797.99153  0.80%     -   38s
+     0     0 3797.99153    0  320 3828.50000 3797.99153  0.80%     -   39s
+H    0     0                    3821.5000000 3797.99153  0.62%     -   41s
+     0     2 3798.00811    0  320 3821.50000 3798.00811  0.61%     -   42s
+     1     3 3819.37500    1   28 3821.50000 3798.02651  0.61%  6229   50s
+     9     3     cutoff    2      3821.50000 3805.19713  0.43%  1426   60s
+*   12     0               3    3818.5000000 3818.50000  0.00%  1288   63s
+
+Explored 13 nodes (38976 simplex iterations) in 44.25 seconds (26.62 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 4: 3818.5 3821.5 3828.5 3876.5 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.818500000000e+03, best bound 3.818500000000e+03, gap 0.0000%
+flow1:  3818.5
+flow2:  3844.0
+Root Upper Bound: inf
+Root lower Bound: 3797.991525423732
+ND-Point: 21
+
+-----------------------------------------
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Set parameter NodeLimit to value 0
+Set parameter TimeLimit to value 1.3004235537052155e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x5f44973f
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolve removed 0 rows and 2416 columns
+Presolve time: 0.13s
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+Variable types: 0 continuous, 1680 integer (1680 binary)
+Root relaxation presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+    5141    3.5943663e+03   1.748423e+04   0.000000e+00      5s
+    8241    3.7329255e+03   1.132514e+04   0.000000e+00     10s
+   11611    3.8074449e+03   2.788541e+04   0.000000e+00     15s
+   12046    3.8094793e+03   0.000000e+00   0.000000e+00     16s
+
+Root relaxation: objective 3.809479e+03, 12046 iterations, 15.38 seconds (10.62 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 3809.47928    0  320          - 3809.47928      -     -   15s
+
+Explored 1 nodes (12053 simplex iterations) in 15.75 seconds (10.85 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 0
+
+Node limit reached
+Best objective -, best bound 3.809500000000e+03, gap -
+Root Upper inf
+Root Lower 3809.479284369114
+Reset all parameters
+Set parameter TimeLimit to value 1.2398090019226074e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x5f44973f
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+03]
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+Continuing optimization...
+
+     0     0 3809.47928    0  320          - 3809.47928      -     -   33s
+H    0     0                    3828.5000000 3809.47928  0.50%     -   33s
+     0     0 3809.47928    0  320 3828.50000 3809.47928  0.50%     -   33s
+H    0     0                    3819.5000000 3809.47928  0.26%     -   35s
+     0     2 3809.49682    0  320 3819.50000 3809.49682  0.26%     -   35s
+     1     1     cutoff    1      3819.50000 3809.49682  0.26%  1773   38s
+
+Explored 3 nodes (26317 simplex iterations) in 22.95 seconds (14.36 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 2: 3819.5 3828.5 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.819500000000e+03, best bound 3.819500000000e+03, gap 0.0000%
+flow1:  3819.5
+flow2:  3801.0
+Root Upper Bound: inf
+Root lower Bound: 3809.479284369114
+ND-Point: 22
+
+-----------------------------------------
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Set parameter NodeLimit to value 0
+Set parameter TimeLimit to value 1.2159705095291138e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x6b6fd5fa
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+03]
+Presolve removed 0 rows and 2416 columns
+Presolve time: 0.14s
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+Variable types: 0 continuous, 1680 integer (1680 binary)
+Root relaxation presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+    4694    3.6052722e+03   2.423330e+04   0.000000e+00      5s
+    7824    3.7334952e+03   1.392233e+04   0.000000e+00     10s
+   11164    3.8151001e+03   3.421399e+03   0.000000e+00     15s
+   12041    3.8175772e+03   0.000000e+00   0.000000e+00     16s
+
+Root relaxation: objective 3.817577e+03, 12041 iterations, 15.89 seconds (10.94 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 3817.57721    0  320          - 3817.57721      -     -   16s
+
+Explored 1 nodes (12046 simplex iterations) in 16.30 seconds (11.18 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 0
+
+Node limit reached
+Best objective -, best bound 3.818500000000e+03, gap -
+Root Upper inf
+Root Lower 3817.5772128060435
+Reset all parameters
+Set parameter TimeLimit to value 1.1539493923187256e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x6b6fd5fa
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+03]
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+Continuing optimization...
+
+     0     0 3817.57721    0  320          - 3817.57721      -     -   35s
+H    0     0                    3828.5000000 3817.57721  0.29%     -   35s
+     0     0 3817.57721    0  320 3828.50000 3817.57721  0.29%     -   36s
+H    0     0                    3826.5000000 3817.57721  0.23%     -   39s
+     0     2 3817.61572    0  320 3826.50000 3817.61572  0.23%     -   39s
+     1     3 3819.65254    1   78 3826.50000 3817.61856  0.23%   235   39s
+     2     4 3819.91935    2   54 3826.50000 3817.61856  0.23%   993   41s
+     7     7     cutoff    6      3826.50000 3817.61856  0.23%   600   45s
+
+Explored 19 nodes (32207 simplex iterations) in 33.56 seconds (19.82 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 2: 3826.5 3828.5 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.826500000000e+03, best bound 3.826500000000e+03, gap 0.0000%
+flow1:  3826.5
+flow2:  3796.0
+Root Upper Bound: inf
+Root lower Bound: 3817.5772128060435
+ND-Point: 23
+
+-----------------------------------------
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Set parameter NodeLimit to value 0
+Set parameter TimeLimit to value 1.1132664418220520e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x21a9eb68
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+03]
+Presolve removed 0 rows and 2416 columns
+Presolve time: 0.20s
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+Variable types: 0 continuous, 1680 integer (1680 binary)
+Root relaxation presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+    3692    3.5130216e+03   2.205269e+05   0.000000e+00      5s
+    5922    3.6283423e+03   7.136931e+03   0.000000e+00     10s
+    8072    3.7239900e+03   1.288793e+04   0.000000e+00     15s
+   10322    3.7907538e+03   1.441481e+04   0.000000e+00     20s
+   12232    3.8185188e+03   0.000000e+00   0.000000e+00     24s
+
+Root relaxation: objective 3.818519e+03, 12232 iterations, 23.60 seconds (11.03 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 3818.51883    0  320          - 3818.51883      -     -   24s
+
+Explored 1 nodes (12241 simplex iterations) in 24.13 seconds (11.26 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 0
+
+Node limit reached
+Best objective -, best bound 3.819500000000e+03, gap -
+Root Upper inf
+Root Lower 3818.5188323917127
+Reset all parameters
+Set parameter TimeLimit to value 1.0363049628734589e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x21a9eb68
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+03]
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+Continuing optimization...
+
+     0     0 3818.51883    0  320          - 3818.51883      -     -   45s
+H    0     0                    3828.5000000 3818.51883  0.26%     -   45s
+     0     0 3818.51883    0  320 3828.50000 3818.51883  0.26%     -   46s
+H    0     0                    3827.5000000 3818.51883  0.23%     -   49s
+     0     2 3818.54594    0  320 3827.50000 3818.54594  0.23%     -   49s
+     1     3 3820.41525    1   78 3827.50000 3818.54594  0.23%   272   50s
+     3     3     cutoff    2      3827.50000 3818.54594  0.23%  1345   55s
+    13     1     cutoff    3      3827.50000 3823.35355  0.11%   646   60s
+
+Explored 15 nodes (32953 simplex iterations) in 36.77 seconds (20.52 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 2: 3827.5 3828.5 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.827500000000e+03, best bound 3.827500000000e+03, gap 0.0000%
+flow1:  3827.5
+flow2:  3792.0
+Root Upper Bound: inf
+Root lower Bound: 3818.5188323917127
+ND-Point: 24
+
+-----------------------------------------
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Set parameter NodeLimit to value 0
+Set parameter TimeLimit to value 1.0040281655788422e+03
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0xba66a63c
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+03]
+Presolve removed 0 rows and 2416 columns
+Presolve time: 0.19s
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+Variable types: 0 continuous, 1680 integer (1680 binary)
+Root relaxation presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+    4095    3.5609019e+03   1.039321e+05   0.000000e+00      5s
+    6685    3.6890861e+03   2.167996e+04   0.000000e+00     10s
+    9375    3.7630633e+03   1.181195e+04   0.000000e+00     15s
+   12075    3.8174213e+03   4.607874e+03   0.000000e+00     20s
+   12912    3.8192721e+03   0.000000e+00   0.000000e+00     21s
+
+Root relaxation: objective 3.819272e+03, 12912 iterations, 20.90 seconds (11.48 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 3819.27213    0  320          - 3819.27213      -     -   21s
+
+Explored 1 nodes (12917 simplex iterations) in 21.35 seconds (11.70 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 0
+
+Node limit reached
+Best objective -, best bound 3.819500000000e+03, gap -
+Root Upper inf
+Root Lower 3819.272128060259
+Reset all parameters
+Set parameter TimeLimit to value 9.3437120699882507e+02
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0xba66a63c
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+03]
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+Continuing optimization...
+
+     0     0 3819.27213    0  320          - 3819.27213      -     -   41s
+H    0     0                    3828.5000000 3819.27213  0.24%     -   41s
+     0     0 3819.27213    0  320 3828.50000 3819.27213  0.24%     -   42s
+     0     2 3819.27956    0  320 3828.50000 3819.27956  0.24%     -   44s
+     1     3 3821.02542    1   78 3828.50000 3819.28126  0.24%   227   45s
+*   10     0               2    3827.5000000 3827.50000  0.00%   695   52s
+
+Explored 11 nodes (32791 simplex iterations) in 31.08 seconds (19.49 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 2: 3827.5 3828.5 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.827500000000e+03, best bound 3.827500000000e+03, gap 0.0000%
+flow1:  3827.5
+flow2:  3785.0
+Root Upper Bound: inf
+Root lower Bound: 3819.272128060259
+ND-Point: 25
+
+-----------------------------------------
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Set parameter NodeLimit to value 0
+Set parameter TimeLimit to value 9.0483178305625916e+02
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x2dc102c3
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+03]
+Presolve removed 0 rows and 2416 columns
+Presolve time: 0.19s
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+Variable types: 0 continuous, 1680 integer (1680 binary)
+Root relaxation presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+    3809    3.4934299e+03   6.727167e+04   0.000000e+00      5s
+    6469    3.6590582e+03   7.299085e+03   0.000000e+00     10s
+    9159    3.7597577e+03   1.722760e+05   0.000000e+00     15s
+   12089    3.8202584e+03   1.172753e+03   0.000000e+00     20s
+   12315    3.8205904e+03   0.000000e+00   0.000000e+00     20s
+
+Root relaxation: objective 3.820590e+03, 12315 iterations, 20.01 seconds (11.20 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 3820.59040    0  320          - 3820.59040      -     -   20s
+
+Explored 1 nodes (12318 simplex iterations) in 20.51 seconds (11.43 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 0
+
+Node limit reached
+Best objective -, best bound 3.821500000000e+03, gap -
+Root Upper inf
+Root Lower 3820.5903954801915
+Reset all parameters
+Set parameter TimeLimit to value 8.3758995103836060e+02
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x2dc102c3
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+03]
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+Continuing optimization...
+
+     0     0 3820.59040    0  320          - 3820.59040      -     -   39s
+H    0     0                    3828.5000000 3820.59040  0.21%     -   39s
+     0     0 3820.59040    0  320 3828.50000 3820.59040  0.21%     -   40s
+     0     0 3820.59040    0  167 3828.50000 3820.59040  0.21%     -   43s
+     0     0 3823.54554    0  123 3828.50000 3823.54554  0.13%     -   44s
+     0     0 3823.54554    0    5 3828.50000 3823.54554  0.13%     -   44s
+     0     0     cutoff    0      3828.50000 3828.50000  0.00%     -   44s
+
+Explored 1 nodes (26814 simplex iterations) in 23.59 seconds (13.80 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 1: 3828.5 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.828500000000e+03, best bound 3.828500000000e+03, gap 0.0000%
+flow1:  3828.5
+flow2:  3742.0
+Root Upper Bound: inf
+Root lower Bound: 3820.5903954801915
+ND-Point: 26
+
+-----------------------------------------
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Set parameter NodeLimit to value 0
+Set parameter TimeLimit to value 8.1526312708854675e+02
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x6541907e
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+03]
+Presolve removed 0 rows and 2416 columns
+Presolve time: 0.16s
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+Variable types: 0 continuous, 1680 integer (1680 binary)
+Root relaxation presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+    4549    3.5666911e+03   5.018399e+04   0.000000e+00      5s
+    7629    3.7237435e+03   3.962956e+04   0.000000e+00     10s
+   10659    3.8208354e+03   2.045475e+04   0.000000e+00     15s
+   14408    3.8291345e+03   0.000000e+00   0.000000e+00     20s
+
+Root relaxation: objective 3.829134e+03, 14408 iterations, 19.67 seconds (12.35 work units)
+Total elapsed time = 20.04s (DegenMoves)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 3829.13448    0  186          - 3829.13448      -     -   20s
+
+Explored 1 nodes (14410 simplex iterations) in 20.06 seconds (12.56 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 0
+
+Node limit reached
+Best objective -, best bound 3.829500000000e+03, gap -
+Root Upper inf
+Root Lower 3829.134482758621
+Reset all parameters
+Set parameter TimeLimit to value 749.748437166214
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x6541907e
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+03]
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+Continuing optimization...
+
+     0     0 3829.13448    0  186          - 3829.13448      -     -   42s
+H    0     0                    3835.5000000 3829.13448  0.17%     -   43s
+     0     0 3829.13448    0  186 3835.50000 3829.13448  0.17%     -   44s
+     0     0 3829.15789    0    8 3835.50000 3829.15789  0.17%     -   47s
+     0     0 3829.23684    0    1 3835.50000 3829.23684  0.16%     -   47s
+     0     0 3830.83333    0   17 3835.50000 3830.83333  0.12%     -   47s
+
+Cutting planes:
+  GUB cover: 1
+
+Explored 1 nodes (28886 simplex iterations) in 27.02 seconds (14.54 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 1: 3835.5 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.835500000000e+03, best bound 3.835500000000e+03, gap 0.0000%
+flow1:  3835.5
+flow2:  3737.0
+Root Upper Bound: inf
+Root lower Bound: 3829.134482758621
+ND-Point: 27
+
+-----------------------------------------
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Set parameter NodeLimit to value 0
+Set parameter TimeLimit to value 7.1556745457649231e+02
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0xf6b7a5bf
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+03]
+Presolve removed 0 rows and 2416 columns
+Presolve time: 0.21s
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+Variable types: 0 continuous, 1680 integer (1680 binary)
+Root relaxation presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+    4011    3.4867334e+03   9.603513e+03   0.000000e+00      5s
+    6451    3.6399575e+03   3.307205e+05   0.000000e+00     10s
+    8731    3.7467256e+03   4.908179e+03   0.000000e+00     15s
+   10871    3.8156406e+03   2.947802e+04   0.000000e+00     20s
+   13741    3.8317558e+03   1.345055e+03   0.000000e+00     25s
+   14936    3.8323069e+03   0.000000e+00   0.000000e+00     27s
+
+Root relaxation: objective 3.832307e+03, 14936 iterations, 26.71 seconds (12.74 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 3832.30690    0  186          - 3832.30690      -     -   27s
+
+Explored 1 nodes (14938 simplex iterations) in 27.19 seconds (12.94 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 0
+
+Node limit reached
+Best objective -, best bound 3.832500000000e+03, gap -
+Root Upper inf
+Root Lower 3832.3068965517245
+Reset all parameters
+Set parameter TimeLimit to value 6.3579770922660828e+02
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0xf6b7a5bf
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+03]
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+Continuing optimization...
+
+     0     0 3832.30690    0  186          - 3832.30690      -     -   50s
+H    0     0                    3842.5000000 3832.30690  0.27%     -   50s
+     0     0 3832.30690    0  186 3842.50000 3832.30690  0.27%     -   51s
+H    0     0                    3836.5000000 3832.30690  0.11%     -   53s
+
+Explored 1 nodes (29878 simplex iterations) in 26.75 seconds (14.79 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 2: 3836.5 3842.5 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.836500000000e+03, best bound 3.836500000000e+03, gap 0.0000%
+flow1:  3836.5
+flow2:  3733.0
+Root Upper Bound: inf
+Root lower Bound: 3832.3068965517245
+ND-Point: 28
+
+-----------------------------------------
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Set parameter NodeLimit to value 0
+Set parameter TimeLimit to value 6.1477859473228455e+02
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0xc50711f4
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+03]
+Presolve removed 0 rows and 2416 columns
+Presolve time: 0.19s
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+Variable types: 0 continuous, 1680 integer (1680 binary)
+Root relaxation presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+    4107    3.5092387e+03   2.390449e+04   0.000000e+00      5s
+    6727    3.6649696e+03   1.083870e+04   0.000000e+00     10s
+    9337    3.7662082e+03   8.597797e+03   0.000000e+00     15s
+   12167    3.8322725e+03   4.021455e+02   0.000000e+00     20s
+   14851    3.8348448e+03   0.000000e+00   0.000000e+00     24s
+
+Root relaxation: objective 3.834845e+03, 14851 iterations, 23.37 seconds (12.89 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 3834.84483    0  186          - 3834.84483      -     -   23s
+
+Explored 1 nodes (14853 simplex iterations) in 23.80 seconds (13.10 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 0
+
+Node limit reached
+Best objective -, best bound 3.835500000000e+03, gap -
+Root Upper inf
+Root Lower 3834.8448275862065
+Reset all parameters
+Set parameter TimeLimit to value 5.4415369009971619e+02
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0xc50711f4
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+03]
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+Continuing optimization...
+
+     0     0 3834.84483    0  186          - 3834.84483      -     -   47s
+H    0     0                    3842.5000000 3834.84483  0.20%     -   47s
+     0     0 3834.84483    0  186 3842.50000 3834.84483  0.20%     -   48s
+     0     0 3835.07895    0    8 3842.50000 3835.07895  0.19%     -   50s
+     0     0 3837.08621    0    8 3842.50000 3837.08621  0.14%     -   50s
+H    0     1                    3839.5000000 3837.08621  0.06%     -   50s
+
+Cutting planes:
+  RLT: 1
+
+Explored 1 nodes (29762 simplex iterations) in 26.90 seconds (14.89 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 2: 3839.5 3842.5 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.839500000000e+03, best bound 3.839500000000e+03, gap 0.0000%
+flow1:  3839.5
+flow2:  3732.0
+Root Upper Bound: inf
+Root lower Bound: 3834.8448275862065
+ND-Point: 29
+
+-----------------------------------------
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Set parameter NodeLimit to value 0
+Set parameter TimeLimit to value 5.1965247559547424e+02
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0xbd842fc2
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+03]
+Presolve removed 0 rows and 2416 columns
+Presolve time: 0.18s
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+Variable types: 0 continuous, 1680 integer (1680 binary)
+Root relaxation presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+    4301    3.5318641e+03   1.781472e+04   0.000000e+00      5s
+    7101    3.6735649e+03   1.201468e+04   0.000000e+00     10s
+    9871    3.7742699e+03   3.078660e+04   0.000000e+00     15s
+   12951    3.8331969e+03   6.319990e+02   0.000000e+00     20s
+   14897    3.8354793e+03   0.000000e+00   0.000000e+00     22s
+
+Root relaxation: objective 3.835479e+03, 14897 iterations, 22.12 seconds (13.11 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 3835.47931    0  186          - 3835.47931      -     -   22s
+
+Explored 1 nodes (14900 simplex iterations) in 22.51 seconds (13.32 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 0
+
+Node limit reached
+Best objective -, best bound 3.835500000000e+03, gap -
+Root Upper inf
+Root Lower 3835.479310344842
+Reset all parameters
+Set parameter TimeLimit to value 4.5274677944183350e+02
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0xbd842fc2
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+03]
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+Continuing optimization...
+
+     0     0 3835.47931    0  186          - 3835.47931      -     -   44s
+     0     0 3835.47931    0  186          - 3835.47931      -     -   45s
+H    0     0                    3842.5000000 3835.47931  0.18%     -   46s
+     0     0 3835.73684    0    7 3842.50000 3835.73684  0.18%     -   48s
+     0     0 3836.60526    0    5 3842.50000 3836.60526  0.15%     -   48s
+     0     0 3838.75455    0    9 3842.50000 3838.75455  0.10%     -   48s
+
+Cutting planes:
+  Gomory: 1
+
+Explored 1 nodes (29849 simplex iterations) in 25.77 seconds (15.43 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 1: 3842.5 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.842500000000e+03, best bound 3.842500000000e+03, gap 0.0000%
+flow1:  3842.5
+flow2:  3726.0
+Root Upper Bound: inf
+Root lower Bound: 3835.479310344842
+ND-Point: 30
+
+-----------------------------------------
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Set parameter NodeLimit to value 0
+Set parameter TimeLimit to value 4.2400028204917908e+02
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0xe2b5e7f8
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+03]
+Presolve removed 0 rows and 2416 columns
+Presolve time: 0.18s
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+Variable types: 0 continuous, 1680 integer (1680 binary)
+Root relaxation presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+    4228    3.5500874e+03   2.005615e+04   0.000000e+00      5s
+    6868    3.6997613e+03   1.099027e+04   0.000000e+00     10s
+    9438    3.7971768e+03   1.306754e+04   0.000000e+00     15s
+   12638    3.8371718e+03   1.326567e+03   0.000000e+00     20s
+   13902    3.8392862e+03   0.000000e+00   0.000000e+00     22s
+
+Root relaxation: objective 3.839286e+03, 13902 iterations, 21.55 seconds (11.81 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 3839.28621    0  186          - 3839.28621      -     -   22s
+
+Explored 1 nodes (13908 simplex iterations) in 22.01 seconds (12.03 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 0
+
+Node limit reached
+Best objective -, best bound 3.839500000000e+03, gap -
+Root Upper inf
+Root Lower 3839.2862068965587
+Reset all parameters
+Set parameter TimeLimit to value 3.5465666508674622e+02
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0xe2b5e7f8
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+03]
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+Continuing optimization...
+
+     0     0 3839.28621    0  186          - 3839.28621      -     -   45s
+H    0     0                    3849.5000000 3839.28621  0.27%     -   45s
+     0     0 3839.28621    0  186 3849.50000 3839.28621  0.27%     -   46s
+H    0     0                    3842.5000000 3839.28621  0.08%     -   48s
+
+Explored 1 nodes (27822 simplex iterations) in 27.23 seconds (13.81 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 2: 3842.5 3849.5 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.842500000000e+03, best bound 3.842500000000e+03, gap 0.0000%
+flow1:  3842.5
+flow2:  3723.0
+Root Upper Bound: inf
+Root lower Bound: 3839.2862068965587
+ND-Point: 31
+
+-----------------------------------------
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Set parameter NodeLimit to value 0
+Set parameter TimeLimit to value 3.2641445541381836e+02
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x8ebcf6f3
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+03]
+Presolve removed 0 rows and 2416 columns
+Presolve time: 0.20s
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+Variable types: 0 continuous, 1680 integer (1680 binary)
+Root relaxation presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+    4095    3.5403959e+03   4.399363e+04   0.000000e+00      5s
+    6665    3.6736920e+03   9.460396e+03   0.000000e+00     10s
+    9525    3.7810444e+03   8.587375e+04   0.000000e+00     15s
+   13035    3.8393110e+03   1.049103e+03   0.000000e+00     20s
+   14156    3.8411897e+03   0.000000e+00   0.000000e+00     21s
+
+Root relaxation: objective 3.841190e+03, 14156 iterations, 21.06 seconds (12.29 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 3841.18966    0  186          - 3841.18966      -     -   21s
+
+Explored 1 nodes (14165 simplex iterations) in 21.54 seconds (12.51 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 0
+
+Node limit reached
+Best objective -, best bound 3.841500000000e+03, gap -
+Root Upper inf
+Root Lower 3841.1896551724108
+Reset all parameters
+Set parameter TimeLimit to value 2.5656617689132690e+02
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x8ebcf6f3
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+03]
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+Continuing optimization...
+
+     0     0 3841.18966    0  186          - 3841.18966      -     -   40s
+H    0     0                    3849.5000000 3841.18966  0.22%     -   40s
+     0     0 3841.18966    0  186 3849.50000 3841.18966  0.22%     -   41s
+     0     2 3841.19561    0  186 3849.50000 3841.19561  0.22%     -   44s
+     1     3 3841.65789    1   28 3849.50000 3841.24026  0.21%   135   44s
+     3     5 3844.60526    3   28 3849.50000 3841.24026  0.21%   267   45s
+    11     3     cutoff    4      3849.50000 3843.31849  0.16%   471   50s
+
+Explored 19 nodes (34898 simplex iterations) in 29.94 seconds (19.62 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 1: 3849.5 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.849500000000e+03, best bound 3.849500000000e+03, gap 0.0000%
+flow1:  3849.5
+flow2:  3721.0
+Root Upper Bound: inf
+Root lower Bound: 3841.1896551724108
+ND-Point: 32
+
+-----------------------------------------
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Set parameter NodeLimit to value 0
+Set parameter TimeLimit to value 2.2753312849998474e+02
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0xca585e32
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+03]
+Presolve removed 0 rows and 2416 columns
+Presolve time: 0.17s
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+Variable types: 0 continuous, 1680 integer (1680 binary)
+Root relaxation presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+    4509    3.5341108e+03   1.760305e+04   0.000000e+00      5s
+    7299    3.6866407e+03   9.314240e+03   0.000000e+00     10s
+   10079    3.7890079e+03   5.446762e+04   0.000000e+00     15s
+   13219    3.8381938e+03   1.134151e+03   0.000000e+00     20s
+   14911    3.8424586e+03   0.000000e+00   0.000000e+00     22s
+
+Root relaxation: objective 3.842459e+03, 14911 iterations, 21.92 seconds (13.03 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 3842.45862    0  186          - 3842.45862      -     -   22s
+
+Explored 1 nodes (14916 simplex iterations) in 22.35 seconds (13.25 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 0
+
+Node limit reached
+Best objective -, best bound 3.842500000000e+03, gap -
+Root Upper inf
+Root Lower 3842.458620689452
+Reset all parameters
+Set parameter TimeLimit to value 1.5781244015693665e+02
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0xca585e32
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+03]
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+Continuing optimization...
+
+     0     0 3842.45862    0  186          - 3842.45862      -     -   43s
+     0     0 3842.45862    0  186          - 3842.45862      -     -   43s
+H    0     0                    3920.5000000 3842.45862  1.99%     -   48s
+H    0     0                    3853.5000000 3842.45862  0.29%     -   48s
+     0     2 3842.47806    0  186 3853.50000 3842.47806  0.29%     -   48s
+     1     3 3842.97368    1   28 3853.50000 3842.49934  0.29%   130   48s
+     3     5 3848.62752    3  522 3853.50000 3842.49934  0.29%   848   51s
+    11     7 3845.12500    3   28 3853.50000 3842.97642  0.27%   588   55s
+H   14     4                    3849.5000000 3842.97642  0.17%   609   57s
+    20     0     cutoff    3      3849.50000 3849.50000  0.00%   578   60s
+
+Explored 21 nodes (41397 simplex iterations) in 37.72 seconds (26.14 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 3: 3849.5 3853.5 3920.5 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.849500000000e+03, best bound 3.849500000000e+03, gap 0.0000%
+flow1:  3849.5
+flow2:  3718.0
+Root Upper Bound: inf
+Root lower Bound: 3842.458620689452
+ND-Point: 33
+
+-----------------------------------------
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Set parameter NodeLimit to value 0
+Set parameter TimeLimit to value 1.2093819856643677e+02
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0xa650474f
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+03]
+Presolve removed 0 rows and 2416 columns
+Presolve time: 0.16s
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+Variable types: 0 continuous, 1680 integer (1680 binary)
+Root relaxation presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+    4527    3.5466543e+03   2.989109e+05   0.000000e+00      5s
+    7317    3.7105650e+03   9.461113e+03   0.000000e+00     10s
+    9937    3.7995983e+03   3.796421e+04   0.000000e+00     15s
+   13237    3.8414553e+03   1.879421e+03   0.000000e+00     20s
+   14632    3.8443621e+03   0.000000e+00   0.000000e+00     22s
+
+Root relaxation: objective 3.844362e+03, 14632 iterations, 21.62 seconds (12.68 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 3844.36207    0  186          - 3844.36207      -     -   22s
+
+Explored 1 nodes (14638 simplex iterations) in 22.01 seconds (12.89 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 0
+
+Node limit reached
+Best objective -, best bound 3.844500000000e+03, gap -
+Root Upper inf
+Root Lower 3844.3620689654917
+Reset all parameters
+Set parameter TimeLimit to value 5.2448811769485474e+01
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0xa650474f
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+03]
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+Continuing optimization...
+
+     0     0 3844.36207    0  186          - 3844.36207      -     -   42s
+     0     0 3844.36207    0  186          - 3844.36207      -     -   43s
+H    0     0                    3853.5000000 3844.36207  0.24%     -   46s
+     0     2 3844.36286    0  186 3853.50000 3844.36286  0.24%     -   47s
+     1     3 3844.94737    1   28 3853.50000 3844.39270  0.24%   133   47s
+     2     4 3851.51695    2   78 3853.50000 3844.39270  0.24%  1553   50s
+H    5     3                    3850.5000000 3844.39270  0.16%   884   52s
+    13     1     cutoff    4      3850.50000 3848.56887  0.05%   642   55s
+
+Explored 15 nodes (37667 simplex iterations) in 33.39 seconds (22.90 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 2: 3850.5 3853.5 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.850500000000e+03, best bound 3.850500000000e+03, gap 0.0000%
+flow1:  3850.5
+flow2:  3714.0
+Root Upper Bound: inf
+Root lower Bound: 3844.3620689654917
+ND-Point: 34
+
+-----------------------------------------
+Warning for adding constraints: zero or small (< 1e-13) coefficients, ignored
+Set parameter NodeLimit to value 0
+Set parameter TimeLimit to value 2.1254068613052368e+01
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x2a36e695
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+03]
+Presolve removed 0 rows and 2416 columns
+Presolve time: 0.15s
+Presolved: 24221 rows, 1680 columns, 73665 nonzeros
+Variable types: 0 continuous, 1680 integer (1680 binary)
+Root relaxation presolved: 24221 rows, 1680 columns, 73665 nonzeros
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+    4678    3.5836892e+03   1.290296e+04   0.000000e+00      5s
+    7908    3.7218837e+03   7.607457e+03   0.000000e+00     10s
+   11498    3.8357107e+03   4.399700e+03   0.000000e+00     15s
+   14511    3.8469000e+03   0.000000e+00   0.000000e+00     18s
+
+Root relaxation: objective 3.846900e+03, 14511 iterations, 17.62 seconds (12.82 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 3846.90000    0  186          - 3846.90000      -     -   18s
+
+Explored 1 nodes (14514 simplex iterations) in 18.01 seconds (13.04 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 0
+
+Node limit reached
+Best objective -, best bound 3.847500000000e+03, gap -
+Root Upper inf
+Root Lower 3846.9000000000024
+Reset all parameters
+Set parameter TimeLimit to value 0
+Set parameter Threads to value 1
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "Debian GNU/Linux 10 (buster)")
+
+CPU model: Intel(R) Xeon(R) CPU           X5570  @ 2.93GHz, instruction set [SSE2]
+Thread count: 8 physical cores, 16 logical processors, using up to 1 threads
+
+Optimize a model with 24221 rows, 4096 columns and 73665 nonzeros
+Model fingerprint: 0x2a36e695
+Variable types: 0 continuous, 4096 integer (4096 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 2e+01]
+  Objective range  [1e+00, 2e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+03]
+
+Explored 0 nodes (0 simplex iterations) in 0.00 seconds (0.00 work units)
+Thread count was 1 (of 16 available processors)
+
+Solution count 0
+
+Time limit reached
+Best objective -, best bound -, gap -
+Time Limit reached
+
+
+Total running time: 3596.8123664855957
+STAH, Instance, #departments, #ND-Points, t-MIP
+STAH, AC_16_70_5_AC_16_70_5_1, 16, 28, 3596.8123664855957
+      OBJ1    OBJ2  ...  BNB_Nodes_MIP  Total_Time_MIP[s]
+0   3777.5  4058.0  ...            1.0          81.425664
+1   3778.5  4015.0  ...            1.0          92.374328
+2   3781.5  3995.0  ...            1.0          89.794428
+3   3787.5  3993.0  ...            1.0          79.991241
+4   3788.5  3991.0  ...           15.0         103.092545
+5   3789.5  3986.0  ...           17.0         108.813612
+6   3790.5  3963.0  ...            7.0         107.533897
+7   3793.5  3943.0  ...           13.0          93.096031
+8   3799.5  3941.0  ...           13.0         107.263386
+9   3800.5  3939.0  ...           22.0         119.561390
+10  3801.5  3934.0  ...           29.0         122.439753
+11  3804.5  3933.0  ...           21.0         127.315482
+12  3806.5  3929.0  ...           15.0          94.201964
+13  3807.5  3927.0  ...            9.0         102.044429
+14  3813.5  3925.0  ...           43.0         143.901400
+15  3814.5  3920.0  ...           29.0         140.887886
+16  3817.5  3919.0  ...           30.0         127.133249
+17  3818.5  3844.0  ...           13.0         113.554407
+18  3819.5  3801.0  ...            3.0          83.599548
+19  3826.5  3796.0  ...           19.0          95.596686
+20  3827.5  3785.0  ...           11.0         100.768561
+21  3828.5  3742.0  ...            1.0          90.843684
+22  3835.5  3737.0  ...            1.0          92.570503
+23  3836.5  3733.0  ...            1.0         106.550696
+24  3839.5  3732.0  ...            1.0          97.555311
+25  3842.5  3723.0  ...            1.0          96.614680
+26  3849.5  3718.0  ...           21.0         107.478147
+27  3850.5  3714.0  ...           15.0         101.915211
+
+[28 rows x 6 columns]
+./output/AC_16_70_5_AC_16_70_5_1.pdf
+Plotting is done

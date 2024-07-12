@@ -42,7 +42,7 @@ def generate_instance(num_departments, density, max_range):
     values_cost = range(0, max_range+1)
     
     ## Generate the probability distribution
-    prob_cost = [density] + [(1-density)/max_range] * (max_range)   
+    prob_cost = [(1-density)] + [(density)/max_range] * (max_range)
     
     ## Generate the cost array
     random_cost = np.random.choice(values_cost, length, p=prob_cost)
