@@ -197,6 +197,7 @@ def Amaral_Model(c1, c2, l, n, v, time_limit):
     
     # Set objective_1 as main and esilon_constraint for objective_2 
     constant_1 = gp.quicksum(float(c1[i+1, j+1])*(l[i] + l[j]) for i in range(0,n-1) for j in range(i+1,n))/2
+    print(type(x[0, 1, 2]))
     objective_1 = gp.quicksum(float(c1[i+1, j+1]) * l[k] * x[i,k,j] for i in range(0,n-1) for j in range(i+1,n) for k in range(n) if (k != i and k != j))
     # objective_1 = gp.quicksum(((c1[i+1, j+1] * l[k]) - (c1[i+1, k+1] * l[j])) * x[i, j, k] for i in range(n) for j in range(i+1, n) for k in range(n) if k != i and k < j)
     # constant_1_1 = gp.quicksum((c1[i+1, j+1]/2) * (l[i] + l[j]) for i in range(n) for j in range(i+1, n))
