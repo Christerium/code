@@ -184,7 +184,7 @@ def Amaral_Model(c1, c2, l, n, v, time_limit):
     m = gp.Model("SRFLP")
 
     # Add variables
-    x = m.addMVar((n, n, n), vtype=GRB.BINARY, name="x",  lb=0.0, ub=1.0)
+    x = m.addVars(n, n, n, vtype=GRB.BINARY, name="x",  lb=0.0, ub=1.0)
 
     # Add constraint:
     m.addConstrs((x[i, j, k] + x[i, k, j] + x[j, i, k] == 1 for i in range(0,n) for j in range(i+1,n) for k in range(j+1,n) if (i < j and j < k)), name='7')
