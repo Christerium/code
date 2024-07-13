@@ -417,7 +417,7 @@ def main(argv):
     dfResults.to_csv("./output/" + output_file_basename + ".csv", index=False)
     
     filename_caption = inputfile.rsplit("/", 1)[-1].replace("_"," ")
-    dfResults.to_latex("./output/" + output_file_basename +".tex", index=False, float_format="%.2f", label="tab:"+inputfile.rsplit('/', 1)[-1])
+    #dfResults.to_latex("./output/" + output_file_basename +".tex", index=False, float_format="%.2f", caption="Non-dominated points statistics for instance "+filename_caption, label="tab:"+inputfile.rsplit('/', 1)[-1])
     #print(dfResults)
     
     #Plotting    
