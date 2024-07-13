@@ -4,3 +4,6 @@ output/
 instance/
 plots/
 old/
+plots/
+stats/
+cluster_results/stats

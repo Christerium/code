@@ -1132,8 +1132,7 @@ def most_fractional(Y):
 
 def epsilon_constraint(instance, timelimit):
     # Create a model
-    #vl = MAX_INT
-    vl = 3500
+    vl = MAX_INT
     dominatedpoints = []
     feasible = True
     lb = 0
