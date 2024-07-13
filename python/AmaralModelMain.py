@@ -194,10 +194,10 @@ def Amaral_Model(c1, c2, l, n, v, time_limit):
     m.addConstrs((x[i, d, j] + x[i, d, k] - x[j, d, k] >= 0 for i in range(n) for j in range(i+1,n) for k in range(j+1,n) for d in range(n) if (i < j and j < k and d!=i and d!=j and d!=k)), name='8.3')
 
     m.addConstrs((x[i, d, j] + x[i, d, k] + x[j, d, k] <= 2 for i in range(n) for j in range(i+1,n) for k in range(j+1,n) for d in range(n) if (i < j and j < k and d!=i and d!=j and d!=k)), name='9')
-    
+    print(float(c1[0, 0])*l[0]*x[0][1][2])
     # Set objective_1 as main and esilon_constraint for objective_2 
     constant_1 = gp.quicksum(float(c1[i+1, j+1])*(l[i] + l[j]) for i in range(0,n-1) for j in range(i+1,n))/2
-    objective_1 = gp.quicksum(float(c1[i+1, j+1])*l[k]*x[i][k][j] for i in range(0,n-1) for j in range(i+1,n) for k in range(n) if (k != i and k != j))
+    objective_1 = gp.quicksum((float(c1[i+1, j+1])*l[k]*x[i][k][j]) for i in range(0,n-1) for j in range(i+1,n) for k in range(n) if (k != i and k != j))
     # objective_1 = gp.quicksum(((c1[i+1, j+1] * l[k]) - (c1[i+1, k+1] * l[j])) * x[i, j, k] for i in range(n) for j in range(i+1, n) for k in range(n) if k != i and k < j)
     # constant_1_1 = gp.quicksum((c1[i+1, j+1]/2) * (l[i] + l[j]) for i in range(n) for j in range(i+1, n))
     # constant_1_2 = gp.quicksum(c1[i+1, j+1] * l[k] for i in range(n) for j in range(i+1, n) for k in range(j+1, n))
