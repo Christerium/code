@@ -194,6 +194,8 @@ def Amaral_Model(c1, c2, l, n, v, time_limit):
     m.addConstrs((x[i, d, j] + x[i, d, k] - x[j, d, k] >= 0 for i in range(n) for j in range(i+1,n) for k in range(j+1,n) for d in range(n) if (i < j and j < k and d!=i and d!=j and d!=k)), name='8.3')
 
     m.addConstrs((x[i, d, j] + x[i, d, k] + x[j, d, k] <= 2 for i in range(n) for j in range(i+1,n) for k in range(j+1,n) for d in range(n) if (i < j and j < k and d!=i and d!=j and d!=k)), name='9')
+    
+    
     #print(type(float(c1[0, 0])*l[0]*x[0][1][2]))
     # Set objective_1 as main and esilon_constraint for objective_2 
     constant_1 = gp.quicksum(float(c1[i+1, j+1])*(l[i] + l[j]) for i in range(0,n-1) for j in range(i+1,n))/2
@@ -239,6 +241,9 @@ def Amaral_Model(c1, c2, l, n, v, time_limit):
         m.setParam(GRB.Param.NodeLimit, 0)
         m.setParam('TimeLimit', time_remain)
         m.setParam(GRB.Param.Threads, 1)
+        #m.setParam(GRB.Param.Presolve, 0)
+        #m.setParam(GRB.Param.Cuts, 0)
+        m.setParam(GRB.Param.Method, 2)
         m.optimize()
         if m.Status != GRB.INFEASIBLE:
             Rootub = m.ObjVal
@@ -250,7 +255,9 @@ def Amaral_Model(c1, c2, l, n, v, time_limit):
             if time_remain < 0:
                 time_remain = 0
             m.setParam('TimeLimit', time_remain)
-            m.setParam(GRB.Param.Threads, 1)
+            #m.setParam(GRB.Param.Threads, 1)
+            #m.setParam(GRB.Param.Presolve, 0)
+            m.setParam(GRB.Param.Method, 2)
             m.optimize()
             BNB_Nodes = m.NodeCount
     except Exception as e:
@@ -410,7 +417,7 @@ def main(argv):
         stats_list.remove(i)
         
     print("STAH, Instance, #departments, #ND-Points, t-MIP")
-    print(f"STAT, {output_file_basename}, {n}, {NDPoints}, {TotalTime}")
+    print(f"STAT,{output_file_basename},{n},{NDPoints},{TotalTime}")
         
     dfResults = pd.DataFrame(stats_list)
     print(dfResults)
