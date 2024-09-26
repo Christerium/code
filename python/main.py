@@ -288,7 +288,7 @@ def print_solution(instance, M):
     print("The objective value of this solution is:", permutation2objective(p_values, instance))
     
 # Transform the solution of the optimization problem to a permutation
-def solution2permutation(X, n, switch, pairs):
+def solution2permutation(X, n, pairs):
     # R_values = []
     # for i in X:
     #     R_values.append(i-EPSOPT)
@@ -399,7 +399,7 @@ def multi_obj_model(instance, M, vl, lb):
     #     for k in range(j+1,n+1):
     #         M.constraint(Expr.sub(Expr.sub(Y.index(get_index(i,j,n), get_index(j,k,n)), Y.index(get_index(i,j,n),get_index(i,k,n))), Y.index(get_index(i,k,n), get_index(j,k,n))), Domain.equalsTo(-1.0))
 
-    # Triangel constraints
+    #Triangel constraints
     # A = np.array([[1,1,1],[1,-1,-1],[-1,1,-1],[-1,-1,1]])
     # end_index = int(comb(n, 2))
     # for i in range(end_index-2):
@@ -1157,6 +1157,8 @@ def epsilon_constraint(instance, timelimit):
                     feasible = incumbent.feasible
                     obj1 = incumbent.obj1
                     obj2 = incumbent.obj2
+                    
+                    print(solution2permutation(incumbent.Y[0],  instance.n, instance.pairs))
                     
                     #print("OBjective1: ", calculateObjective(incumbent.Y, instance, 1))
                     #print("Objective2: ", calculateObjective(incumbent.Y, instance, 2))

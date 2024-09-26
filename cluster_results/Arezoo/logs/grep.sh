@@ -14,11 +14,11 @@ do
 	echo "Bearbeite File:  $filename"
 	if [ -f "$outputdir"/"$outputfilename" ]
 	then
-		grep "STAH" "$file" >> "$outputdir"/output.csv || { echo "No STAT line found"; }
+		grep "STAT" "$file" >> "$outputdir"/output.csv || { echo "No STAT line found"; }
 		echo "Line has been appended"
 	else
 		grep "STAH" "$file" > "$outputdir"/output.csv || { echo "No STAH line found"; }
-		grep "STAH" "$file" >> "$outputdir"/output.csv || { echo "No STAT line found"; }
+		grep "STAT" "$file" >> "$outputdir"/output.csv || { echo "No STAT line found"; }
 		echo "New File"
 	fi	
 	#if [ "$filename" != "pmed13.txt" ]

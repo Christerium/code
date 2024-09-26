@@ -6,6 +6,8 @@ import pandas as pd
 import argparse
 import sys, getopt
 import numpy as np
+from collections import defaultdict, deque
+
 
 #root_ub = 0
 
@@ -95,87 +97,183 @@ def mycallback(m, where):
 #                     print(f"{i}, {j}, {k}")
 #         #print("Solution: ", order)
         
-def getPermutation(sol):
-    n = len(sol)  # Assuming sol is a cubic matrix, n x n x n
-    permutation = [-1] * n  # Initialize permutation with -1 or any placeholder to indicate unfilled positions
+# def getPermutation(sol):
+#     n = len(sol)  # Assuming sol is a cubic matrix, n x n x n
+#     permutation = [-1] * n  # Initialize permutation with -1 or any placeholder to indicate unfilled positions
     
-    facilities = set(range(n))
+#     facilities = set(range(n))
     
-    fac_count_1 = []
-    fac_count_2 = []
-    fac_count_3 = []
+#     fac_count_1 = []
+#     fac_count_2 = []
+#     fac_count_3 = []
     
-    # Step 1: Find the start (i) and end (j) elements
-    # This example assumes a simplistic approach and might need adjustments based on the specific problem constraints
-    for facility in facilities:
-        count_1 = 0
-        count_2 = 0
-        count_3 = 0
-        for j in range(n):
-            for k in range(n):
-                if sol[j][k][facility] == 1:
-                    # if facility == 8:
-                    #     print(j, k)
-                    count_1 += 1
-                if sol[facility][j][k] == 1:
-                    count_2 += 1
-                if sol[j][facility][k] == 1:
-                    count_3 += 1
-        fac_count_1.append(count_1)
-        fac_count_2.append(count_2)
-        fac_count_3.append(count_3)
+#     # Step 1: Find the start (i) and end (j) elements
+#     # This example assumes a simplistic approach and might need adjustments based on the specific problem constraints
+#     for facility in facilities:
+#         count_1 = 0
+#         count_2 = 0
+#         count_3 = 0
+#         for j in range(n):
+#             for k in range(n):
+#                 if sol[j][k][facility] == 1:
+#                     # if facility == 8:
+#                     #     print(j, k)
+#                     count_1 += 1
+#                 if sol[facility][j][k] == 1:
+#                     count_2 += 1
+#                 if sol[j][facility][k] == 1:
+#                     count_3 += 1
+#         fac_count_1.append(count_1)
+#         fac_count_2.append(count_2)
+#         fac_count_3.append(count_3)
     
-    print(fac_count_1)
-    print(fac_count_2)
-    print(fac_count_3)
+#     print(fac_count_1)
+#     print(fac_count_2)
+#     print(fac_count_3)
     
-    frontback = np.where(np.array(fac_count_3) == np.zeros(n))[0]
-    if fac_count_2[frontback[0]] == 0:
-        start = frontback[1]
-        end = frontback[0]
+#     frontback = np.where(np.array(fac_count_3) == np.zeros(n))[0]
+#     if fac_count_2[frontback[0]] == 0:
+#         start = frontback[1]
+#         end = frontback[0]
         
-    else:
-        start = frontback[0]
-        end = frontback[1]
+#     else:
+#         start = frontback[0]
+#         end = frontback[1]
     
-    permutation[0] = start
-    permutation[-1] = end
-    facilities.remove(start)
-    facilities.remove(end)
-    #print(facilities)
+#     permutation[0] = start
+#     permutation[-1] = end
+#     facilities.remove(start)
+#     facilities.remove(end)
+#     #print(facilities)
  
-    for fac in facilities:
-        count = 0
-        for j in range(n):
-            if sol[fac][j][end] == 1:
-                count += 1
-        print(count)
-        #print(n-1-count)
-        permutation[n-2-count] = fac
+#     for fac in facilities:
+#         count = 0
+#         for j in range(n):
+#             if sol[fac][j][end] == 1:
+#                 count += 1
+#         print(count)
+#         #print(n-1-count)
+#         permutation[n-2-count] = fac
     
 
         
-    # Step 2: Fill the permutation array
+#     # Step 2: Fill the permutation array
     
-    # for k in facilities:
-    #     count = 0
-    #     for j in range(n):
-    #         if sol[start][j][k] == 1:
-    #             print(start, j, k)
-    #             count += 1
-    #     permutation[count-1] = k
-    #     print(count)
-    #     #facilities.remove(k)
+#     # for k in facilities:
+#     #     count = 0
+#     #     for j in range(n):
+#     #         if sol[start][j][k] == 1:
+#     #             print(start, j, k)
+#     #             count += 1
+#     #     permutation[count-1] = k
+#     #     print(count)
+#     #     #facilities.remove(k)
     
     
     
-    # print("Start:", start, "End:", end)
-    print("Permutation:", permutation)
-    return permutation
+#     # print("Start:", start, "End:", end)
+#     print("Permutation:", permutation)
+#     return permutation
 
 # Example usage
 
 
+# def build_graph(sol, n):
+#     graph = defaultdict(list)
+#     in_degree = defaultdict(int)
+#     n
+#     for i in range(n):
+#         for j in range(n):
+#             for k in range(n):
+#                 key = (i, j, k)
+#                 if sol[key] == 1:
+#                     graph[i].append(k)
+#                     graph[k].append(j)
+#                     in_degree[k] += 1
+#                     in_degree[j] += 1
+#     return graph, in_degree
+
+# def topological_sort(graph, in_degree):
+#     n = len(in_degree)
+#     queue = deque([node for node in in_degree if in_degree[node] == 0])
+#     sorted_order = []
+#     while queue:
+#         node = queue.popleft()
+#         sorted_order.append(node)
+#         for neighbor in graph[node]:
+#             in_degree[neighbor] -= 1
+#             if in_degree[neighbor] == 0:
+#                 queue.append(neighbor)
+#     if len(sorted_order) == n:
+#         return sorted_order
+#     else:
+#         return []  # Cycle detected or graph not fully connected
+
+# def getPermutation(sol,n):
+#     graph, in_degree = build_graph(sol,n)
+#     permutation = topological_sort(graph, in_degree)
+#     return permutation
+
+# def build_graph_debug(sol, n):
+#     graph, in_degree = build_graph(sol, n)
+#     print("Graph:", graph)
+#     print("In-degree:", in_degree)
+#     return graph, in_degree
+
+# def contains_cycle(graph):
+#     visited = set()
+#     rec_stack = set()
+
+#     def is_cyclic(v):
+#         visited.add(v)
+#         rec_stack.add(v)
+#         for neighbour in graph[v]:
+#             if neighbour not in visited and is_cyclic(neighbour):
+#                 return True
+#             elif neighbour in rec_stack:
+#                 return True
+#         rec_stack.remove(v)
+#         return False
+
+#     for node in list(graph):
+#         if node not in visited:
+#             if is_cyclic(node):
+#                 return True
+#     return False
+
+
+def getPermutation(sol, n):
+    permutation = [-1]*n
+    value_index = []
+    for i in range(n):
+        for j in range(n):
+            sum_ij = 0
+            for k in range(n):
+                sum_ij += sol[i, k, j]
+                sum_ij += sol[j, k, i]
+            value_index.append((sum_ij, i, j))
+    value_index.sort(reverse=True)
+    print(value_index)
+    permutation[0] = value_index[0][1]
+    permutation[-1] = value_index[0][2]
+    
+    indices = []
+    for j in range(n):
+        if j == permutation[0]:
+            continue 
+        sum_k = 0
+        for k in range(n):
+            sum_k += sol[permutation[0], k, j]
+            sum_k += sol[j, k, permutation[0]]
+        indices.append((sum_k, j))
+    indices.sort(reverse=False)
+    
+    for i in range(1, n-1):
+        permutation[i] = indices[i-1][1]
+    
+    print(indices)
+    print("Permutation: ", permutation)
+        #print("Solution: ", order)
 
 def Amaral_Model(c1, c2, l, n, v, time_limit):         
     
@@ -184,7 +282,13 @@ def Amaral_Model(c1, c2, l, n, v, time_limit):
     m = gp.Model("SRFLP")
 
     # Add variables
-    x = m.addVars(n, n, n, vtype=GRB.BINARY, name="x",  lb=0.0, ub=1.0)
+    x = m.addVars(n, n, n, vtype=GRB.CONTINUOUS, name="x",  lb=0.0, ub=1.0)
+    
+    for i in range(n):
+        for j in range(n):
+            for k in range(n):
+                if i >= k:
+                    x[i, j, k].ub = 0
 
     # Add constraint:
     m.addConstrs((x[i, j, k] + x[i, k, j] + x[j, i, k] == 1 for i in range(0,n) for j in range(i+1,n) for k in range(j+1,n) if (i < j and j < k)), name='7')
@@ -243,7 +347,7 @@ def Amaral_Model(c1, c2, l, n, v, time_limit):
         m.setParam(GRB.Param.Threads, 1)
         #m.setParam(GRB.Param.Presolve, 0)
         #m.setParam(GRB.Param.Cuts, 0)
-        m.setParam(GRB.Param.Method, 2)
+        #m.setParam(GRB.Param.Method, 2)
         m.optimize()
         if m.Status != GRB.INFEASIBLE:
             Rootub = m.ObjVal
@@ -257,16 +361,20 @@ def Amaral_Model(c1, c2, l, n, v, time_limit):
             m.setParam('TimeLimit', time_remain)
             #m.setParam(GRB.Param.Threads, 1)
             #m.setParam(GRB.Param.Presolve, 0)
-            m.setParam(GRB.Param.Method, 2)
+            #m.setParam(GRB.Param.Method, 2)
             m.optimize()
+            #print(m.getAttr("X", x))
             BNB_Nodes = m.NodeCount
+            getPermutation(m.getAttr("X", x), n)
+            #print("Permutation: ", getPermutation(m.getAttr("X", x), n))
+           
     except Exception as e:
         print("There is an error: ", e)
     
     
     #sol = [[[0 for k in range(11)] for j in range(11)] for i in range(11)]
 # Assuming sol is filled according to the problem's conditions
-    #print(getPermutation(x.X))
+    
     
     #print("X", x.getAttr)
     
